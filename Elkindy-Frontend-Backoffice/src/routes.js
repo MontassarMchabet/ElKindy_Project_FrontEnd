@@ -12,6 +12,7 @@ import {
 // Admin Imports
 import MainDashboard from "views/admin/default";
 import NFTMarketplace from "views/admin/marketplace";
+import Events from "views/admin/events";
 import Profile from "views/admin/profile";
 import DataTables from "views/admin/dataTables";
 import RTL from "views/admin/rtl";
@@ -50,6 +51,21 @@ const routes = [
       />
     ),
     component: NFTMarketplace,
+    secondary: true,
+  },
+  {
+    name: "Evenements ElKindy",
+    layout: "/admin",
+    path: "/events",
+    icon: (
+      <Icon
+        as={MdOutlineShoppingCart}
+        width='20px'
+        height='20px'
+        color='inherit'
+      />
+    ),
+    component: Events,
     secondary: true,
   },
   {
