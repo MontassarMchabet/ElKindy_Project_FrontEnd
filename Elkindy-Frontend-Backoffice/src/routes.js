@@ -16,6 +16,7 @@ import Profile from "views/admin/profile";
 import DataTables from "views/admin/dataTables";
 import RTL from "views/admin/rtl";
 import UserTables from "views/admin/userTables";
+import Courses from "views/admin/courses";
 
 // Auth Imports
 import SignInCentered from "views/auth/signIn";
@@ -65,6 +66,14 @@ const routes = [
     icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
     path: "/users",
     component: UserTables,
+  },
+  
+  {
+    name: "Course Tables",
+    layout: "/admin",
+    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+    path: "/course",
+    component: Courses,
   },
 ];
 
