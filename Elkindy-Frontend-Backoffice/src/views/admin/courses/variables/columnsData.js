@@ -19,5 +19,6 @@
       Header: "ACTIONS",
     },
   ];
+  
   export default CoursesData;
   

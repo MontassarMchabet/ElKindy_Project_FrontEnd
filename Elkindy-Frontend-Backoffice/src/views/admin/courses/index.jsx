@@ -1,12 +1,16 @@
 import { Box, SimpleGrid } from "@chakra-ui/react";
 import CourseTable from "views/admin/courses/components/courseTable";
+import RoomTable from "views/admin/courses/components/roomTable.js";
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import  CoursesData from "./variables/columnsData.js";
+import  RoomData from "./variables/roomData.js";
 export default function Settings() {
-    const [editedCourse, setEditedCourse] = useState(null); // État pour stocker les données du cours en cours update
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false); // État pour contrôler l'ouverture et la fermeture de la modal update
+   
+    const [isCourseEditModalOpen, setIsCourseEditModalOpen] = useState(false); 
+    const [isRoomEditModalOpen, setIsRoomEditModalOpen] = useState(false); 
     const [CoursessData, setCoursesData] = useState([]);
+    const [RoomsData, setRoomData] = useState([]);
     useEffect(() => {
         fetchData();
     }, []);
@@ -15,63 +19,79 @@ export default function Settings() {
         try {
             const CourseResponse = await axios.get('http://localhost:8080/api/Course/getall');
             setCoursesData(CourseResponse.data);
+            const RoomResponse = await axios.get('http://localhost:8080/api/Room/getall');
+            setRoomData(RoomResponse.data);
+            
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     };
-// La fonction pour ouvrir le formulaire d'update
-    const openEditModal = () => {
-    setIsEditModalOpen(true);
-};
-
      // Fonction pour fermer la modal d'update
-     const closeEditModal = () => {
-        setIsEditModalOpen(false);
+     const closeCourseEditModal = () => {
+        setIsCourseEditModalOpen(false);
     };
-    // Fonction pour sauvegarder les modifications du cours
-    const handleSaveEdit = async () => {
-            try {
-                // Effectuer la requête API pour MAJ le cours avec les nouvelles données
-                await axios.put(`http://localhost:8080/api/Course/update/${editedCourse._id}`, editedCourse);
-                console.log("Course updated successfully");
-                setIsEditModalOpen(false); // Fermer la modal d'édition après la sauvegarde
-                fetchData(); // Rafraîchir les données des cours
-            } catch (error) {
-                console.error("Error updating course:", error);
-            }
-        };
-
-    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const closeRoomEditModal = () => {
+        setIsRoomEditModalOpen(false);
+    };
+    //const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [isCourseDeleteDialogOpen, setIsCourseDeleteDialogOpen] = useState(false);
+    const [isRoomDeleteDialogOpen, setIsRoomDeleteDialogOpen] = useState(false);
     const [deletingUserId, setDeletingUserId] = useState(null);
+    const [deletingRoomId, setDeletingRoomId] = useState(null);
     const cancelRef = useRef();
 
     const confirmDelete = (userId) => {
         setDeletingUserId(userId);
-        setIsDeleteDialogOpen(true);
+        setIsCourseDeleteDialogOpen(true);
     };
-
+    
+    const confirmDeleteR = (RoomID) => {
+        setDeletingRoomId(RoomID);
+        setIsRoomDeleteDialogOpen(true);
+    };
     const cancelDelete = () => {
-        setIsDeleteDialogOpen(false);
+        setIsCourseDeleteDialogOpen(false);
+        
     };
     const handleDelete = async () => {
-        setIsDeleteDialogOpen(false);
+        setIsCourseDeleteDialogOpen(false);
         try {
             await axios.delete(`http://localhost:8080/api/Course/delete/${deletingUserId}`);
             console.log("Course deleted successfully");
-            setIsEditModalOpen(false);
+            setIsCourseEditModalOpen(false);
+            fetchData();
+        } catch (error) {
+            console.error("Error deleting user:", error);
+        }
+    };
+    const cancelDeleteR = () => {
+        setIsRoomDeleteDialogOpen(false);
+    };
+    const handleDeleteRoom = async () => {
+        setIsRoomDeleteDialogOpen(false);
+        try {
+            await axios.delete(`http://localhost:8080/api/Room/delete/${deletingRoomId}`);
+            console.log("Course deleted successfully");
+            setIsRoomEditModalOpen(false);
             fetchData();
         } catch (error) {
             console.error("Error deleting user:", error);
         }
     };
     const [isModalOpenP, setIsModalOpenP] = useState(false);
+    const [isModalOpenR, setIsModalOpenR] = useState(false);
+    const openModalR = () => {
+        setIsModalOpenR(true);
+    };
+    const closeModalR = () => {
+        setIsModalOpenR(false);
+    };
     const openModalP = () => {
         setIsModalOpenP(true);
     };
     const closeModalP = () => {
         setIsModalOpenP(false);
     };
-
     return (
         <Box width="3150px" pt={{ base: "130px", md: "80px", xl: "80px" }}>
     
@@ -87,14 +107,35 @@ export default function Settings() {
                     cancelDelete={cancelDelete}
                     cancelRef={cancelRef}
                     confirmDelete={confirmDelete}
-                    isDeleteDialogOpen={isDeleteDialogOpen}
+                    isDeleteDialogOpen={isCourseDeleteDialogOpen}
                     openModalP={openModalP}
                     closeModalP={closeModalP}
                     isModalOpenP={isModalOpenP}
                     fetchData={fetchData}
-                    isEditModalOpen={isEditModalOpen} // Passer l'état de la modal d'édition
-                    closeEditModal={closeEditModal} // Passer la fonction pour fermer la modal d'édition
-                    setIsEditModalOpen={setIsEditModalOpen} // Passer la fonction pour sauvegarder les modifications du cours
+                    isEditModalOpen={isCourseEditModalOpen} 
+                    closeEditModal={closeCourseEditModal} 
+                    setIsEditModalOpen={setIsCourseEditModalOpen} 
+                />
+            </SimpleGrid>
+            <SimpleGrid
+                mb='20px'
+                columns={{ sm: 1, md: 2 }}
+                spacing={{ base: "20px", xl: "20px" }}>
+                <RoomTable
+                    columnsData={RoomData}
+                    tableData={RoomsData}
+                    handleDelete={handleDeleteRoom}
+                    cancelDelete={cancelDeleteR}
+                    cancelRef={cancelRef}
+                    confirmDelete={confirmDeleteR}
+                    isDeleteDialogOpen={isRoomDeleteDialogOpen}
+                    openModalR={openModalR}
+                    closeModalR={closeModalR}
+                    isModalOpenR={isModalOpenR}
+                    fetchData={fetchData}
+                    isEditModalOpen={isRoomEditModalOpen} 
+                    closeEditModal={closeRoomEditModal} 
+                    setIsEditModalOpen={setIsRoomEditModalOpen} 
                 />
             </SimpleGrid>
 
