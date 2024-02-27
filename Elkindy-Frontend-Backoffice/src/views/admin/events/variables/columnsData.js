@@ -81,44 +81,29 @@
 // Élimination des doublons dans les données d'événements
 export const eventsData = [
   {
-    Header: "NAME",
-    accessor: "name",
+    Header: "IMAGE",
+    accessor: "imageURL", // Utilisation de la même casse pour tous les accesseurs
   },
   {
-    Header: "DESCRIPTION",
-    accessor: "description",
+    Header: "NAME",
+    accessor: "name",
   },
   {
     Header: "DATE",
     accessor: "date",
   },
   {
-    Header: "IMAGE",
-    accessor: "imageURL", // Utilisation de la même casse pour tous les accesseurs
+    Header: "PRICE",
+    accessor: "price",
   },
   {
     Header: "LOCATION",
     accessor: "location",
   },
-  {
-    Header: "PRICE",
-    accessor: "price",
-  },
+
   {
     Header: "ROOM",
-    accessor: "room.name", // Supposition qu'il s'agisse de room au lieu de name
-  },
-  {
-    Header: "SHAPE",
-    accessor: "room.shape",
-  },
-  {
-    Header: "CAPACITY",
-    accessor: "room.capacity",
-  },
-  {
-    Header: "SEATS",
-    accessor: "room.distributionSeats",
+    accessor: "room_name", // Supposition qu'il s'agisse de room au lieu de name
   },
   {
     Header: "ACTIONS", // Ajout d'une nouvelle colonne pour les actions

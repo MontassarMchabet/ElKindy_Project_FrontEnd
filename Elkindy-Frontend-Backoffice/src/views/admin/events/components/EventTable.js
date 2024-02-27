@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button } from "@chakra-ui/react";
+import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button, Select } from "@chakra-ui/react";
 import { ViewIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { AddIcon } from '@chakra-ui/icons'
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, ModalFooter, FormControl, FormLabel, Input, Grid, SimpleGrid } from "@chakra-ui/react";
@@ -61,14 +61,14 @@ export default function ColumnsTable(props) {
         useSortBy,
         usePagination
     );
-    const [editedCourse, setEditedCourse] = useState({}); // Déclaration et initialisation
+    const [editedEvent, setEditedEvent] = useState({}); // Déclaration et initialisation
     ////////////////////////
         // Fonction pour sauvegarder les modifications du cours
         const handleSaveEdit = async () => {
             try {
                 // Effectuer la requête API pour mettre à jour le cours avec les nouvelles données
-                await axios.put(`http://localhost:8080/event/update/${editedCourse._id}`, editedCourse);
-                //console.log (editedCourse._id,"aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+                await axios.put(`http://localhost:8080/event/update/${editedEvent._id}`, editedEvent);
+                //console.log (editedEvent._id,"aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
                 console.log("Course updated successfully");
                 setIsEditModalOpen(false); // Fermer la modal d'édition après la sauvegarde
                 fetchData(); // Rafraîchir les données des cours
@@ -77,7 +77,7 @@ export default function ColumnsTable(props) {
             }
         };
     const handleEdit = (course) => {
-       setEditedCourse(course); // Charger les données du cours à éditer dans editedCourse
+       setEditedEvent(course); // Charger les données du cours à éditer dans editedEvent
        openEditModal(); // Ouvrir le formulaire d'édition
     };
 
@@ -155,12 +155,11 @@ export default function ColumnsTable(props) {
         location: "",
         price: "",
       
-        room: {
-          name: "",
-          shape: "",
-          capacity: "",
-          distributionSeats:""
-        }
+        room_name: "",
+        room_shape: "",
+        room_capacity: "",
+        room_distributionSeats:""
+        
       });
     const [errors, setErrors] = useState({});
     const handleChange = (e) => {
@@ -196,42 +195,30 @@ export default function ColumnsTable(props) {
         let errors = {};
       
         if (!formData.name.trim()) {
-          errors.name = 'All fields are required'
+          errors.name = 'Nameis required'
         } else if (!formData.description.trim()) {
-          errors.description = 'All fields are required'
+          errors.description = 'Description required'
         } else if (!formData.location.trim()) {
-          errors.location = 'All fields are required'
+          errors.location = 'location required'
         } else if (!formData.price.trim()) {
-          errors.price = 'All fields are required'
+          errors.price = 'price required'
         } else if (!formData.imageUrl.trim()) {
-          errors.imageUrl = 'All fields are required'
+          errors.imageUrl = 'image required'
         } else if (!formData.date.trim()) {
-          errors.date = 'All fields are required'
-        } 
-      
+          errors.date = 'date required'
+        } else if (!formData.room_name.trim()) {
+            errors.room_name = 'room required'
+        } else if (!formData.room_capacity.trim()) {
+            errors.room_capacity = 'room capacity required'
+        } else if (!formData.room_shape.trim()) {
+            errors.room_shape = 'room shape required'
+        
+        } else if (!formData.room_distributionSeats.trim()) {
+            errors.room_distributionSeats = 'Seats required'
+        }
         setErrors(errors);
         return Object.keys(errors).length === 0;
       };
-
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     const isValid = await validateForm();
-    //     console.log("Submitting form");
-    //     if (isValid) {
-    //         try {
-    //             const response = await axios.post(
-    //                 "http://localhost:8080/event/add",
-    //                 formData
-    //             );
-    //             fetchData()
-    //             closeModalA()
-    //             console.log(response.data);
-    //         } catch (error) {
-    //             console.error("Error adding event:", error);
-    //         }
-    //     }
-    // };
-
 
       const handleSubmit = async (e) => {
         e.preventDefault();
@@ -251,104 +238,7 @@ export default function ColumnsTable(props) {
           }
         }
       };
-    // return (
-    //     <Card
-    //         direction='column'
-    //         w='100%'
-    //         px='0px'
-    //         overflowX={{ sm: "scroll", lg: "hidden" }}>
-    //         <Flex px='25px' justify='space-between' mb='20px' align='center'>
-    //             <Text
-    //                 color={textColor}
-    //                 fontSize='22px'
-    //                 fontWeight='700'
-    //                 lineHeight='100%'>
-    //                 Events Table
-    //             </Text>
 
-    //             <Menu isOpen={isOpen1} onClose={onClose1}>
-    //                 <MenuButton
-    //                     align='center'
-    //                     justifyContent='center'
-    //                     bg={bgButton}
-    //                     _hover={bgHover}
-    //                     _focus={bgFocus}
-    //                     _active={bgFocus}
-    //                     w='37px'
-    //                     h='37px'
-    //                     lineHeight='100%'
-    //                     onClick={openModalA}
-    //                     borderRadius='10px'
-    //                     {...rest}>
-    //                     <AddIcon color={iconColor} w='20px' h='20px' />
-    //                 </MenuButton>
-    //             </Menu>
-
-    //             {/* Modal for adding event */}
-    //             <Modal isOpen={isModalOpenA} onClose={closeModalA}>
-    //                 <ModalOverlay />
-    //                 <ModalContent>
-    //                     <form onSubmit={handleSubmit} noValidate>
-    //                         <ModalHeader>Add Event</ModalHeader>
-    //                         <ModalCloseButton />
-    //                         <ModalBody>
-    //                             <Grid templateColumns="1fr 1fr" gap={4}>
-    //                                 <FormControl>
-    //                                     <FormLabel>Name</FormLabel>
-    //                                     <Input type="text"
-    //                                         name="name"
-    //                                         value={formData.Name}
-    //                                         onChange={handleChange}
-    //                                     />
-    //                                 </FormControl>
-    //                                 <FormControl>
-    //                                     <FormLabel>Description</FormLabel>
-    //                                     <Input type="text"
-    //                                         name="Description"
-    //                                         value={formData.Description}
-    //                                         onChange={handleChange}
-    //                                     />
-    //                                 </FormControl>
-    //                             </Grid>
-                                
-    //                             <FormControl mt={4}>
-    //                                 <FormLabel>Date</FormLabel>
-    //                                 <Input type="date"
-    //                                     name="dateOfBirth"
-    //                                     value={formData.Date}
-    //                                     onChange={handleChange}
-    //                                 />
-    //                             </FormControl>
-    //                             <FormControl mt={4}>
-    //                                 <FormLabel>Image</FormLabel>
-    //                                 <Input type="file"
-    //                                     name="profilePicture"
-    //                                     value={formData.imageUrl}
-    //                                     onChange={handleChange}
-    //                                 />
-    //                             </FormControl>
-    //                         </ModalBody>
-    //                         {errors.Name && <Text color="red">{errors.Name}</Text>}
-    //                         {errors. Description && <Text color="red">{errors.Description}</Text>}
-    //                         {errors.Location && <Text color="red">{errors.Location}</Text>}
-    //                         {errors.price && <Text color="red">{errors.price}</Text>}
-    //                         {errors.imageUrl && <Text color="red">{errors.imageUrl}</Text>}
-    //                         {errors.Date && <Text color="red">{errors.Date}</Text>}
-    //                         {errors.room.name && <Text color="red">{errors.room.name}</Text>}
-    //                         {errors.room.capacity && <Text color="red">{errors.room.capacity}</Text>}
-    //                         {errors.room.shape && <Text color="red">{errors.room.shape}</Text>}
-    //                         <ModalFooter>
-    //                             <Button colorScheme="blue" mr={3} onClick={closeModalA}>
-    //                                 Close
-    //                             </Button>
-    //                             <Button type="submit" colorScheme="green">
-    //                                 Save
-    //                             </Button>
-    //                         </ModalFooter>
-    //                     </form>
-    //                 </ModalContent>
-    //             </Modal>
-    //         </Flex>
     return (
         <Card direction='column' w='100%' px='0px' overflowX={{ sm: "scroll", lg: "hidden" }}>
           <Flex px='25px' justify='space-between' mb='20px' align='center'>
@@ -389,19 +279,25 @@ export default function ColumnsTable(props) {
                       </FormControl>
                       <FormControl>
                         <FormLabel>Room Name</FormLabel>
-                        <Input type="text" name="room" value={formData.room.name} onChange={handleChange} />
+                        <Input type="text" name="room_name" value={formData.room_name} onChange={handleChange} />
                       </FormControl>
                       <FormControl>
                         <FormLabel>shape</FormLabel>
-                        <Input type="text" name="shape" value={formData.room.shape} onChange={handleChange} />
+                        {/* <Input type="text" name="room_shape" value={formData.room_shape} onChange={handleChange} /> */}
+                        <Select name="room_shape" value={formData.room_shape} onChange={handleChange}>
+                            <option value="Rectangular">Rectangular</option>
+                            <option value="Triangular">Triangular</option>
+                            <option value="Circle">Circle</option>
+                            <option value="Square">Square</option>
+                        </Select>
                       </FormControl>
                       <FormControl>
                         <FormLabel>Capacity</FormLabel>
-                        <Input type="number" name="capacity" value={formData.room.capacity} onChange={handleChange} />
+                        <Input type="number" name="room_capacity" value={formData.room_capacity} onChange={handleChange} />
                       </FormControl>
                       <FormControl>
-                        <FormLabel>Price</FormLabel>
-                        <Input type="text" name="distributionSeats" value={formData.room.distributionSeats} onChange={handleChange} />
+                        <FormLabel>Seats</FormLabel>
+                        <Input type="text" name="room_distributionSeats" value={formData.room_distributionSeats} onChange={handleChange} />
                       </FormControl>
                     </Grid>
                     <FormControl mt={4}>
@@ -421,6 +317,10 @@ export default function ColumnsTable(props) {
                   {errors.price && <Text color="red">{errors.price}</Text>}
                   {errors.imageUrl && <Text color="red">{errors.imageUrl}</Text>}
                   {errors.date && <Text color="red">{errors.date}</Text>}
+                  {errors.room_name && <Text color="red">{errors.room_name}</Text>}
+                  {errors.room_shape && <Text color="red">{errors.room_shape}</Text>}
+                  {errors.room_capacity && <Text color="red">{errors.room_capacity}</Text>}
+                  {errors.room_distributionSeats && <Text color="red">{errors.room_distributionSeats}</Text>}
                 
     
                       
@@ -490,18 +390,19 @@ export default function ColumnsTable(props) {
                             <Tr {...row.getRowProps()} key={index}>
                                 {row.cells.map((cell, index) => {
                                     let data = "";
-                                    if (cell.column.Header === "NAME") {
+                                    if  (cell.column.Header === "IMAGE") {
+                                        data = (
+                                            <Text color={textColor} fontSize='sm' fontWeight='700'>
+                                                <img src={cell.value} alt="Event Image" />
+                                            </Text>
+                                        );
+                                    }else if(cell.column.Header === "NAME") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
                                                 {cell.value}
                                             </Text>
                                         );
-                                    } else if (cell.column.Header === "DESCRIPTION") {
-                                        data = (
-                                            <Text color={textColor} fontSize='sm' fontWeight='700'>
-                                                {cell.value}
-                                            </Text>
-                                        );
+                                    
                                     // } else if (cell.column.Header === "DATE") {
                                     //     const date = new Date(cell.value);
                                     //     const formattedDate = date.toISOString().split('T')[0];
@@ -516,13 +417,7 @@ export default function ColumnsTable(props) {
                                                 {cell.value}
                                             </Text>
                                         );
-                                    } else if (cell.column.Header === "IMAGE") {
-                                        data = (
-                                            <Text color={textColor} fontSize='sm' fontWeight='700'>
-                                                {cell.value}
-                                            </Text>
-                                        );
-                                    } else if (cell.column.Header === "LOCATION") {
+                                    }  else if (cell.column.Header === "LOCATION") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
                                                 {cell.value}
@@ -536,33 +431,15 @@ export default function ColumnsTable(props) {
                                         );
                                     
                                     
-                                    } else if (cell.column.Header === "ROOM") {
-                                        data = (
-                                            <Text color={textColor} fontSize='sm' fontWeight='700'>
-                                                {cell.value}
-                                            </Text>
-                                        );
-                                    } else if (cell.column.Header === "SHAPE") {
-                                        data = (
-                                            <Text color={textColor} fontSize='sm' fontWeight='700'>
-                                                {cell.value}
-                                            </Text>
-                                        );
-                                    } else if (cell.column.Header === "CAPACITY") {
-                                        data = (
-                                            <Text color={textColor} fontSize='sm' fontWeight='700'>
-                                                {cell.value}
-                                            </Text>
-                                        );
-                                    } else if (cell.column.Header === "SEATS") {
-                                        data = (
-                                            <Text color={textColor} fontSize='sm' fontWeight='700'>
-                                                {cell.value}
-                                            </Text>
-                                        );
                                     
-                                    
-                                    } else if (cell.column.Header === "ACTIONS") {
+                             
+                                    }else if (cell.column.Header === "ROOM") {
+                                        data = (
+                                            <Text color={textColor} fontSize='sm' fontWeight='700'>
+                                                {cell.value}
+                                            </Text>
+                                        );
+                                    }  else if (cell.column.Header === "ACTIONS") {
                                         data = (
                                             <Flex align="center">
                                                 {/* Edit icon */}
@@ -582,24 +459,57 @@ export default function ColumnsTable(props) {
                                                 <ModalContent maxW={'800px'}>
                                                     <ModalHeader>Edit Event</ModalHeader>
                                                     <ModalCloseButton />
-                                                    {editedCourse && ( // Vérifiez si editedCourse est disponible
+                                                    {editedEvent && ( // Vérifiez si editedEvent est disponible
                                                         <ModalBody>
                                                             {/* Formulaire pour l'édition du cours */}
                                                             <FormControl id="name">
                                                                 <FormLabel>Name</FormLabel>
-                                                                <Input type="text" value={editedCourse.name} onChange={(e) => setEditedCourse({ ...editedCourse, name: e.target.value })} />
+                                                                <Input type="text" value={editedEvent.name} onChange={(e) => setEditedEvent({ ...editedEvent, name: e.target.value })} />
                                                             </FormControl>
-                                                            <FormControl id="type">
-                                                                <FormLabel>Type</FormLabel>
-                                                                <Input type="text" value={editedCourse.type} onChange={(e) => setEditedCourse({ ...editedCourse, type: e.target.value })} />
+                                                            <FormControl id="description">
+                                                                <FormLabel>Description</FormLabel>
+                                                                <Input type="text" value={editedEvent.description} onChange={(e) => setEditedEvent({ ...editedEvent, description: e.target.value })} />
                                                             </FormControl>
-                                                            <FormControl id="duration">
-                                                                <FormLabel>Duration</FormLabel>
-                                                                <Input type="number" value={editedCourse.duration} onChange={(e) => setEditedCourse({ ...editedCourse, duration: parseInt(e.target.value) })} />
+                                                            <FormControl id="location">
+                                                                <FormLabel>Location</FormLabel>
+                                                                <Input type="text" value={editedEvent.location} onChange={(e) => setEditedEvent({ ...editedEvent, location: parseInt(e.target.value) })} />
                                                             </FormControl>
-                                                            <FormControl id="capacity">
+                                                            <FormControl id="price">
+                                                                <FormLabel>Price</FormLabel>
+                                                                <Input type="number" value={editedEvent.price} onChange={(e) => setEditedEvent({ ...editedEvent, price: parseInt(e.target.value) })} />
+                                                            </FormControl>
+                                                            <FormControl id="room_name">
+                                                                <FormLabel>Room Name</FormLabel>
+                                                                <Input type="text" value={editedEvent.room_name} onChange={(e) => setEditedEvent({ ...editedEvent, room_name: parseInt(e.target.value) })} />
+                                                            </FormControl>
+                                                            {/* <FormControl id="room_shape">
+                                                                <FormLabel>Shape</FormLabel>
+                                                                <Input type="text" value={editedEvent.room_shape} onChange={(e) => setEditedEvent({ ...editedEvent, room_shape: parseInt(e.target.value) })} />
+                                                            
+                                                            </FormControl> */}
+                                                            <FormControl id="room_shape">
+                                                            <FormLabel>Shape</FormLabel>
+                                                            <Select value={editedEvent.room_shape} onChange={(e) => setEditedEvent({ ...editedEvent, room_shape: e.target.value })}>
+                                                                <option value="Rectangular">Rectangular</option>
+                                                                <option value="Triangular">Triangular</option>
+                                                                <option value="Circle">Circle</option>
+                                                                <option value="Square">Square</option>
+                                                            </Select>
+                                                        </FormControl>
+
+                                                            {/* Select name="room_shape" value={formData.room_shape} onChange={handleChange}>
+                                                                    <option value="Rectangular">Rectangular</option>
+                                                                    <option value="Triangular">Triangular</option>
+                                                                    <option value="Circle">Circle</option>
+                                                                    <option value="Square">Square</option>
+                                                                </Select> */}
+                                                            <FormControl id="room_capacity">
                                                                 <FormLabel>Capacity</FormLabel>
-                                                                <Input type="number" value={editedCourse.capacity} onChange={(e) => setEditedCourse({ ...editedCourse, capacity: parseInt(e.target.value) })} />
+                                                                <Input type="number" value={editedEvent.room_capacity} onChange={(e) => setEditedEvent({ ...editedEvent, room_capacity: parseInt(e.target.value) })} />
+                                                            </FormControl>
+                                                            <FormControl id="room_distributionSeats">
+                                                                <FormLabel>Seats</FormLabel>
+                                                                <Input type="text" value={editedEvent.room_distributionSeats} onChange={(e) => setEditedEvent({ ...editedEvent, room_distributionSeats: parseInt(e.target.value) })} />
                                                             </FormControl>
                                                         </ModalBody>
                                                     )}
@@ -658,12 +568,12 @@ export default function ColumnsTable(props) {
                                                 <Modal isOpen={isModalViewOpen} onClose={closeModalViewA}>
                                                     <ModalOverlay />
                                                     <ModalContent maxW={'800px'}>
-                                                        <ModalHeader>Event Information</ModalHeader>
+                                                        {/* <ModalHeader>Event Information</ModalHeader> */}
                                                         <ModalCloseButton />
                                                         <ModalBody>
                                                             {eventInfo && (
                                                                 <>
-                                                                    {eventInfo.imageUrl}
+                                                                     <img src={eventInfo.imageUrl} alt="Event Image" />
                                                                     <Card mb={{ base: "0px", "2xl": "20px" }} {...rest}>
                                                                         <Text
                                                                             color={textColorPrimary}
@@ -674,7 +584,7 @@ export default function ColumnsTable(props) {
                                                                             {eventInfo.name}
                                                                         </Text>
                                                                         <Text color={textColorSecondary} fontSize='md' me='26px' mb='40px'>
-                                                                            @{eventInfo.Description}
+                                                                            {eventInfo.description}
                                                                         </Text>
                                                                         <SimpleGrid columns='2' gap='20px'>
                                                                             <Information
@@ -695,8 +605,23 @@ export default function ColumnsTable(props) {
                                                                                                                                                         
                                                                             <Information
                                                                                 boxShadow={cardShadow}
-                                                                                title='Date'
-                                                                                value={eventInfo.date}
+                                                                                title='Room Name'
+                                                                                value={eventInfo.room_name}
+                                                                            />
+                                                                            <Information
+                                                                                boxShadow={cardShadow}
+                                                                                title='Room Shape'
+                                                                                value={eventInfo.room_shape}
+                                                                            />
+                                                                            <Information
+                                                                                boxShadow={cardShadow}
+                                                                                title='Room Capacity'
+                                                                                value={eventInfo.room_capacity}
+                                                                            />
+                                                                            <Information
+                                                                                boxShadow={cardShadow}
+                                                                                title='Seats'
+                                                                                value={eventInfo.room_distributionSeats}
                                                                             />
                                                                         </SimpleGrid>
                                                                     </Card>
