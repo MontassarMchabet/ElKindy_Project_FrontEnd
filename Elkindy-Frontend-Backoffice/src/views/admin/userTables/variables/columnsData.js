@@ -17,7 +17,7 @@ export const columnsDataComplex = [
   },
 ];
 
-export const adminsData = [
+export  const adminsData = [
   {
     Header: "NAME",
     accessor: "name",
