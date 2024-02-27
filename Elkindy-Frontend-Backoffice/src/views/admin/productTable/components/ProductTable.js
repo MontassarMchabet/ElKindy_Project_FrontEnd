@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button } from "@chakra-ui/react";
+import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button, Select } from "@chakra-ui/react";
 import { ViewIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { AddIcon } from '@chakra-ui/icons'
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, ModalFooter, FormControl, FormLabel, Input, Grid, SimpleGrid } from "@chakra-ui/react";
@@ -27,13 +27,6 @@ import {
 } from "@chakra-ui/react";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiEyeCloseLine } from "react-icons/ri";
-import {
-    MdOutlineMoreHoriz,
-    MdOutlinePerson,
-    MdOutlineCardTravel,
-    MdOutlineLightbulb,
-    MdOutlineSettings,
-} from "react-icons/md";
 import React, { useMemo, useState } from "react";
 import {
     useGlobalFilter,
@@ -49,7 +42,7 @@ import Information from "views/admin/profile/components/Information";
 
 export default function ColumnsTable(props) {
     const { columnsData, tableData, handleDelete, cancelDelete, cancelRef, confirmDelete, isDeleteDialogOpen,
-        isModalOpenA, openModalA, closeModalA, fetchData } = props;
+        isModalOpenPro, openModalPro, closeModalPro, fetchData } = props;
 
     const textColorPrimary = useColorModeValue("secondaryGray.900", "white");
     const cardShadow = useColorModeValue(
@@ -62,6 +55,9 @@ export default function ColumnsTable(props) {
     const { ...rest } = props;
     const iconColor = useColorModeValue("brand.500", "white");
     /////////////////////////////////////////////////
+
+
+
     const tableInstance = useTable(
         {
             columns,
@@ -80,7 +76,7 @@ export default function ColumnsTable(props) {
         prepareRow,
         initialState,
     } = tableInstance;
-    initialState.pageSize = 99999999999999999;
+    initialState.pageSize = 99;
 ////////////////////////////////////////////////////////////////
     const textColor = useColorModeValue("secondaryGray.900", "white");
     const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
@@ -106,33 +102,28 @@ export default function ColumnsTable(props) {
     const [show, setShow] = React.useState(false);
     const handleClick = () => setShow(!show);
 
-
-
-
-
     const [isModalViewOpen, setIsModalViewOpen] = useState(false);
-    const [adminInfo, setAdminInfo] = useState(null);
-    const handleView = (userData) => {
-        setAdminInfo(userData);
+    const [productInfo, setProductInfo] = useState(null);
+
+    const handleView = (productData) => {
+        setProductInfo(productData);
         setIsModalViewOpen(true);
     };
+    const closeModalViewPro = () => {
+        setIsModalViewOpen(false);
+    };
+
     const closeModalViewA = () => {
         setIsModalViewOpen(false);
     };
 
 
     const [formData, setFormData] = useState({
-        name: "",
-        lastname: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-        username: "",
-
-        cinNumber: "",
-        phoneNumber: "",
-        dateOfBirth: "",
-        profilePicture: "",
+        title: "",
+        description: "",
+        price: "",
+        quantity: "",
+        category: "",
     });
     const [errors, setErrors] = useState({});
     const handleChange = (e) => {
@@ -141,72 +132,16 @@ export default function ColumnsTable(props) {
     const validateForm = async () => {
         let errors = {};
 
-        if (!formData.name.trim()) {
-            errors.name = 'All fields are required'
-        } else if (!formData.lastname.trim()) {
-            errors.lastname = 'All fields are required'
-        } else if (!formData.email.trim()) {
-            errors.email = 'All fields are required'
-        } else if (!formData.password.trim()) {
-            errors.password = 'All fields are required'
-        } else if (!formData.confirmPassword.trim()) {
-            errors.confirmPassword = 'All fields are required'
-        } else if (!formData.username.trim()) {
-            errors.confirmPassword = 'All fields are required'
-        } else if (!formData.cinNumber.trim()) {
-            errors.confirmPassword = 'All fields are required'
-        } else if (!formData.phoneNumber.trim()) {
-            errors.confirmPassword = 'All fields are required'
-        } else if (!formData.dateOfBirth.trim()) {
-            errors.confirmPassword = 'All fields are required'
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            errors.email = 'Email is invalid';
-        } else if (formData.username.trim().length < 3) {
-            errors.username = 'Username must be at least 3 characters long';
-        } else if (formData.cinNumber.length !== 8 || isNaN(parseInt(formData.cinNumber))) {
-            errors.cinNumber = 'CIN must be an 8-digit number';
-        } else if (formData.phoneNumber.length !== 8 || isNaN(parseInt(formData.phoneNumber))) {
-            errors.phoneNumber = 'Phone number must be an 8-digit number';
-        } else if (formData.password.length < 8) {
-            errors.password = 'Password must be at least 8 characters';
-        } else if (formData.password !== formData.confirmPassword) {
-            errors.confirmPassword = 'Passwords do not match';
-        }
-
-        try {
-            const emailResponse = await axios.get(`http://localhost:8080/api/auth/check/email/${formData.email}`);
-            if (emailResponse.data.exists) {
-                errors.email = 'Email already in use';
-            }
-        } catch (error) {
-            console.error('Error checking email:', error);
-        }
-
-        try {
-            const usernameResponse = await axios.get(`http://localhost:8080/api/auth/check/username/${formData.username}`);
-            if (usernameResponse.data.exists) {
-                errors.username = 'Username already taken';
-            }
-        } catch (error) {
-            console.error('Error checking username:', error);
-        }
-
-        try {
-            const cinResponse = await axios.get(`http://localhost:8080/api/auth/check/cin/${formData.cinNumber}`);
-            if (cinResponse.data.exists) {
-                errors.cinNumber = 'CIN is invalid';
-            }
-        } catch (error) {
-            console.error('Error checking CIN:', error);
-        }
-
-        try {
-            const phoneResponse = await axios.get(`http://localhost:8080/api/auth/check/phone/${formData.phoneNumber}`);
-            if (phoneResponse.data.exists) {
-                errors.phoneNumber = 'Phone number is invalid';
-            }
-        } catch (error) {
-            console.error('Error checking Phone number:', error);
+        if (!formData.title.trim()) {
+            errors.title = 'All fields are required'
+        } else if (!formData.description.trim()) {
+            errors.description = 'All fields are required'
+        } else if (!formData.price.trim()) {
+            errors.price = 'All fields are required'
+        } else if (!formData.quantity.trim()) {
+            errors.quantity = 'All fields are required'
+        } else if (!formData.category.trim()) {
+            errors.category = 'All fields are required'
         }
 
         setErrors(errors);
@@ -215,27 +150,27 @@ export default function ColumnsTable(props) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const isValid = await validateForm();
+        
         console.log("Submitting form");
-        if (isValid) {
+        
             try {
                 const response = await axios.post(
-                    "http://localhost:8080/api/auth/registerAdmin",
+                    "http://localhost:8080/api/product",
                     formData
                 );
                 fetchData()
-                closeModalA()
+                closeModalPro()
                 console.log(response.data);
             } catch (error) {
-                console.error("Error registering admin:", error);
+                console.error("Error registering product:", error);
             }
-        }
+        
     };
 
     return (
         <Card
             direction='column'
-            w='100%'
+            w='70%'
             px='0px'
             overflowX={{ sm: "scroll", lg: "hidden" }}>
             <Flex px='25px' justify='space-between' mb='20px' align='center'>
@@ -244,7 +179,7 @@ export default function ColumnsTable(props) {
                     fontSize='22px'
                     fontWeight='700'
                     lineHeight='100%'>
-                    Admins Table
+                    Products Table
                 </Text>
 
 
@@ -263,7 +198,7 @@ export default function ColumnsTable(props) {
                         w='37px'
                         h='37px'
                         lineHeight='100%'
-                        onClick={openModalA}
+                        onClick={openModalPro}
                         borderRadius='10px'
                         {...rest}>
                         <AddIcon color={iconColor} w='20px' h='20px' />
@@ -271,113 +206,56 @@ export default function ColumnsTable(props) {
                 </Menu>
 
                 {/* Modal for adding user */}
-                <Modal isOpen={isModalOpenA} onClose={closeModalA}>
+                <Modal isOpen={isModalOpenPro} onClose={closeModalPro}>
                     <ModalOverlay />
                     <ModalContent>
                         <form onSubmit={handleSubmit} noValidate>
-                            <ModalHeader>Add Admin</ModalHeader>
+                            <ModalHeader>Add Product</ModalHeader>
                             <ModalCloseButton />
                             <ModalBody>
                                 <Grid templateColumns="1fr 1fr" gap={4}>
                                     <FormControl>
-                                        <FormLabel>Name</FormLabel>
+                                        <FormLabel>Title</FormLabel>
                                         <Input type="text"
-                                            name="name"
-                                            value={formData.name}
+                                            name="title"
+                                            value={formData.title}
                                             onChange={handleChange}
                                         />
                                     </FormControl>
                                     <FormControl>
-                                        <FormLabel>Lastname</FormLabel>
+                                        <FormLabel>Description</FormLabel>
                                         <Input type="text"
-                                            name="lastname"
-                                            value={formData.lastname}
+                                            name="description"
+                                            value={formData.description}
                                             onChange={handleChange}
                                         />
                                     </FormControl>
                                 </Grid>
                                 <FormControl mt={4}>
-                                    <FormLabel>Username</FormLabel>
-                                    <Input type="text"
-                                        name="username"
-                                        value={formData.username}
+                                    <FormLabel>Price</FormLabel>
+                                    <Input type="number"
+                                        name="price"
+                                        value={formData.price}
                                         onChange={handleChange}
                                     />
                                 </FormControl>
                                 <FormControl mt={4}>
-                                    <FormLabel>Email</FormLabel>
-                                    <Input type="email"
-                                        name="email"
-                                        value={formData.email}
+                                    <FormLabel>Quantity</FormLabel>
+                                    <Input type="number"
+                                        name="quantity"
+                                        value={formData.quantity}
                                         onChange={handleChange}
                                     />
                                 </FormControl>
                                 <FormControl mt={4}>
-                                    <FormLabel>Password</FormLabel>
-                                    <InputGroup size='md'>
-                                        <Input
-                                            type={show ? "text" : "password"}
-                                            name="password"
-                                            value={formData.password}
-                                            onChange={handleChange}
-                                        />
-                                        <InputRightElement display='flex' alignItems='center' mt='1px'>
-                                            <Icon
-                                                color={textColorSecondary}
-                                                _hover={{ cursor: "pointer" }}
-                                                as={show ? RiEyeCloseLine : MdOutlineRemoveRedEye}
-                                                onClick={handleClick}
-                                            />
-                                        </InputRightElement>
-                                    </InputGroup>
+                                    <FormLabel>Category</FormLabel>
+                                    <Select>
+                                        <option name="category" value="book">book</option>
+                                        <option name="category" value="instrument">instument</option>
+                                    </Select>
                                 </FormControl>
                                 <FormControl mt={4}>
-                                    <FormLabel>Password Confirmation</FormLabel>
-                                    <InputGroup size='md'>
-                                        <Input
-                                            type={show ? "text" : "password"}
-                                            name="confirmPassword"
-                                            value={formData.confirmPassword}
-                                            onChange={handleChange}
-                                        />
-                                        <InputRightElement display='flex' alignItems='center' mt='1px'>
-                                            <Icon
-                                                color={textColorSecondary}
-                                                _hover={{ cursor: "pointer" }}
-                                                as={show ? RiEyeCloseLine : MdOutlineRemoveRedEye}
-                                                onClick={handleClick}
-                                            />
-                                        </InputRightElement>
-                                    </InputGroup>
-                                </FormControl>
-                                <Grid templateColumns="1fr 1fr" gap={4}>
-                                    <FormControl mt={4}>
-                                        <FormLabel>CIN</FormLabel>
-                                        <Input type="text"
-                                            name="cinNumber"
-                                            value={formData.cinNumber}
-                                            onChange={handleChange}
-                                        />
-                                    </FormControl>
-                                    <FormControl mt={4}>
-                                        <FormLabel>Phone number</FormLabel>
-                                        <Input type="tel"
-                                            name="phoneNumber"
-                                            value={formData.phoneNumber}
-                                            onChange={handleChange}
-                                        />
-                                    </FormControl>
-                                </Grid>
-                                <FormControl mt={4}>
-                                    <FormLabel>Birth date</FormLabel>
-                                    <Input type="date"
-                                        name="dateOfBirth"
-                                        value={formData.dateOfBirth}
-                                        onChange={handleChange}
-                                    />
-                                </FormControl>
-                                <FormControl mt={4}>
-                                    <FormLabel>Profile picture</FormLabel>
+                                    <FormLabel>Product picture</FormLabel>
                                     <Input type="file"
                                         name="profilePicture"
                                         value={formData.profilePicture}
@@ -385,16 +263,13 @@ export default function ColumnsTable(props) {
                                     />
                                 </FormControl>
                             </ModalBody>
-                            {errors.name && <Text color="red">{errors.name}</Text>}
-                            {errors.lastname && <Text color="red">{errors.lastname}</Text>}
-                            {errors.email && <Text color="red">{errors.email}</Text>}
-                            {errors.username && <Text color="red">{errors.username}</Text>}
-                            {errors.password && <Text color="red">{errors.password}</Text>}
-                            {errors.confirmPassword && <Text color="red">{errors.confirmPassword}</Text>}
-                            {errors.cinNumber && <Text color="red">{errors.cinNumber}</Text>}
-                            {errors.phoneNumber && <Text color="red">{errors.phoneNumber}</Text>}
+                            {errors.name && <Text color="red">{errors.title}</Text>}
+                            {errors.lastname && <Text color="red">{errors.description}</Text>}
+                            {errors.email && <Text color="red">{errors.price}</Text>}
+                            {errors.username && <Text color="red">{errors.quantity}</Text>}
+                            {errors.password && <Text color="red">{errors.category}</Text>}
                             <ModalFooter>
-                                <Button colorScheme="blue" mr={3} onClick={closeModalA}>
+                                <Button colorScheme="blue" mr={3} onClick={closeModalPro}>
                                     Close
                                 </Button>
                                 <Button type="submit" colorScheme="green">
@@ -408,7 +283,7 @@ export default function ColumnsTable(props) {
 
 
 
-
+                {/* ////////////////////////////////////////////////table////////////////////////////////////////////////////  */}
 
 
 
@@ -444,91 +319,34 @@ export default function ColumnsTable(props) {
                             <Tr {...row.getRowProps()} key={index}>
                                 {row.cells.map((cell, index) => {
                                     let data = "";
-                                    if (cell.column.Header === "NAME") {
+                                    if (cell.column.Header === "title") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
                                                 {cell.value}
                                             </Text>
                                         );
-                                    } else if (cell.column.Header === "Lastname") {
+                                    } else if (cell.column.Header === "description") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
                                                 {cell.value}
                                             </Text>
                                         );
-                                    } else if (cell.column.Header === "Username") {
+                                    } else if (cell.column.Header === "price") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
                                                 {cell.value}
                                             </Text>
                                         );
-                                    } else if (cell.column.Header === "Email") {
+                                    } else if (cell.column.Header === "quantity") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
                                                 {cell.value}
                                             </Text>
                                         );
-                                    } else if (cell.column.Header === "CIN") {
+                                    } else if (cell.column.Header === "category") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
                                                 {cell.value}
-                                            </Text>
-                                        );
-                                    } else if (cell.column.Header === "Phone number") {
-                                        data = (
-                                            <Text color={textColor} fontSize='sm' fontWeight='700'>
-                                                {cell.value}
-                                            </Text>
-                                        );
-                                    } else if (cell.column.Header === "Profile picture") {
-                                        data = (
-                                            <Text color={textColor} fontSize='sm' fontWeight='700'>
-                                                {cell.value}
-                                            </Text>
-                                        );
-                                    } else if (cell.column.Header === "Password") {
-                                        data = (
-                                            <Text color={textColor} fontSize='sm' fontWeight='700'>
-                                                *************
-                                            </Text>
-                                        );
-                                    } else if (cell.column.Header === "Verified") {
-                                        data = (
-                                            <Flex align='center'>
-                                                <Icon
-                                                    w='24px'
-                                                    h='24px'
-                                                    me='5px'
-                                                    color={
-                                                        cell.value === true
-                                                            ? "green.500"
-                                                            : cell.value === false
-                                                                ? "red.500"
-                                                                : cell.value === "Error"
-                                                                    ? "orange.500"
-                                                                    : null
-                                                    }
-                                                    as={
-                                                        cell.value === true
-                                                            ? MdCheckCircle
-                                                            : cell.value === false
-                                                                ? MdCancel
-                                                                : cell.value === "Error"
-                                                                    ? MdOutlineError
-                                                                    : null
-                                                    }
-                                                />
-                                                <Text color={textColor} fontSize='sm' fontWeight='700'>
-                                                    {cell.value ? "True" : "False"}
-                                                </Text>
-                                            </Flex>
-                                        );
-                                    } else if (cell.column.Header === "Birth date") {
-                                        const date = new Date(cell.value);
-                                        const formattedDate = date.toISOString().split('T')[0];
-                                        data = (
-                                            <Text color={textColor} fontSize='sm' fontWeight='700'>
-                                                {formattedDate}
                                             </Text>
                                         );
                                     } else if (cell.column.Header === "ACTIONS") {
@@ -552,11 +370,11 @@ export default function ColumnsTable(props) {
                                                     <AlertDialogOverlay>
                                                         <AlertDialogContent>
                                                             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                                                                Delete User
+                                                                Delete Product
                                                             </AlertDialogHeader>
 
                                                             <AlertDialogBody>
-                                                                Are you sure you want to delete this user?
+                                                                Are you sure you want to delete this product?
                                                             </AlertDialogBody>
 
                                                             <AlertDialogFooter>
@@ -591,12 +409,12 @@ export default function ColumnsTable(props) {
                                                 <Modal isOpen={isModalViewOpen} onClose={closeModalViewA}>
                                                     <ModalOverlay />
                                                     <ModalContent maxW={'800px'}>
-                                                        <ModalHeader>Admin Information</ModalHeader>
+                                                        <ModalHeader>Product Information</ModalHeader>
                                                         <ModalCloseButton />
                                                         <ModalBody>
-                                                            {adminInfo && (
+                                                            {productInfo && (
                                                                 <>
-                                                                    {adminInfo.profilePicture}
+                                                                    {productInfo.profilePicture}
                                                                     <Card mb={{ base: "0px", "2xl": "20px" }} {...rest}>
                                                                         <Text
                                                                             color={textColorPrimary}
@@ -604,46 +422,28 @@ export default function ColumnsTable(props) {
                                                                             fontSize='2xl'
                                                                             mt='10px'
                                                                             mb='4px'>
-                                                                            {adminInfo.name} {adminInfo.lastname}
-                                                                        </Text>
-                                                                        <Text color={textColorSecondary} fontSize='md' me='26px' mb='40px'>
-                                                                            @{adminInfo.username}
+                                                                            {productInfo.title}
                                                                         </Text>
                                                                         <SimpleGrid columns='2' gap='20px'>
                                                                             <Information
                                                                                 boxShadow={cardShadow}
-                                                                                title='Email'
-                                                                                value={adminInfo.email}
+                                                                                title='price'
+                                                                                value={productInfo.price}
                                                                             />
                                                                             <Information
                                                                                 boxShadow={cardShadow}
-                                                                                title='Role'
-                                                                                value={adminInfo.role}
+                                                                                title='Description'
+                                                                                value={productInfo.description}
                                                                             />
                                                                             <Information
                                                                                 boxShadow={cardShadow}
-                                                                                title='Phone number'
-                                                                                value={adminInfo.phoneNumber}
+                                                                                title='Quantity'
+                                                                                value={productInfo.quantity}
                                                                             />
                                                                             <Information
                                                                                 boxShadow={cardShadow}
-                                                                                title='CIN'
-                                                                                value={adminInfo.cinNumber}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Status'
-                                                                                value={adminInfo.isEmailVerified ? 'Verified' : 'Not Verified'}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Birthday'
-                                                                                value={adminInfo.dateOfBirth ? adminInfo.dateOfBirth.substring(0, 10) : "N/A"}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Password'
-                                                                                value='**************'
+                                                                                title='Category'
+                                                                                value={productInfo.category}
                                                                             />
                                                                         </SimpleGrid>
                                                                     </Card>
