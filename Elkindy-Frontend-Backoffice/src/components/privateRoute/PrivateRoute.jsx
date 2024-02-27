@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
 const PrivateRoute = ({ component: Component, allowedRoles, ...rest }) => {
     const [userRole, setUserRole] = useState(null);
@@ -9,10 +9,11 @@ const PrivateRoute = ({ component: Component, allowedRoles, ...rest }) => {
     useEffect(() => {
         const fetchUserRole = async () => {
             try {
-                const username = localStorage.getItem('username');
-                if (username) {
-                    const response = await axios.get(`http://localhost:8080/api/auth/check/username/${username}`);
-                    setUserRole(response.data.role);
+                const token = localStorage.getItem('token');
+                if (token) {
+                    const decodedToken = jwtDecode(token);
+                    const { role } = decodedToken;
+                    setUserRole(role);
                 } else {
                     setUserRole(null);
                 }

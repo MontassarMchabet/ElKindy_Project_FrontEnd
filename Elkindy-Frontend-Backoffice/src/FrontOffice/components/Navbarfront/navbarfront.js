@@ -17,6 +17,7 @@ import elkindylogo from "assets/img/elkindy.png";
 import AdminNavbar from 'components/navbar/NavbarAdmin';
 import { NavLink, useHistory } from 'react-router-dom';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
 const Navbarfront = () => {
     const isLoggedIn = localStorage.getItem('token') !== null;
@@ -26,8 +27,11 @@ const Navbarfront = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const username = localStorage.getItem('username');
-                const response = await axios.get(`http://localhost:8080/api/auth/check/username/${username}`);
+                const token = localStorage.getItem('token');
+                const decodedToken = jwtDecode(token);
+                const { userId, role } = decodedToken;
+
+                const response = await axios.get(`http://localhost:8080/api/auth/user/${userId}`);
                 setUser(response.data);
             } catch (error) {
                 console.error('Error fetching user data:', error);
@@ -37,7 +41,7 @@ const Navbarfront = () => {
     }, []);
 
     const handleLogout = () => {
-        localStorage.removeItem('username');
+        localStorage.removeItem('refreshToken');
         localStorage.removeItem('token');
         history.push('/home');
     };

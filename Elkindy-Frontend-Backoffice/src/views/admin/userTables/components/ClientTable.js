@@ -100,7 +100,6 @@ export default function ColumnsTable(props) {
     const [clientInfo, setClientInfo] = useState(null);
     const handleView = (e, userData) => {
         e.preventDefault();
-        console.log(userData)
         setClientInfo(userData);
         setIsModalViewOpen(true);
     };

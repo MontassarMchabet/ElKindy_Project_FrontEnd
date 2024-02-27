@@ -210,7 +210,6 @@ export default function ColumnsTable(props) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const isValid = await validateForm();
-        console.log("Submitting form");
         if (isValid) {
             try {
                 const response = await axios.post(
@@ -219,7 +218,6 @@ export default function ColumnsTable(props) {
                 );
                 fetchData()
                 closeModalP()
-                console.log(response.data);
             } catch (error) {
                 console.error("Error registering prof:", error);
             }

@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { NavLink } from "react-router-dom";
 import { useHistory } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
+
+
 // Chakra imports
 import {
   Box,
@@ -63,22 +66,23 @@ function SignIn() {
         ? await axios.post('http://localhost:8080/api/auth/loginEmail', { email, password })
         : await axios.post('http://localhost:8080/api/auth/loginUsername', { username: email, password });
 
-      const { token, username } = response.data;
+      const { token, refreshToken } = response.data;
       localStorage.setItem('token', token);
-      localStorage.setItem('username', username);
+      localStorage.setItem('refreshToken', refreshToken);
+
+      const decodedToken = jwtDecode(token);
+      const { userId, role } = decodedToken;
+
       setError('');
-      handleUserRole(username);
+      handleUserRole(role);
     } catch (error) {
       setError('Invalid Email, Username or password');
       console.error('Error logging in:', error);
     }
   };
 
-  const handleUserRole = async (username) => {
+  const handleUserRole = async (role) => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/auth/check/username/${username}`);
-      const { role } = response.data;
-
       if (role === 'admin') {
         history.push('/admin/dashboard');
       } else if (role === 'client' || role === 'prof') {
@@ -96,10 +100,24 @@ function SignIn() {
   const handleClick = () => setShow(!show);
 
   const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
-    const username = localStorage.getItem('username');
-    if (username) {
-      handleUserRole(username);
+    const token = localStorage.getItem('token');
+
+    if (token && typeof token === 'string') {
+      try {
+        const decodedToken = jwtDecode(token);
+        const { userId, role } = decodedToken;
+
+        if (role) {
+          handleUserRole(role);
+        } else {
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error('Error decoding token:', error);
+        setIsLoading(false);
+      }
     } else {
       setIsLoading(false);
     }

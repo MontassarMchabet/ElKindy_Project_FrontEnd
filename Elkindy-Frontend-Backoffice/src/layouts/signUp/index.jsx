@@ -104,14 +104,18 @@ function SignUp() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const isValid = await validateForm();
-        console.log("Submitting form");
         if (isValid) {
             try {
                 const response = await axios.post(
                     "http://localhost:8080/api/auth/register",
                     formData
                 );
-                console.log(response.data);
+                const { token, refreshToken } = response.data;
+
+                localStorage.setItem('token', token);
+                localStorage.setItem('refreshToken', refreshToken);
+
+                history.push('/home');
             } catch (error) {
                 console.error("Error registering user:", error);
             }

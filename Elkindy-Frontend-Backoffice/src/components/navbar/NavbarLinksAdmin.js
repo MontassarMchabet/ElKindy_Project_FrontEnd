@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 // Chakra Imports
 import {
 	Avatar,
@@ -52,8 +53,11 @@ export default function HeaderLinks(props) {
 	useEffect(() => {
 		const fetchUserData = async () => {
 			try {
-				const username = localStorage.getItem('username');
-				const response = await axios.get(`http://localhost:8080/api/auth/check/username/${username}`);
+				const token = localStorage.getItem('token');
+				const decodedToken = jwtDecode(token);
+				const { userId, role } = decodedToken;
+
+				const response = await axios.get(`http://localhost:8080/api/auth/user/${userId}`);
 				setUser(response.data);
 			} catch (error) {
 				console.error('Error fetching user data:', error);
@@ -63,7 +67,7 @@ export default function HeaderLinks(props) {
 	}, []);
 	const handleLogout = () => {
 		localStorage.removeItem('token');
-		localStorage.removeItem('username');
+		localStorage.removeItem('refreshToken');
 		history.push('/home');
 	};
 

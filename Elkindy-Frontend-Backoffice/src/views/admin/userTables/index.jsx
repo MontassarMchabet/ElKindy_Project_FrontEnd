@@ -17,12 +17,32 @@ export default function Settings() {
 
     const fetchData = async () => {
         try {
-            const adminResponse = await axios.get('http://localhost:8080/api/auth/admins');
+            const token = localStorage.getItem('token');
+
+            const adminResponse = await axios.get('http://localhost:8080/api/auth/admins', {
+                headers: {
+                    'authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
             setAdminsData(adminResponse.data);
-            const clientResponse = await axios.get('http://localhost:8080/api/auth/clients');
+
+            const clientResponse = await axios.get('http://localhost:8080/api/auth/clients', {
+                headers: {
+                    'authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
             setClientsData(clientResponse.data);
-            const profResponse = await axios.get('http://localhost:8080/api/auth/profs');
+
+            const profResponse = await axios.get('http://localhost:8080/api/auth/profs', {
+                headers: {
+                    'authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
             setProfsData(profResponse.data);
+
         } catch (error) {
             console.error('Error fetching data:', error);
         }
@@ -44,7 +64,6 @@ export default function Settings() {
         setIsDeleteDialogOpen(false);
         try {
             await axios.delete(`http://localhost:8080/api/auth/deleteUser/${deletingUserId}`);
-            console.log("User deleted successfully");
             fetchData();
         } catch (error) {
             console.error("Error deleting user:", error);
