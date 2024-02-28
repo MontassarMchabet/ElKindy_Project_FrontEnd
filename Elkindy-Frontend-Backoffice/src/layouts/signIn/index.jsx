@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from "services/api";
 import { NavLink } from "react-router-dom";
 import { useHistory } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
@@ -63,8 +63,8 @@ function SignIn() {
     const isEmail = /\S+@\S+\.\S+/.test(email);
     try {
       const response = isEmail
-        ? await axios.post('http://localhost:8080/api/auth/loginEmail', { email, password })
-        : await axios.post('http://localhost:8080/api/auth/loginUsername', { username: email, password });
+        ? await api.post('http://localhost:9090/api/auth/loginEmail', { email, password })
+        : await api.post('http://localhost:9090/api/auth/loginUsername', { username: email, password });
 
       const { token, refreshToken } = response.data;
       localStorage.setItem('token', token);

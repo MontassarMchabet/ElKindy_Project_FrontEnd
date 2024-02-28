@@ -1,6 +1,7 @@
 import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button } from "@chakra-ui/react";
 import { ViewIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, ModalFooter, SimpleGrid } from "@chakra-ui/react";
+import { Input, FormControl, FormLabel, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, ModalFooter, SimpleGrid } from "@chakra-ui/react";
+import api from "services/api";
 import { AddIcon } from '@chakra-ui/icons'
 import {
     Flex,
@@ -42,11 +43,35 @@ import Card from "components/card/Card";
 import Information from "views/admin/profile/components/Information";
 import { MdCheckCircle, MdCancel, MdOutlineError } from "react-icons/md";
 export default function ColumnsTable(props) {
-    const { columnsData, tableData, handleDelete, cancelDelete, cancelRef, confirmDelete, isDeleteDialogOpen,
-        isModalOpenC, openModalC, closeModalC } = props;
+    const { columnsData, tabledata, handledelete, canceldelete, cancelref, confirmDelete, isDeleteDialogOpen,
+        isModalOpenC, openModalC, closeModalC, closeEditModalC, isEditModalOpenC, setIsEditModalOpenC, fetchData } = props;
 
+    ////////////////////////
+    ////////////////////////
+    ////////////////////////
+    const [editedUser, setEditedUser] = useState({});
+    const handleSaveEdit = async () => {
+        try {
+            await api.patch(`http://localhost:9090/api/auth/editClient/${editedUser._id}`, editedUser);
+            console.log("User updated successfully");
+            setIsEditModalOpenC(false);
+            fetchData();
+        } catch (error) {
+            console.error("Error updating user:", error);
+        }
+    };
+    const handleEdit = (user) => {
+        setEditedUser(user);
+        openEditModal();
+    };
+    const openEditModal = () => {
+        setIsEditModalOpenC(true);
+    };
+    ////////////////////////
+    ////////////////////////
+    ////////////////////////
     const columns = useMemo(() => columnsData, [columnsData]);
-    const data = useMemo(() => tableData, [tableData]);
+    const data = useMemo(() => tabledata, [tabledata]);
     const cardShadow = useColorModeValue(
         "0px 18px 40px rgba(112, 144, 176, 0.12)",
         "unset"
@@ -125,6 +150,172 @@ export default function ColumnsTable(props) {
             </Flex>
 
 
+
+            <AlertDialog
+                isOpen={isDeleteDialogOpen}
+                leastDestructiveRef={cancelref}
+                onClose={canceldelete}
+            >
+                <AlertDialogOverlay>
+                    <AlertDialogContent>
+                        <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                            Delete User
+                        </AlertDialogHeader>
+
+                        <AlertDialogBody>
+                            Are you sure you want to delete this user?
+                        </AlertDialogBody>
+
+                        <AlertDialogFooter>
+                            <Button ref={cancelref} onClick={canceldelete}>
+                                Cancel
+                            </Button>
+                            <Button colorScheme="red" onClick={handledelete} ml={3}>
+                                Delete
+                            </Button>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialogOverlay>
+            </AlertDialog>
+
+
+
+            <Modal isOpen={isModalViewOpen} onClose={() => closeModalViewA()}>
+                <ModalOverlay />
+                <ModalContent maxW={'800px'}>
+                    <ModalHeader>Admin Information</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        {clientInfo && (
+                            <>
+                                {clientInfo.profilePicture}
+                                <Card mb={{ base: "0px", "2xl": "20px" }} {...rest}>
+                                    <Text
+                                        color={textColorPrimary}
+                                        fontWeight='bold'
+                                        fontSize='2xl'
+                                        mt='10px'
+                                        mb='4px'>
+                                        {clientInfo.name} {clientInfo.lastname}
+                                    </Text>
+                                    <Text color={textColorSecondary} fontSize='md' me='26px' mb='40px'>
+                                        @{clientInfo.username}
+                                    </Text>
+                                    <SimpleGrid columns='2' gap='20px'>
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Email'
+                                            value={clientInfo.email}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Role'
+                                            value={clientInfo.role}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Parent Phone number'
+                                            value={clientInfo.parentPhoneNumber ? clientInfo.parentPhoneNumber : "_"}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Parent CIN'
+                                            value={clientInfo.parentCinNumber ? clientInfo.parentCinNumber : "_"}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Father occupation'
+                                            value={clientInfo.fatherOccupation ? clientInfo.fatherOccupation : "_"}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Mother occupation'
+                                            value={clientInfo.motherOccupation ? clientInfo.motherOccupation : "_"}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Instrument'
+                                            value={clientInfo.instrument ? clientInfo.instrument : "_"}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Other instruments'
+                                            value={clientInfo.otherInstruments ? clientInfo.otherInstruments : "_"}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Status'
+                                            value={clientInfo.isEmailVerified ? 'Verified' : 'Not Verified'}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Status'
+                                            value={clientInfo.isSubscribed ? 'Subscribed' : 'Not subscribed'}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Birthday'
+                                            value={clientInfo.dateOfBirth ? clientInfo.dateOfBirth.substring(0, 10) : "N/A"}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='School grade'
+                                            value={clientInfo.schoolGrade ? clientInfo.schoolGrade : "_"}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Password'
+                                            value='**************'
+                                        />
+                                    </SimpleGrid>
+                                </Card>
+                            </>
+                        )}
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
+
+
+            <Modal isOpen={isEditModalOpenC} onClose={closeEditModalC}>
+                <ModalOverlay />
+                <ModalContent maxW={'800px'}>
+                    <ModalHeader>Edit User</ModalHeader>
+                    <ModalCloseButton />
+                    {editedUser && (
+                        <ModalBody>
+                            <FormControl id="name">
+                                <FormLabel>Name</FormLabel>
+                                <Input type="text" value={editedUser.name} onChange={(e) => setEditedUser({ ...editedUser, name: e.target.value })} />
+                            </FormControl>
+                            <FormControl id="lastname">
+                                <FormLabel>Lastname</FormLabel>
+                                <Input type="text" value={editedUser.lastname} onChange={(e) => setEditedUser({ ...editedUser, lastname: e.target.value })} />
+                            </FormControl>
+                            <FormControl id="username">
+                                <FormLabel>Username</FormLabel>
+                                <Input type="text" value={editedUser.username} onChange={(e) => setEditedUser({ ...editedUser, username: parseInt(e.target.value) })} />
+                            </FormControl>
+                            <FormControl id="email">
+                                <FormLabel>Email</FormLabel>
+                                <Input type="email" value={editedUser.email} onChange={(e) => setEditedUser({ ...editedUser, email: parseInt(e.target.value) })} />
+                            </FormControl>
+                            <FormControl id="password">
+                                <FormLabel>Password</FormLabel>
+                                <Input type="password" value={editedUser.password} onChange={(e) => setEditedUser({ ...editedUser, password: parseInt(e.target.value) })} />
+                            </FormControl>
+                            
+                            <FormControl id="profilePicture">
+                                <FormLabel>Profile picture</FormLabel>
+                                <Input type="image" value={editedUser.profilePicture} onChange={(e) => setEditedUser({ ...editedUser, profilePicture: parseInt(e.target.value) })} />
+                            </FormControl>
+                        </ModalBody>
+                    )}
+                    <ModalFooter>
+                        <Button colorScheme="blue" mr={3} onClick={handleSaveEdit}>Save</Button>
+                        <Button onClick={closeEditModalC}>Cancel</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
 
 
 
@@ -299,35 +490,9 @@ export default function ColumnsTable(props) {
                                                     me='5px'
                                                     color={"green.500"}
                                                     cursor="pointer"
-                                                /*onClick={() => handleEdit(row.original)}*/
+                                                    onClick={() => handleEdit(row.original)}
                                                 />
                                                 {/* Delete icon */}
-                                                <AlertDialog
-                                                    isOpen={isDeleteDialogOpen}
-                                                    leastDestructiveRef={cancelRef}
-                                                    onClose={cancelDelete}
-                                                >
-                                                    <AlertDialogOverlay>
-                                                        <AlertDialogContent>
-                                                            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                                                                Delete User
-                                                            </AlertDialogHeader>
-
-                                                            <AlertDialogBody>
-                                                                Are you sure you want to delete this user?
-                                                            </AlertDialogBody>
-
-                                                            <AlertDialogFooter>
-                                                                <Button ref={cancelRef} onClick={cancelDelete}>
-                                                                    Cancel
-                                                                </Button>
-                                                                <Button colorScheme="red" onClick={handleDelete} ml={3}>
-                                                                    Delete
-                                                                </Button>
-                                                            </AlertDialogFooter>
-                                                        </AlertDialogContent>
-                                                    </AlertDialogOverlay>
-                                                </AlertDialog>
 
                                                 <DeleteIcon
                                                     w='20px'
@@ -346,100 +511,7 @@ export default function ColumnsTable(props) {
                                                     cursor="pointer"
                                                     onClick={(e) => handleView(e, row.original)}
                                                 />
-                                                <Modal isOpen={isModalViewOpen} onClose={() => closeModalViewA()}>
-                                                    <ModalOverlay />
-                                                    <ModalContent maxW={'800px'}>
-                                                        <ModalHeader>Admin Information</ModalHeader>
-                                                        <ModalCloseButton />
-                                                        <ModalBody>
-                                                            {clientInfo && (
-                                                                <>
-                                                                    {clientInfo.profilePicture}
-                                                                    <Card mb={{ base: "0px", "2xl": "20px" }} {...rest}>
-                                                                        <Text
-                                                                            color={textColorPrimary}
-                                                                            fontWeight='bold'
-                                                                            fontSize='2xl'
-                                                                            mt='10px'
-                                                                            mb='4px'>
-                                                                            {clientInfo.name} {clientInfo.lastname}
-                                                                        </Text>
-                                                                        <Text color={textColorSecondary} fontSize='md' me='26px' mb='40px'>
-                                                                            @{clientInfo.username}
-                                                                        </Text>
-                                                                        <SimpleGrid columns='2' gap='20px'>
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Email'
-                                                                                value={clientInfo.email}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Role'
-                                                                                value={clientInfo.role}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Parent Phone number'
-                                                                                value={clientInfo.parentPhoneNumber ? clientInfo.parentPhoneNumber : "_"}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Parent CIN'
-                                                                                value={clientInfo.parentCinNumber ? clientInfo.parentCinNumber : "_"}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Father occupation'
-                                                                                value={clientInfo.fatherOccupation ? clientInfo.fatherOccupation : "_"}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Mother occupation'
-                                                                                value={clientInfo.motherOccupation ? clientInfo.motherOccupation : "_"}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Instrument'
-                                                                                value={clientInfo.instrument ? clientInfo.instrument : "_"}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Other instruments'
-                                                                                value={clientInfo.otherInstruments ? clientInfo.otherInstruments : "_"}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Status'
-                                                                                value={clientInfo.isEmailVerified ? 'Verified' : 'Not Verified'}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Status'
-                                                                                value={clientInfo.isSubscribed ? 'Subscribed' : 'Not subscribed'}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Birthday'
-                                                                                value={clientInfo.dateOfBirth ? clientInfo.dateOfBirth.substring(0, 10) : "N/A"}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='School grade'
-                                                                                value={clientInfo.schoolGrade ? clientInfo.schoolGrade : "_"}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Password'
-                                                                                value='**************'
-                                                                            />
-                                                                        </SimpleGrid>
-                                                                    </Card>
-                                                                </>
-                                                            )}
-                                                        </ModalBody>
-                                                    </ModalContent>
-                                                </Modal>
+
                                             </Flex>
                                         );
                                     }

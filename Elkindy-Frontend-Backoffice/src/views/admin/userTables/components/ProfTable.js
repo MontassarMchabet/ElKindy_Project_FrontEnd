@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "services/api";
 import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button } from "@chakra-ui/react";
 import { ViewIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, ModalFooter, FormControl, FormLabel, Input, Grid, SimpleGrid } from "@chakra-ui/react";
@@ -47,11 +47,12 @@ import Card from "components/card/Card";
 import Information from "views/admin/profile/components/Information";
 import { MdCheckCircle, MdCancel, MdOutlineError } from "react-icons/md";
 export default function ColumnsTable(props) {
-    const { columnsData, tableData, handleDelete, cancelDelete, cancelRef, confirmDelete, isDeleteDialogOpen,
-        isModalOpenP, openModalP, closeModalP, fetchData } = props;
+    const { columnsData, tabledata, handledelete, canceldelete, cancelref, confirmDelete, isDeleteDialogOpen,
+        isModalOpenP, openModalP, closeModalP, fetchData, closeEditModalP, isEditModalOpenP, setIsEditModalOpenP
+    } = props;
     const textColorPrimary = useColorModeValue("secondaryGray.900", "white");
     const columns = useMemo(() => columnsData, [columnsData]);
-    const data = useMemo(() => tableData, [tableData]);
+    const data = useMemo(() => tabledata, [tabledata]);
     const textColorSecondary = "gray.400";
     const { ...rest } = props;
     const iconColor = useColorModeValue("brand.500", "white");
@@ -104,6 +105,30 @@ export default function ColumnsTable(props) {
 
 
 
+    ////////////////////////
+    ////////////////////////
+    ////////////////////////
+    const [editedUser, setEditedUser] = useState({});
+    const handleSaveEdit = async () => {
+        try {
+            await api.patch(`http://localhost:9090/api/auth/editAdminProf/${editedUser._id}`, editedUser);
+            console.log("User updated successfully");
+            setIsEditModalOpenP(false);
+            fetchData();
+        } catch (error) {
+            console.error("Error updating user:", error);
+        }
+    };
+    const handleEdit = (user) => {
+        setEditedUser(user);
+        openEditModal();
+    };
+    const openEditModal = () => {
+        setIsEditModalOpenP(true);
+    };
+    ////////////////////////
+    ////////////////////////
+    ////////////////////////
 
     const [isModalViewOpen, setIsModalViewOpen] = useState(false);
     const [profInfo, setProfInfo] = useState(null);
@@ -168,7 +193,7 @@ export default function ColumnsTable(props) {
         }
 
         try {
-            const emailResponse = await axios.get(`http://localhost:8080/api/auth/check/email/${formData.email}`);
+            const emailResponse = await api.get(`http://localhost:9090/api/auth/check/email/${formData.email}`);
             if (emailResponse.data.exists) {
                 errors.email = 'Email already in use';
             }
@@ -177,7 +202,7 @@ export default function ColumnsTable(props) {
         }
 
         try {
-            const usernameResponse = await axios.get(`http://localhost:8080/api/auth/check/username/${formData.username}`);
+            const usernameResponse = await api.get(`http://localhost:9090/api/auth/check/username/${formData.username}`);
             if (usernameResponse.data.exists) {
                 errors.username = 'Username already taken';
             }
@@ -186,7 +211,7 @@ export default function ColumnsTable(props) {
         }
 
         try {
-            const cinResponse = await axios.get(`http://localhost:8080/api/auth/check/cin/${formData.cinNumber}`);
+            const cinResponse = await api.get(`http://localhost:9090/api/auth/check/cin/${formData.cinNumber}`);
             if (cinResponse.data.exists) {
                 errors.cinNumber = 'CIN is invalid';
             }
@@ -195,7 +220,7 @@ export default function ColumnsTable(props) {
         }
 
         try {
-            const phoneResponse = await axios.get(`http://localhost:8080/api/auth/check/phone/${formData.phoneNumber}`);
+            const phoneResponse = await api.get(`http://localhost:9090/api/auth/check/phone/${formData.phoneNumber}`);
             if (phoneResponse.data.exists) {
                 errors.phoneNumber = 'Phone number is invalid';
             }
@@ -212,8 +237,8 @@ export default function ColumnsTable(props) {
         const isValid = await validateForm();
         if (isValid) {
             try {
-                const response = await axios.post(
-                    "http://localhost:8080/api/auth/registerProf",
+                const response = await api.post(
+                    "http://localhost:9090/api/auth/registerProf",
                     formData
                 );
                 fetchData()
@@ -396,13 +421,163 @@ export default function ColumnsTable(props) {
                         </form>
                     </ModalContent>
                 </Modal>
-
-
-
-
-
-
             </Flex>
+
+
+
+
+            <AlertDialog
+                isOpen={isDeleteDialogOpen}
+                leastDestructiveRef={cancelref}
+                onClose={canceldelete}
+            >
+                <AlertDialogOverlay>
+                    <AlertDialogContent>
+                        <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                            Delete User
+                        </AlertDialogHeader>
+
+                        <AlertDialogBody>
+                            Are you sure you want to delete this user?
+                        </AlertDialogBody>
+
+                        <AlertDialogFooter>
+                            <Button ref={cancelref} onClick={canceldelete}>
+                                Cancel
+                            </Button>
+                            <Button colorScheme="red" onClick={handledelete} ml={3}>
+                                Delete
+                            </Button>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialogOverlay>
+            </AlertDialog>
+
+
+
+
+
+
+
+            <Modal isOpen={isModalViewOpen} onClose={closeModalViewA}>
+                <ModalOverlay />
+                <ModalContent maxW={'800px'}>
+                    <ModalHeader>Admin Information</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        {profInfo && (
+                            <>
+                                {profInfo.profilePicture}
+                                <Card mb={{ base: "0px", "2xl": "20px" }} {...rest}>
+                                    <Text
+                                        color={textColorPrimary}
+                                        fontWeight='bold'
+                                        fontSize='2xl'
+                                        mt='10px'
+                                        mb='4px'>
+                                        {profInfo.name} {profInfo.lastname}
+                                    </Text>
+                                    <Text color={textColorSecondary} fontSize='md' me='26px' mb='40px'>
+                                        @{profInfo.username}
+                                    </Text>
+                                    <SimpleGrid columns='2' gap='20px'>
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Email'
+                                            value={profInfo.email}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Role'
+                                            value={profInfo.role}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Phone number'
+                                            value={profInfo.phoneNumber}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='CIN'
+                                            value={profInfo.cinNumber}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Status'
+                                            value={profInfo.isEmailVerified ? 'Verified' : 'Not Verified'}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Birthday'
+                                            value={profInfo.dateOfBirth ? profInfo.dateOfBirth.substring(0, 10) : "N/A"}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Password'
+                                            value='**************'
+                                        />
+                                    </SimpleGrid>
+                                </Card>
+                            </>
+                        )}
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
+
+
+
+            <Modal isOpen={isEditModalOpenP} onClose={closeEditModalP}>
+                <ModalOverlay />
+                <ModalContent maxW={'800px'}>
+                    <ModalHeader>Edit User</ModalHeader>
+                    <ModalCloseButton />
+                    {editedUser && (
+                        <ModalBody>
+                            <FormControl id="name">
+                                <FormLabel>Name</FormLabel>
+                                <Input type="text" value={editedUser.name} onChange={(e) => setEditedUser({ ...editedUser, name: e.target.value })} />
+                            </FormControl>
+                            <FormControl id="lastname">
+                                <FormLabel>Lastname</FormLabel>
+                                <Input type="text" value={editedUser.lastname} onChange={(e) => setEditedUser({ ...editedUser, lastname: e.target.value })} />
+                            </FormControl>
+                            <FormControl id="username">
+                                <FormLabel>Username</FormLabel>
+                                <Input type="text" value={editedUser.username} onChange={(e) => setEditedUser({ ...editedUser, username: parseInt(e.target.value) })} />
+                            </FormControl>
+                            <FormControl id="email">
+                                <FormLabel>Email</FormLabel>
+                                <Input type="email" value={editedUser.email} onChange={(e) => setEditedUser({ ...editedUser, email: parseInt(e.target.value) })} />
+                            </FormControl>
+                            <FormControl id="password">
+                                <FormLabel>Password</FormLabel>
+                                <Input type="password" value={editedUser.password} onChange={(e) => setEditedUser({ ...editedUser, password: parseInt(e.target.value) })} />
+                            </FormControl>
+
+                            <FormControl id="phoneNumber">
+                                <FormLabel>Phone Number</FormLabel>
+                                <Input type="number" value={editedUser.phoneNumber} onChange={(e) => setEditedUser({ ...editedUser, phoneNumber: parseInt(e.target.value) })} />
+                            </FormControl>
+                            <FormControl id="cinNumber">
+                                <FormLabel>CIN Number</FormLabel>
+                                <Input type="number" value={editedUser.cinNumber} onChange={(e) => setEditedUser({ ...editedUser, cinNumber: parseInt(e.target.value) })} />
+                            </FormControl>
+                            <FormControl id="profilePicture">
+                                <FormLabel>Profile picture</FormLabel>
+                                <Input type="image" value={editedUser.profilePicture} onChange={(e) => setEditedUser({ ...editedUser, profilePicture: parseInt(e.target.value) })} />
+                            </FormControl>
+                        </ModalBody>
+                    )}
+                    <ModalFooter>
+                        <Button colorScheme="blue" mr={3} onClick={handleSaveEdit}>Save</Button>
+                        <Button onClick={closeEditModalP}>Cancel</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+
+
+
+
             <Table {...getTableProps()} variant='simple' color='gray.500' mb='24px'>
                 <Thead>
                     {headerGroups.map((headerGroup, index) => (
@@ -543,35 +718,10 @@ export default function ColumnsTable(props) {
                                                     me='5px'
                                                     color={"green.500"}
                                                     cursor="pointer"
-                                                /*onClick={() => handleEdit(row.original)}*/
+                                                onClick={() => handleEdit(row.original)}
                                                 />
                                                 {/* Delete icon */}
-                                                <AlertDialog
-                                                    isOpen={isDeleteDialogOpen}
-                                                    leastDestructiveRef={cancelRef}
-                                                    onClose={cancelDelete}
-                                                >
-                                                    <AlertDialogOverlay>
-                                                        <AlertDialogContent>
-                                                            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                                                                Delete User
-                                                            </AlertDialogHeader>
 
-                                                            <AlertDialogBody>
-                                                                Are you sure you want to delete this user?
-                                                            </AlertDialogBody>
-
-                                                            <AlertDialogFooter>
-                                                                <Button ref={cancelRef} onClick={cancelDelete}>
-                                                                    Cancel
-                                                                </Button>
-                                                                <Button colorScheme="red" onClick={handleDelete} ml={3}>
-                                                                    Delete
-                                                                </Button>
-                                                            </AlertDialogFooter>
-                                                        </AlertDialogContent>
-                                                    </AlertDialogOverlay>
-                                                </AlertDialog>
 
                                                 <DeleteIcon
                                                     w='20px'
@@ -590,70 +740,7 @@ export default function ColumnsTable(props) {
                                                     cursor="pointer"
                                                     onClick={() => handleView(row.original)}
                                                 />
-                                                <Modal isOpen={isModalViewOpen} onClose={closeModalViewA}>
-                                                    <ModalOverlay />
-                                                    <ModalContent maxW={'800px'}>
-                                                        <ModalHeader>Admin Information</ModalHeader>
-                                                        <ModalCloseButton />
-                                                        <ModalBody>
-                                                            {profInfo && (
-                                                                <>
-                                                                    {profInfo.profilePicture}
-                                                                    <Card mb={{ base: "0px", "2xl": "20px" }} {...rest}>
-                                                                        <Text
-                                                                            color={textColorPrimary}
-                                                                            fontWeight='bold'
-                                                                            fontSize='2xl'
-                                                                            mt='10px'
-                                                                            mb='4px'>
-                                                                            {profInfo.name} {profInfo.lastname}
-                                                                        </Text>
-                                                                        <Text color={textColorSecondary} fontSize='md' me='26px' mb='40px'>
-                                                                            @{profInfo.username}
-                                                                        </Text>
-                                                                        <SimpleGrid columns='2' gap='20px'>
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Email'
-                                                                                value={profInfo.email}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Role'
-                                                                                value={profInfo.role}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Phone number'
-                                                                                value={profInfo.phoneNumber}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='CIN'
-                                                                                value={profInfo.cinNumber}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Status'
-                                                                                value={profInfo.isEmailVerified ? 'Verified' : 'Not Verified'}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Birthday'
-                                                                                value={profInfo.dateOfBirth ? profInfo.dateOfBirth.substring(0, 10) : "N/A"}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Password'
-                                                                                value='**************'
-                                                                            />
-                                                                        </SimpleGrid>
-                                                                    </Card>
-                                                                </>
-                                                            )}
-                                                        </ModalBody>
-                                                    </ModalContent>
-                                                </Modal>
+
                                             </Flex>
                                         );
                                     }

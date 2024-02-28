@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useHistory } from "react-router-dom";
-import axios from 'axios';
+import api from "services/api";
 // Chakra imports
 import {
     Box,
@@ -80,7 +80,7 @@ function SignUp() {
         }
 
         try {
-            const emailResponse = await axios.get(`http://localhost:8080/api/auth/check/email/${formData.email}`);
+            const emailResponse = await api.get(`http://localhost:9090/api/auth/check/email/${formData.email}`);
             if (emailResponse.data.exists) {
                 errors.email = 'Email already in use';
             }
@@ -89,7 +89,7 @@ function SignUp() {
         }
 
         try {
-            const usernameResponse = await axios.get(`http://localhost:8080/api/auth/check/username/${formData.username}`);
+            const usernameResponse = await api.get(`http://localhost:9090/api/auth/check/username/${formData.username}`);
             if (usernameResponse.data.exists) {
                 errors.username = 'Username already taken';
             }
@@ -106,8 +106,8 @@ function SignUp() {
         const isValid = await validateForm();
         if (isValid) {
             try {
-                const response = await axios.post(
-                    "http://localhost:8080/api/auth/register",
+                const response = await api.post(
+                    "http://localhost:9090/api/auth/register",
                     formData
                 );
                 const { token, refreshToken } = response.data;
@@ -119,6 +119,8 @@ function SignUp() {
             } catch (error) {
                 console.error("Error registering user:", error);
             }
+
+
         }
     };
 
