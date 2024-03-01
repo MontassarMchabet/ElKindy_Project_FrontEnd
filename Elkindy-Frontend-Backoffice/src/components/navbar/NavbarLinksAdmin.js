@@ -152,7 +152,7 @@ export default function HeaderLinks(props) {
 					<Avatar
 						_hover={{ cursor: 'pointer' }}
 						color="white"
-						name={`${user?.name} ${user?.lastname}`}
+						src={user?.profilePicture}
 						bg="#11047A"
 						size="sm"
 						w="40px"
@@ -175,10 +175,11 @@ export default function HeaderLinks(props) {
 						</Text>
 					</Flex>
 					<Flex flexDirection="column" p="10px">
-						<MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} borderRadius="8px" px="14px">
-							<Text fontSize="sm">Profile</Text>
-						</MenuItem>
-
+						<NavLink to="/admin/profile" style={{ textDecoration: "none" }}>
+							<MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} borderRadius="8px" px="14px">
+								<Text fontSize="sm">Profile</Text>
+							</MenuItem>
+						</NavLink>
 						<MenuItem
 							_hover={{ bg: 'none' }}
 							_focus={{ bg: 'none' }}
