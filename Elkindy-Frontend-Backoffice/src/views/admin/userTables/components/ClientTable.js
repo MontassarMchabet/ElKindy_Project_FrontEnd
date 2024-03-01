@@ -405,19 +405,21 @@ export default function ColumnsTable(props) {
                     <ModalBody>
                         {clientInfo && (
                             <>
-                                {clientInfo.profilePicture}
+                                <img src={clientInfo.profilePicture} alt="Profile Picture" style={{ maxWidth: "250px", maxHeight: "250px", borderRadius: "50%", margin: "auto" }} />
                                 <Card mb={{ base: "0px", "2xl": "20px" }} {...rest}>
                                     <Text
                                         color={textColorPrimary}
                                         fontWeight='bold'
                                         fontSize='2xl'
                                         mt='10px'
-                                        mb='4px'>
+                                        mb='4px' style={{ margin: "auto" }}>
                                         {clientInfo.name} {clientInfo.lastname}
                                     </Text>
-                                    <Text color={textColorSecondary} fontSize='md' me='26px' mb='40px'>
+                                    <Text color={textColorSecondary} fontSize='md' me='26px' mb='40px'
+                                        style={{ margin: "auto" }}>
                                         @{clientInfo.username}
                                     </Text>
+                                    <br />
                                     <SimpleGrid columns='2' gap='20px'>
                                         <Information
                                             boxShadow={cardShadow}
