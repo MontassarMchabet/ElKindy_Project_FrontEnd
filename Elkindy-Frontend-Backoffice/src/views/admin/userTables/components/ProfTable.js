@@ -113,6 +113,7 @@ export default function ColumnsTable(props) {
     const [originalCIN, setOriginalCIN] = useState("");
     const [originalUsername, setOriginalUsername] = useState("");
     const [originalEmail, setOriginalEmail] = useState("");
+    const [profilePictureFile, setProfilePictureFile] = useState("");
     const [errorsEdit, setErrorsEdit] = useState({
         name: "",
         lastname: "",
@@ -122,7 +123,11 @@ export default function ColumnsTable(props) {
         confirmPassword: "",
         cinNumber: "",
         phoneNumber: "",
+        profilePicture: "",
     });
+    const handleProfilePictureChange = (e) => {
+        setProfilePictureFile(e.target.files[0]);
+    };
     const validateName = (name) => {
         if (!name.trim()) {
             setErrorsEdit({ ...errorsEdit, name: "Name is required" });
@@ -307,8 +312,23 @@ export default function ColumnsTable(props) {
         }
 
         try {
+            if (profilePictureFile) {
+                const formDataToSend = new FormData();
+                formDataToSend.append("image", profilePictureFile);
+
+                const uploadResponse = await api.post(
+                    "http://localhost:9090/api/image/uploadimage",
+                    formDataToSend,
+                    {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                    }
+                );
+                editedUser.profilePicture = uploadResponse.data.downloadURL[0];
+            }
             await api.patch(`http://localhost:9090/api/auth/editAdminProf/${editedUser._id}`, editedUser);
-            console.log("User updated successfully");
+
             setIsEditModalOpenP(false);
             fetchData();
         } catch (error) {
@@ -317,10 +337,10 @@ export default function ColumnsTable(props) {
     };
     const handleEdit = (user) => {
         setEditedUser(user);
-        setOriginalPhoneNumber(user.phoneNumber); // Store original phone number
-        setOriginalCIN(user.cinNumber); // Store original CIN number
-        setOriginalUsername(user.username); // Store original username
-        setOriginalEmail(user.email); // Store original email
+        setOriginalPhoneNumber(user.phoneNumber);
+        setOriginalCIN(user.cinNumber);
+        setOriginalUsername(user.username);
+        setOriginalEmail(user.email);
         setErrorsEdit({
             name: "",
             lastname: "",
@@ -330,6 +350,7 @@ export default function ColumnsTable(props) {
             confirmPassword: "",
             cinNumber: "",
             phoneNumber: "",
+            profilePicture: "",
         });
         openEditModal();
     };
@@ -767,6 +788,10 @@ export default function ColumnsTable(props) {
                     <ModalCloseButton />
                     {editedUser && (
                         <ModalBody>
+                            <FormControl id="profilePicture" mt={4}>
+                                <img src={editedUser.profilePicture} alt="Profile Picture" style={{ maxWidth: "250px", maxHeight: "250px", borderRadius: "50%", margin: "auto" }} />
+                                <input type="file" name="profilePicture" onChange={handleProfilePictureChange} />
+                            </FormControl>
                             <Grid templateColumns="1fr 1fr" gap={4}>
                                 <FormControl id="name" mt={4}>
                                     <FormLabel>Name</FormLabel>
@@ -832,10 +857,6 @@ export default function ColumnsTable(props) {
                                     <Input type="number" value={editedUser.cinNumber} onChange={(e) => { setEditedUser({ ...editedUser, cinNumber: parseInt(e.target.value) }); validateCIN(e.target.value); }} />
                                 </FormControl>
                             </Grid>
-                            <FormControl id="profilePicture" mt={4}>
-                                <FormLabel>Profile picture</FormLabel>
-                                <Input type="image" value={editedUser.profilePicture} onChange={(e) => setEditedUser({ ...editedUser, profilePicture: e.target.value })} />
-                            </FormControl>
                         </ModalBody>
                     )}
                     {errorsEdit.name && <Text color="red">{errorsEdit.name}</Text>}
