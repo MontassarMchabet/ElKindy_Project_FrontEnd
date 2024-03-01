@@ -109,7 +109,203 @@ export default function ColumnsTable(props) {
     ////////////////////////
     ////////////////////////
     const [editedUser, setEditedUser] = useState({});
+    const [originalPhoneNumber, setOriginalPhoneNumber] = useState("");
+    const [originalCIN, setOriginalCIN] = useState("");
+    const [originalUsername, setOriginalUsername] = useState("");
+    const [originalEmail, setOriginalEmail] = useState("");
+    const [errorsEdit, setErrorsEdit] = useState({
+        name: "",
+        lastname: "",
+        email: "",
+        username: "",
+        password: "",
+        confirmPassword: "",
+        cinNumber: "",
+        phoneNumber: "",
+    });
+    const validateName = (name) => {
+        if (!name.trim()) {
+            setErrorsEdit({ ...errorsEdit, name: "Name is required" });
+            return false;
+        } else {
+            setErrorsEdit({ ...errorsEdit, name: "" });
+            return true;
+        }
+    };
+    const validateLastname = (lastname) => {
+        if (!lastname.trim()) {
+            setErrorsEdit({ ...errorsEdit, lastname: "Lastname is required" });
+            return false;
+        } else {
+            setErrorsEdit({ ...errorsEdit, lastname: "" });
+            return true;
+        }
+    };
+    const validateEmail = async (email) => {
+        const emailString = String(email).trim();
+        if (!emailString) {
+            setErrorsEdit({ ...errorsEdit, email: "Email is required" });
+            return false;
+        } else if (!/\S+@\S+\.\S+/.test(email)) {
+            setErrorsEdit({ ...errorsEdit, email: "Email is invalid" });
+            return false;
+        } else {
+            try {
+                if (email !== originalEmail) {
+                    const emailResponse = await api.get(`http://localhost:9090/api/auth/check/email/${email}`);
+                    if (emailResponse.data.exists) {
+                        setErrorsEdit({ ...errorsEdit, email: "Email is not valid" });
+                        return false;
+                    }
+                }
+                setErrorsEdit({ ...errorsEdit, email: "" });
+                return true;
+            } catch (error) {
+                console.error("Error validating phone number:", error);
+                return false;
+            }
+        }
+    };
+    const validateUsername = async (username) => {
+        const usernameString = String(username).trim();
+        if (!usernameString) {
+            setErrorsEdit({ ...errorsEdit, username: "Username is required" });
+            return false;
+        } else if (usernameString.length < 3) {
+            setErrorsEdit({ ...errorsEdit, username: "Username must be at least 3 characters long" });
+            return false;
+        } else {
+            try {
+                if (username !== originalUsername) {
+                    const usernameResponse = await api.get(`http://localhost:9090/api/auth/check/username/${username}`);
+                    if (usernameResponse.data.exists) {
+                        setErrorsEdit({ ...errorsEdit, username: "Username is not valid" });
+                        return false;
+                    }
+                }
+                setErrorsEdit({ ...errorsEdit, username: "" });
+                return true;
+            } catch (error) {
+                console.error("Error validating username:", error);
+                return false;
+            }
+        }
+    };
+    const validatePassword = (password) => {
+        const passwordString = String(password).trim();
+        if (!passwordString) {
+            setErrorsEdit({ ...errorsEdit, password: "Password is required" });
+            return false;
+        } else if (passwordString.length < 8) {
+            setErrorsEdit({ ...errorsEdit, password: "Password must be at least 8 characters" });
+            return false;
+        } else {
+            setErrorsEdit({ ...errorsEdit, password: "" });
+            return true;
+        }
+    };
+    const validateConfirmPassword = (confirmPassword) => {
+        const confirmPasswordString = String(confirmPassword).trim();
+        if (!confirmPasswordString) {
+            setErrorsEdit({ ...errorsEdit, confirmPassword: "Password confirmation is required" });
+            return false;
+        } else if (confirmPasswordString !== editedUser.password) {
+            setErrorsEdit({ ...errorsEdit, confirmPassword: "Passwords do not match" });
+            return false;
+        } else {
+            setErrorsEdit({ ...errorsEdit, confirmPassword: "" });
+            return true;
+        }
+    }
+    const validateCIN = async (cinNumber) => {
+        const cinString = String(cinNumber).trim();
+        if (!cinNumber) {
+            setErrorsEdit({ ...errorsEdit, cinNumber: "CIN is required" });
+            return false;
+        }
+        if (!cinString) {
+            setErrorsEdit({ ...errorsEdit, cinNumber: "CIN is required" });
+            return false;
+        } else if (cinString.length !== 8 || isNaN(parseInt(cinString))) {
+            setErrorsEdit({ ...errorsEdit, cinNumber: "CIN must be an 8-digit number" });
+            return false;
+        } else {
+            try {
+                if (cinNumber !== originalCIN) {
+                    const cinResponse = await api.get(`http://localhost:9090/api/auth/check/cin/${cinNumber}`);
+                    if (cinResponse.data.exists) {
+                        setErrorsEdit({ ...errorsEdit, cinNumber: "CIN number is not valid" });
+                        return false;
+                    }
+                }
+                setErrorsEdit({ ...errorsEdit, cinNumber: "" });
+                return true;
+            } catch (error) {
+                console.error("Error validating phone number:", error);
+                return false;
+            }
+        }
+    };
+    const validatePhoneNumber = async (phoneNumber) => {
+        const phoneString = String(phoneNumber).trim();
+        if (!phoneNumber) {
+            setErrorsEdit({ ...errorsEdit, phoneNumber: "Phone number is required" });
+            return false;
+        }
+        if (!phoneString) {
+            setErrorsEdit({ ...errorsEdit, phoneNumber: "Phone number is required" });
+            return false;
+        } else if (phoneString.length !== 8 || isNaN(parseInt(phoneString))) {
+            setErrorsEdit({ ...errorsEdit, phoneNumber: "Phone number must be an 8-digit number" });
+            return false;
+        } else {
+            try {
+                if (phoneNumber !== originalPhoneNumber) {
+                    const phoneResponse = await api.get(`http://localhost:9090/api/auth/check/phone/${phoneNumber}`);
+                    if (phoneResponse.data.exists) {
+                        setErrorsEdit({ ...errorsEdit, phoneNumber: "Phone number is not valid" });
+                        return false;
+                    }
+                }
+                setErrorsEdit({ ...errorsEdit, phoneNumber: "" });
+                return true;
+            } catch (error) {
+                console.error("Error validating phone number:", error);
+                return false;
+            }
+        }
+    };
+
     const handleSaveEdit = async () => {
+        const isNameValid = validateName(editedUser.name);
+        const isLastnameValid = validateLastname(editedUser.lastname);
+        const isEmailValid = validateEmail(editedUser.email);
+        const isUsernameValid = validateUsername(editedUser.username);
+        const isCINValid = validateCIN(editedUser.cinNumber);
+        const isPhoneNumberValid = validatePhoneNumber(editedUser.phoneNumber);
+
+        if (editedUser.newPassword || editedUser.confirmPassword) {
+            const isNewPasswordValid = validatePassword(editedUser.newPassword);
+            const isConfirmPasswordValid = validateConfirmPassword(editedUser.confirmPassword);
+            if (!isNewPasswordValid || !isConfirmPasswordValid) {
+                console.log("Password validation errors detected");
+                return;
+            }
+            editedUser.password = editedUser.newPassword;
+        }
+
+        if (
+            !isNameValid ||
+            !isLastnameValid ||
+            !isEmailValid ||
+            !isUsernameValid ||
+            !isCINValid ||
+            !isPhoneNumberValid
+        ) {
+            console.log("Validation errors detected");
+            return;
+        }
+
         try {
             await api.patch(`http://localhost:9090/api/auth/editAdminProf/${editedUser._id}`, editedUser);
             console.log("User updated successfully");
@@ -121,6 +317,20 @@ export default function ColumnsTable(props) {
     };
     const handleEdit = (user) => {
         setEditedUser(user);
+        setOriginalPhoneNumber(user.phoneNumber); // Store original phone number
+        setOriginalCIN(user.cinNumber); // Store original CIN number
+        setOriginalUsername(user.username); // Store original username
+        setOriginalEmail(user.email); // Store original email
+        setErrorsEdit({
+            name: "",
+            lastname: "",
+            email: "",
+            username: "",
+            password: "",
+            confirmPassword: "",
+            cinNumber: "",
+            phoneNumber: "",
+        });
         openEditModal();
     };
     const openEditModal = () => {
@@ -462,7 +672,7 @@ export default function ColumnsTable(props) {
             <Modal isOpen={isModalViewOpen} onClose={closeModalViewA}>
                 <ModalOverlay />
                 <ModalContent maxW={'800px'}>
-                    <ModalHeader>Admin Information</ModalHeader>
+                    <ModalHeader>Prof Information</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
                         {profInfo && (
@@ -533,41 +743,85 @@ export default function ColumnsTable(props) {
                     <ModalCloseButton />
                     {editedUser && (
                         <ModalBody>
-                            <FormControl id="name">
-                                <FormLabel>Name</FormLabel>
-                                <Input type="text" value={editedUser.name} onChange={(e) => setEditedUser({ ...editedUser, name: e.target.value })} />
-                            </FormControl>
-                            <FormControl id="lastname">
-                                <FormLabel>Lastname</FormLabel>
-                                <Input type="text" value={editedUser.lastname} onChange={(e) => setEditedUser({ ...editedUser, lastname: e.target.value })} />
-                            </FormControl>
-                            <FormControl id="username">
-                                <FormLabel>Username</FormLabel>
-                                <Input type="text" value={editedUser.username} onChange={(e) => setEditedUser({ ...editedUser, username: parseInt(e.target.value) })} />
-                            </FormControl>
-                            <FormControl id="email">
-                                <FormLabel>Email</FormLabel>
-                                <Input type="email" value={editedUser.email} onChange={(e) => setEditedUser({ ...editedUser, email: parseInt(e.target.value) })} />
-                            </FormControl>
-                            <FormControl id="password">
-                                <FormLabel>Password</FormLabel>
-                                <Input type="password" value={editedUser.password} onChange={(e) => setEditedUser({ ...editedUser, password: parseInt(e.target.value) })} />
-                            </FormControl>
+                            <Grid templateColumns="1fr 1fr" gap={4}>
+                                <FormControl id="name" mt={4}>
+                                    <FormLabel>Name</FormLabel>
+                                    <Input type="text" value={editedUser.name} onChange={(e) => { setEditedUser({ ...editedUser, name: e.target.value }); validateName(e.target.value); }} />
+                                </FormControl>
+                                <FormControl id="lastname" mt={4}>
+                                    <FormLabel>Lastname</FormLabel>
+                                    <Input type="text" value={editedUser.lastname} onChange={(e) => { setEditedUser({ ...editedUser, lastname: e.target.value }); validateLastname(e.target.value); }} />
+                                </FormControl>
+                            </Grid>
+                            <Grid templateColumns="1fr 1fr" gap={4}>
+                                <FormControl id="email" mt={4}>
+                                    <FormLabel>Email</FormLabel>
+                                    <Input type="email" value={editedUser.email} onChange={(e) => { setEditedUser({ ...editedUser, email: e.target.value }); validateEmail(e.target.value); }} />
+                                </FormControl>
+                                <FormControl id="username" mt={4}>
+                                    <FormLabel>Username</FormLabel>
+                                    <Input type="text" value={editedUser.username} onChange={(e) => { setEditedUser({ ...editedUser, username: e.target.value }); validateUsername(e.target.value); }} />
+                                </FormControl>
+                            </Grid>
+                            <Grid templateColumns="1fr 1fr" gap={4}>
+                                <FormControl id="password" mt={4}>
+                                    <FormLabel>Password</FormLabel>
+                                    <InputGroup size='md'>
+                                        <Input type={show ? "text" : "password"} onChange={(e) => { setEditedUser({ ...editedUser, password: e.target.value }); validatePassword(e.target.value); }} />
+                                        <InputRightElement display='flex' alignItems='center' mt='1px'>
+                                            <Icon
+                                                color={textColorSecondary}
+                                                _hover={{ cursor: "pointer" }}
+                                                as={show ? RiEyeCloseLine : MdOutlineRemoveRedEye}
+                                                onClick={handleClick}
+                                            />
+                                        </InputRightElement>
+                                    </InputGroup>
+                                </FormControl>
 
-                            <FormControl id="phoneNumber">
-                                <FormLabel>Phone Number</FormLabel>
-                                <Input type="number" value={editedUser.phoneNumber} onChange={(e) => setEditedUser({ ...editedUser, phoneNumber: parseInt(e.target.value) })} />
-                            </FormControl>
-                            <FormControl id="cinNumber">
-                                <FormLabel>CIN Number</FormLabel>
-                                <Input type="number" value={editedUser.cinNumber} onChange={(e) => setEditedUser({ ...editedUser, cinNumber: parseInt(e.target.value) })} />
-                            </FormControl>
-                            <FormControl id="profilePicture">
+                                <FormControl mt={4}>
+                                    <FormLabel>Password Confirmation</FormLabel>
+                                    <InputGroup size='md'>
+                                        <Input
+                                            type={show ? "text" : "password"}
+                                            onChange={(e) => { setEditedUser({ ...editedUser, confirmPassword: e.target.value }); validateConfirmPassword(e.target.value); }}
+                                        />
+                                        <InputRightElement display='flex' alignItems='center' mt='1px'>
+                                            <Icon
+                                                color={textColorSecondary}
+                                                _hover={{ cursor: "pointer" }}
+                                                as={show ? RiEyeCloseLine : MdOutlineRemoveRedEye}
+                                                onClick={handleClick}
+                                            />
+                                        </InputRightElement>
+                                    </InputGroup>
+                                </FormControl>
+                            </Grid>
+
+                            <Grid templateColumns="1fr 1fr" gap={4}>
+                                <FormControl id="phoneNumber" mt={4}>
+                                    <FormLabel>Phone Number</FormLabel>
+                                    <Input type="number" value={editedUser.phoneNumber} onChange={(e) => { setEditedUser({ ...editedUser, phoneNumber: parseInt(e.target.value) }); validatePhoneNumber(e.target.value); }} />
+                                </FormControl>
+                                <FormControl id="cinNumber" mt={4}>
+                                    <FormLabel>CIN Number</FormLabel>
+                                    <Input type="number" value={editedUser.cinNumber} onChange={(e) => { setEditedUser({ ...editedUser, cinNumber: parseInt(e.target.value) }); validateCIN(e.target.value); }} />
+                                </FormControl>
+                            </Grid>
+                            <FormControl id="profilePicture" mt={4}>
                                 <FormLabel>Profile picture</FormLabel>
-                                <Input type="image" value={editedUser.profilePicture} onChange={(e) => setEditedUser({ ...editedUser, profilePicture: parseInt(e.target.value) })} />
+                                <Input type="image" value={editedUser.profilePicture} onChange={(e) => setEditedUser({ ...editedUser, profilePicture: e.target.value })} />
                             </FormControl>
                         </ModalBody>
                     )}
+                    {errorsEdit.name && <Text color="red">{errorsEdit.name}</Text>}
+                    {errorsEdit.lastname && <Text color="red">{errorsEdit.lastname}</Text>}
+                    {errorsEdit.email && <Text color="red">{errorsEdit.email}</Text>}
+                    {errorsEdit.username && <Text color="red">{errorsEdit.username}</Text>}
+                    {errorsEdit.password && <Text color="red">{errorsEdit.password}</Text>}
+                    {errorsEdit.confirmPassword && <Text color="red">{errorsEdit.confirmPassword}</Text>}
+                    {errorsEdit.cinNumber && <Text color="red">{errorsEdit.cinNumber}</Text>}
+                    {errorsEdit.phoneNumber && <Text color="red">{errorsEdit.phoneNumber}</Text>}
                     <ModalFooter>
                         <Button colorScheme="blue" mr={3} onClick={handleSaveEdit}>Save</Button>
                         <Button onClick={closeEditModalP}>Cancel</Button>
@@ -718,7 +972,7 @@ export default function ColumnsTable(props) {
                                                     me='5px'
                                                     color={"green.500"}
                                                     cursor="pointer"
-                                                onClick={() => handleEdit(row.original)}
+                                                    onClick={() => handleEdit(row.original)}
                                                 />
                                                 {/* Delete icon */}
 
