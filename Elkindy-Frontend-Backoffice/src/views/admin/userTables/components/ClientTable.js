@@ -650,9 +650,7 @@ export default function ColumnsTable(props) {
                                         );
                                     } else if (cell.column.Header === "Profile picture") {
                                         data = (
-                                            <Text color={textColor} fontSize='sm' fontWeight='700'>
-                                                {cell.value}
-                                            </Text>
+                                            <img src={cell.value} alt="Profile Picture" style={{ maxWidth: "50px", maxHeight: "50px", borderRadius: "50%" }} />
                                         );
                                     } else if (cell.column.Header === "Password") {
                                         data = (

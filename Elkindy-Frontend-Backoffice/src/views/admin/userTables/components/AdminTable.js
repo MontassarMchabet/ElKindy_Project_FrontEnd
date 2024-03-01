@@ -370,7 +370,11 @@ export default function ColumnsTable(props) {
     });
     const [errors, setErrors] = useState({});
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        if (e.target.type === "file") {
+            setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+        } else {
+            setFormData({ ...formData, [e.target.name]: e.target.value });
+        }
     };
     const validateForm = async () => {
         let errors = {};
@@ -452,9 +456,25 @@ export default function ColumnsTable(props) {
         const isValid = await validateForm();
         if (isValid) {
             try {
-                const response = await api.post(
+                const formDataToSend = new FormData();
+                formDataToSend.append("image", formData.profilePicture); // Use "image" as the key
+
+                const uploadResponse = await api.post(
+                    "http://localhost:9090/api/image/uploadimage",
+                    formDataToSend,
+                    {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                    }
+                );
+
+                const profilePictureUrl = uploadResponse.data.downloadURL[0];
+                const formDataWithProfilePicture = { ...formData, profilePicture: profilePictureUrl };
+
+                const registerResponse = await api.post(
                     "http://localhost:9090/api/auth/registerAdmin",
-                    formData
+                    formDataWithProfilePicture
                 );
                 fetchData()
                 closeModalA()
@@ -612,9 +632,11 @@ export default function ColumnsTable(props) {
                                     <FormLabel>Profile picture</FormLabel>
                                     <Input type="file"
                                         name="profilePicture"
-                                        value={formData.profilePicture}
                                         onChange={handleChange}
                                     />
+                                    {formData.profilePicture && (
+                                        <p>Selected file: {formData.profilePicture.name}</p>
+                                    )}
                                 </FormControl>
                             </ModalBody>
                             {errors.name && <Text color="red">{errors.name}</Text>}
@@ -909,9 +931,7 @@ export default function ColumnsTable(props) {
                                         );
                                     } else if (cell.column.Header === "Profile picture") {
                                         data = (
-                                            <Text color={textColor} fontSize='sm' fontWeight='700'>
-                                                {cell.value}
-                                            </Text>
+                                            <img src={cell.value} alt="Profile Picture" style={{ maxWidth: "50px", maxHeight: "50px", borderRadius: "50%" }} />
                                         );
                                     } else if (cell.column.Header === "Password") {
                                         data = (
