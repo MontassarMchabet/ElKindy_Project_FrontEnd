@@ -49,7 +49,7 @@ import Information from "views/admin/profile/components/Information";
 
 export default function ColumnsTable(props) {
     const { columnsData, tableData, handleDelete, cancelDelete, cancelRef, confirmDelete, isDeleteDialogOpen,
-        isModalOpenA, openModalA, closeModalA, fetchData } = props;
+        isModalOpenA, openModalA, closeModalA, fetchData , isEditModalOpen, closeEditModal,setIsEditModalOpen} = props;
 
     const textColorPrimary = useColorModeValue("secondaryGray.900", "white");
     const cardShadow = useColorModeValue(
@@ -70,6 +70,32 @@ export default function ColumnsTable(props) {
         useSortBy,
         usePagination
     );
+
+    
+    const [editedExam, setEditedExam] = useState({});
+    ////////////////////////
+        // Fonction pour sauvegarder les modifications du cours
+        const handleSaveEdit = async () => {
+            try {
+                
+                await axios.put(`http://localhost:8080/api/exam/${editedExam._id}`, editedExam);
+                console.log("Exam updated successfully");
+                setIsEditModalOpen(false); 
+                fetchData(); 
+            } catch (error) {
+                console.error("Error updating exam:", error);
+            }
+        };
+    const handleEdit = (exam) => {
+       setEditedExam(exam);
+       openEditModal(); 
+    };
+
+// La fonction pour ouvrir le formulaire d'édition
+    const openEditModal = () => {
+    setIsEditModalOpen(true);
+};
+///////////////////////
 
     const {
         getTableProps,
@@ -123,25 +149,28 @@ export default function ColumnsTable(props) {
         description: "",
         type: "",
         format: "",
-        pdfile: "",
+        pdfFile: "",
     });
     const [selectedPdfFile, setSelectedPdfFile] = useState(null);
 
-    const handlePdfFileChange = (file) => {
-      setSelectedPdfFile(file);
-      // Do whatever you need with the selected PDF file
+    const handlePdfFileChange = (e) => {
+      setSelectedPdfFile(e.target.files[0]);
+      
     };
     const [errors, setErrors] = useState({});
     const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
         console.log("Selected file:", selectedFile);
-        handlePdfFileChange(selectedFile);
+        setFormData({ ...formData, pdfFile: selectedFile }); 
     };
     
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-      };
+        if (e.target.type === "file") {
+            setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+        } else {
+            setFormData({ ...formData, [e.target.name]: e.target.value });
+        }
+    };
     const validateForm = async () => {
         let errors = {};
 
@@ -159,25 +188,42 @@ export default function ColumnsTable(props) {
         return Object.keys(errors).length === 0;
     };
 
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const isValid = await validateForm();
         console.log("Submitting form");
         if (isValid) {
             try {
-                const response = await axios.post(
+                const formDataToSend = new FormData();
+                formDataToSend.append("image", formData.pdfFile); // fi3outh l profilePicture ekteb l field mte3k mt3 image exam eli f schema exam
+                console.log(formData);
+                console.log(formDataToSend);
+                const uploadResponse = await axios.post(
+                    "http://localhost:8080/api/image/uploadimage",
+                    formDataToSend,
+                    {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                    }
+                );
+                
+                const examPictureUrl = uploadResponse.data.downloadURL[0];
+                const formDataWithPicture = { ...formData, pdfFile: examPictureUrl };
+
+                const registerResponse = await axios.post(
                     "http://localhost:8080/api/exam/",
-                    formData
+                    formDataWithPicture
                 );
                 fetchData()
                 closeModalA()
-                console.log(response.data);
             } catch (error) {
-                console.error("Error adding exam:", error);
+                console.error("Error adding Exam:", error);
             }
         }
     };
-
     return (
         <Card
             direction='column'
@@ -254,7 +300,7 @@ export default function ColumnsTable(props) {
           <option value="midterm exam">Midterm Exam</option>
         </Select>
       </FormControl>
-      <FormControl mt={4}> {/* No margin needed for the second select */}
+      <FormControl mt={4}>
         <FormLabel>Format</FormLabel>
         <Select
           name="format"
@@ -268,17 +314,17 @@ export default function ColumnsTable(props) {
       {formData.format === 'pdf' && (
        <FormControl mt={4}>
        <label htmlFor="pdfFileInput">
-         Upload PDF File:
-         <input
-           id="pdfFileInput"
-           name="pdfFile" 
-           type="file"
-           accept=".pdf"
-           style={{ display: "inline" }} 
-           onChange={handleFileChange} 
-         />
+           Upload PDF File:
+           <input
+               name="pdfFile" 
+               type="file"
+               accept=".pdf"
+               style={{ display: "inline" }}
+               onChange={handleChange}
+           />
        </label>
-     </FormControl>
+   </FormControl>
+   
      
 
 )}
@@ -373,15 +419,47 @@ export default function ColumnsTable(props) {
                                     } else if (cell.column.Header === "ACTIONS") {
                                         data = (
                                             <Flex align="center">
-                                                {/* Edit icon */}
-                                                <EditIcon
+                                               {/* Edit icon */}
+                                               <EditIcon
                                                     w='20px'
                                                     h='20px'
                                                     me='5px'
                                                     color={"green.500"}
                                                     cursor="pointer"
-                                                /*onClick={() => handleEdit(row.original)}*/
+                                                onClick={() => handleEdit(row.original)}
                                                 />
+                                                
+
+
+                                                <Modal isOpen={isEditModalOpen} onClose={closeEditModal}>
+                                            <ModalOverlay />
+                                                <ModalContent maxW={'800px'}>
+                                                    <ModalHeader>Edit Exam</ModalHeader>
+                                                    <ModalCloseButton />
+                                                    {editedExam && ( // Vérifiez si editedExam est disponible
+                                                        <ModalBody>
+                                                            {/* Formulaire pour l'édition du exam */}
+                                                            <FormControl id="title">
+                                                                <FormLabel>Title</FormLabel>
+                                                                <Input type="text" value={editedExam.title} onChange={(e) => setEditedExam({ ...editedExam, title: e.target.value })} />
+                                                            </FormControl>
+                                                            <FormControl id="description">
+                                                                <FormLabel>Description</FormLabel>
+                                                                <Input type="text" value={editedExam.description} onChange={(e) => setEditedExam({ ...editedExam, description: e.target.value })} />
+                                                            </FormControl>
+                                                            <FormControl id="format">
+                                                                <FormLabel>Format</FormLabel>
+                                                                <Input type="text" value={editedExam.format} onChange={(e) => setEditedExam({ ...editedExam, format: parseInt(e.target.value) })} />
+                                                            </FormControl>
+                                                        </ModalBody>
+                                                    )}
+                                                    <ModalFooter>
+                                                        <Button colorScheme="blue" mr={3} onClick={handleSaveEdit}>Save</Button>
+                                                        <Button onClick={closeEditModal}>Cancel</Button>
+                                                    </ModalFooter>
+                                                </ModalContent>
+                                            </Modal>
+                                            
                                                 {/* Delete icon */}
                                                 <AlertDialog
                                                     isOpen={isDeleteDialogOpen}
@@ -418,7 +496,9 @@ export default function ColumnsTable(props) {
                                                     cursor="pointer"
                                                     onClick={() => confirmDelete(row.original._id)}
                                                 />
-                                                {/* View icon 
+
+
+                                                {/* View icon */}
                                                 <ViewIcon
                                                     w='20px'
                                                     h='20px'
@@ -430,70 +510,32 @@ export default function ColumnsTable(props) {
                                                 <Modal isOpen={isModalViewOpen} onClose={closeModalViewA}>
                                                     <ModalOverlay />
                                                     <ModalContent maxW={'800px'}>
-                                                        <ModalHeader>Admin Information</ModalHeader>
+                                                        <ModalHeader>Exam Information</ModalHeader>
                                                         <ModalCloseButton />
                                                         <ModalBody>
                                                             {examInfo && (
                                                                 <>
-                                                                    {examInfo.profilePicture}
-                                                                    <Card mb={{ base: "0px", "2xl": "20px" }} {...rest}>
-                                                                        <Text
-                                                                            color={textColorPrimary}
-                                                                            fontWeight='bold'
-                                                                            fontSize='2xl'
-                                                                            mt='10px'
-                                                                            mb='4px'>
-                                                                            {examInfo.name} {examInfo.lastname}
-                                                                        </Text>
-                                                                        <Text color={textColorSecondary} fontSize='md' me='26px' mb='40px'>
-                                                                            @{examInfo.username}
-                                                                        </Text>
-                                                                        <SimpleGrid columns='2' gap='20px'>
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Email'
-                                                                                value={examInfo.email}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Role'
-                                                                                value={examInfo.role}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Phone number'
-                                                                                value={examInfo.phoneNumber}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='CIN'
-                                                                                value={examInfo.cinNumber}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Status'
-                                                                                value={examInfo.isEmailVerified ? 'Verified' : 'Not Verified'}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Birthday'
-                                                                                value={examInfo.dateOfBirth ? examInfo.dateOfBirth.substring(0, 10) : "N/A"}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Password'
-                                                                                value='**************'
-                                                                            />
-                                                                        </SimpleGrid>
-                                                                    </Card>
+                                                                    <Text
+                                        color={textColorPrimary}
+                                        fontWeight='bold'
+                                        fontSize='2xl'
+                                        mt='10px'
+                                        mb='4px'
+                                        style={{ margin: "auto" }}>
+                                        {examInfo.title} {examInfo.description}
+                                    </Text>
+                                                                    <object data={examInfo.pdfFile} type="application/pdf" width="100%" height="500px">
+                                                                <p>PDF cannot be displayed. <a href={examInfo.pdfFile}>Download PDF</a> instead.</p>
+                                                            </object>
                                                                 </>
                                                             )}
                                                         </ModalBody>
                                                     </ModalContent>
-                                                </Modal>*/}
+                                                </Modal>
                                             </Flex>
                                         );
                                     }
+                                    
                                     return (
                                         <Td
                                             {...cell.getCellProps()}

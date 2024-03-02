@@ -20,10 +20,6 @@ export const ExamData = [
     accessor: "format",
   },
   {
-    Header: "Pdfile",
-    accessor: "pdfile",
-  },
-  {
     Header: "ACTIONS", 
   },
 ];

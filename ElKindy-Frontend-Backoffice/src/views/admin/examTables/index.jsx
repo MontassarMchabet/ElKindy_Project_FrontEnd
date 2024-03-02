@@ -54,7 +54,11 @@ export default function Settings() {
     const closeModalA = () => {
         setIsModalOpenA(false);
     };
-
+//for edit
+const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+const closeEditModal = () => {
+    setIsEditModalOpen(false);
+};
     return (
         <Box width="2350px" pt={{ base: "130px", md: "80px", xl: "80px" }}>
             <SimpleGrid
@@ -64,7 +68,7 @@ export default function Settings() {
                 <ExamTable
                     columnsData={ExamData}
                     tableData={examData}
-                     handleDelete={handleDelete}
+                    handleDelete={handleDelete}
                     cancelDelete={cancelDelete}
                     cancelRef={cancelRef}
                     confirmDelete={confirmDelete}
@@ -73,6 +77,9 @@ export default function Settings() {
                     closeModalA={closeModalA}
                     isModalOpenA={isModalOpenA}
                     fetchData={fetchData}
+                    isEditModalOpen={isEditModalOpen} 
+                    closeEditModal={closeEditModal} 
+                    setIsEditModalOpen={setIsEditModalOpen} 
                 />
             </SimpleGrid>
         </Box>
