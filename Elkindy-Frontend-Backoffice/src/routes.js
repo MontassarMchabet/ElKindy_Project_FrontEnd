@@ -56,7 +56,7 @@ const routes = [
   {
     name: "Evenements ElKindy",
     layout: "/admin",
-    path: "/events",
+    path: "/event",
     icon: (
       <Icon
         as={MdOutlineShoppingCart}

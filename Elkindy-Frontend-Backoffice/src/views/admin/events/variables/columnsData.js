@@ -109,5 +109,19 @@ export const eventsData = [
     Header: "ACTIONS", // Ajout d'une nouvelle colonne pour les actions
   }
 ];
+export const tableColumnsTopCreators = [
+  {
+    Header: "Name",
+    accessor: "name",
+  },
+  {
+    Header: "Artworks",
+    accessor: "artworks",
+  },
+  {
+    Header: "Rating",
+    accessor: "rating",
+  },
+];
 export default eventsData;
 // Suppression de l'export par défaut inutile

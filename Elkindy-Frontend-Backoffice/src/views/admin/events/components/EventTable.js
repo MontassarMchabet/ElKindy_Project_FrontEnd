@@ -15,6 +15,7 @@ import {
     Tr,
     useColorModeValue,
 } from "@chakra-ui/react";
+import { Link } from 'react-router-dom';
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiEyeCloseLine } from "react-icons/ri";
 import {
@@ -36,10 +37,12 @@ import Card from "components/card/Card";
 //import Menu from "components/menu/MainMenu";
 import { MdCheckCircle, MdCancel, MdOutlineError } from "react-icons/md";
 import Information from "views/admin/events/components/Information";
+import { NavLink } from "react-router-dom/cjs/react-router-dom";
+import { useHistory } from 'react-router-dom'; 
 
 
 export default function ColumnsTable(props) {
-    const { columnsData, tableData, handleDelete, cancelDelete, cancelRef, confirmDelete, isDeleteDialogOpen,
+    const { columnsData, tableData, handleDelete,handleTickets, cancelDelete, cancelRef, confirmDelete, isDeleteDialogOpen,
         isModalOpenA, openModalA, closeModalA, fetchData, isEditModalOpen, closeEditModal,setIsEditModalOpen } = props;
 
     const textColorPrimary = useColorModeValue("secondaryGray.900", "white");
@@ -62,6 +65,14 @@ export default function ColumnsTable(props) {
         usePagination
     );
     const [editedEvent, setEditedEvent] = useState({}); // Déclaration et initialisation
+    const [tickets, setTickets] = useState([]);
+    const [comments, setComments] = useState([]);
+    // const [eventId, setEventId] = useState(null);
+    const eventId = '65de60ac69889e0c3cfa4bd3';
+    const [eventInfo, setEventInfo] = useState(null);
+    const history = useHistory();
+    
+
     ////////////////////////
         // Fonction pour sauvegarder les modifications du cours
         const handleSaveEdit = async () => {
@@ -80,7 +91,51 @@ export default function ColumnsTable(props) {
        setEditedEvent(course); // Charger les données du cours à éditer dans editedEvent
        openEditModal(); // Ouvrir le formulaire d'édition
     };
-
+    // const handleTicketsClick = async () => {
+    //     if (!eventId) { // Vérifiez si  son ID sont définis
+    //         console.error('Event info is missing or does not have an ID');
+    //         return;
+    //     }
+    //     try {
+    //         const response = await axios.get(`http://localhost:8080/event/${eventId}/tickets`); // Utilisez eventInfo._id
+            
+    //         const data = await response.json();
+    //         setTickets(data);
+    //     } catch (error) {
+    //         console.error('Error fetching tickets:', error);
+    //     }
+    // };
+    const handleTicketsClick = async () => {
+        if (!eventId) { // Vérifiez si l'ID de l'événement est défini
+            console.error('Event info is missing or does not have an ID');
+            return;
+        }
+        try {
+            const response = await axios.get(`http://localhost:8080/event/${eventId}/tickets`); // Utilisez eventInfo._id
+            
+            const data = response.data; // Accédez directement aux données de la réponse
+            //setTickets(data);
+      
+            // Redirigez l'utilisateur vers la page des tickets en utilisant history.push()
+            history.push('/tickets');
+        } catch (error) {
+            console.error('Error fetching tickets:', error);
+        }
+    };
+    
+    const handleCommentsClick = async () => {
+        if (!eventId) { // Vérifiez si eventInfo ou son ID sont définis
+            console.error('Event info is missing or does not have an ID');
+            return;
+        }
+        try {
+            const response = await fetch(`/admin/event/${eventId}/comments`); // Utilisez eventInfo._id
+            const data = await response.json();
+            setComments(data);
+        } catch (error) {
+            console.error('Error fetching comments:', error);
+        }
+    };
 // La fonction pour ouvrir le formulaire d'édition
     const openEditModal = () => {
     setIsEditModalOpen(true);
@@ -122,7 +177,8 @@ export default function ColumnsTable(props) {
 
 
     const [isModalViewOpen, setIsModalViewOpen] = useState(false);
-    const [eventInfo, setEventInfo] = useState(null);
+    
+
     const handleView = (eventData) => {
         setEventInfo(eventData);
         setIsModalViewOpen(true);
@@ -132,21 +188,6 @@ export default function ColumnsTable(props) {
     };
 
 
-    // const [formData, setFormData] = useState({
-    //     Name: "",
-    //     Description: "",
-    //     imageUrl: "",
-    //     Date: "",
-    //     Location: "",
-    //     price: "",
-
-    //     room: {
-    //         name: "",
-    //         shape: "",
-    //         capacity: "",
-    //         distributionSeats: []
-    //     }
-    // });
     const [formData, setFormData] = useState({
         name: "",
         description: "",
@@ -165,32 +206,7 @@ export default function ColumnsTable(props) {
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
-    // const validateForm = async () => {
-    //     let errors = {};
 
-    //     if (!formData.Name.trim()) {
-    //         errors.Name = 'All fields are required'
-    //     } else if (!formData.Description.trim()) {
-    //         errors.Description = 'All fields are required'
-    //     } else if (!formData.Location.trim()) {
-    //         errors.Location = 'All fields are required'
-    //     } else if (!formData.price.trim()) {
-    //         errors.price = 'All fields are required'
-    //     } else if (!formData.imageUrl.trim()) {
-    //         errors.imageUrl = 'All fields are required'
-    //     } else if (!formData.Date.trim()) {
-    //         errors.Date = 'All fields are required'
-    //     } else if (!formData.room.name.trim()) {
-    //         errors.room.name = 'All fields are required'
-    //     } else if (!formData.room.capacity.trim()) {
-    //         errors.room.capacity = 'All fields are required'
-    //     } else if (!formData.room.shape.trim()) {
-    //         errors.room.shape = 'All fields are required'
-    //     } else if (formData.Name.trim().length < 3) {
-    //         errors.Name = 'Name of event must be at least 3 characters long';
-    //     }
-
-    // };
     const validateForm = async () => {
         let errors = {};
       
@@ -238,7 +254,40 @@ export default function ColumnsTable(props) {
           }
         }
       };
+    //   const [eventId, setEventId] = useState({});
 
+    //   const handleTicketsClick = async () => {
+    //     try {
+    //         const response = await fetch(`http://localhost:8080/event/${eventId._id}/tickets`);
+    //         //const response = await axios.(`http://localhost:8080/event/${eventId}/tickets`);
+    //         if (!response.ok) {
+    //             throw new Error('Erreur lors de la récupération des tickets');
+    //         }
+    //         // Gérez la réponse pour afficher la page de tickets
+    //     } catch (error) {
+    //         console.error(error);
+    //         // Gérez les erreurs
+    //     }
+    // };
+
+
+
+
+//     const [tickets, setTickets] = useState([]);
+// const [eventId, setEventId] = useState({});
+//     const handleTicketsClick = async () => {
+//         try {
+//             const response = await axios.get(`http://localhost:8080/event/${eventId._id}/tickets`);
+//             if (!response.ok) {
+//                 throw new Error('Erreur lors de la récupération des tickets');
+//             }
+//             const data = await response.json();
+//             setTickets(data);
+//         } catch (error) {
+//             console.error(error);
+//             // Gérez les erreurs
+//         }
+//     }
     return (
         <Card direction='column' w='100%' px='0px' overflowX={{ sm: "scroll", lg: "hidden" }}>
           <Flex px='25px' justify='space-between' mb='20px' align='center'>
@@ -339,28 +388,8 @@ export default function ColumnsTable(props) {
               </ModalContent>
             </Modal>
           </Flex>
-            {/* <Table {...getTableProps()} variant='simple' color='gray.500' mb='24px'>
-                <Thead>
-                    {headerGroups.map((headerGroup, index) => (
-                        <Tr {...headerGroup.getHeaderGroupProps()} key={index}>
-                            {headerGroup.headers.map((column, index) => (
-                                <Th
-                                    {...column.getHeaderProps(column.getSortByToggleProps())}
-                                    pe='10px'
-                                    key={index}
-                                    borderColor={borderColor}>
-                                    <Flex
-                                        justify='space-between'
-                                        align='center'
-                                        fontSize={{ sm: "10px", lg: "12px" }}
-                                        color='gray.400'>
-                                        {column.render("Header")}
-                                    </Flex>
-                                </Th>
-                            ))}
-                        </Tr>
-                    ))}
-                </Thead> */}
+            
+          
             <Table {...getTableProps()} variant='simple' color='gray.500' mb='24px'>
                 <Thead>
                     {headerGroups.map((headerGroup, index) => (
@@ -403,14 +432,7 @@ export default function ColumnsTable(props) {
                                             </Text>
                                         );
                                     
-                                    // } else if (cell.column.Header === "DATE") {
-                                    //     const date = new Date(cell.value);
-                                    //     const formattedDate = date.toISOString().split('T')[0];
-                                    //     data = (
-                                    //         <Text color={textColor} fontSize='sm' fontWeight='700'>
-                                    //             {formattedDate}
-                                    //         </Text>
-                                    //     );
+                                    
                                     } else if (cell.column.Header === "DATE") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
@@ -623,7 +645,29 @@ export default function ColumnsTable(props) {
                                                                                 title='Seats'
                                                                                 value={eventInfo.room_distributionSeats}
                                                                             />
+                                                                            
+                                                                            {/* <ModalFooter>
+                                                                                <NavLink to={`/admin/events/${eventInfo.id}/tickets`}>Tickets</NavLink>
+                                                                                
+                                                                                <Button  colorScheme="orange">
+                                                                                comments
+                                                                                </Button>
+                                                                            </ModalFooter> */}
+                                                                            {/* <ModalFooter>
+                                                                                <NavLink to={`/admin/events/${eventInfo.id}/tickets`}>Tickets</NavLink>
+                                                                                <Button colorScheme="blue" onClick={() => setShowTickets(true)}>
+                                                                                tickets
+                                                                                </Button>
+                                                                                <Button colorScheme="orange" onClick={() => setShowComments(true)}>
+                                                                                comments
+                                                                                </Button>
+                                                                            </ModalFooter> */}
+                                                                            
                                                                         </SimpleGrid>
+                                                                        <ModalFooter>
+                                                                            <NavLink to={`/${eventId}/tickets`} onClick={handleTicketsClick}>Tickets</NavLink>
+                                                                            <Button colorScheme="orange" onClick={handleCommentsClick}>Comments</Button>
+                                                                        </ModalFooter>
                                                                     </Card>
                                                                 </>
                                                             )}

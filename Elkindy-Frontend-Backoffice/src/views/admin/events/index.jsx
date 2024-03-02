@@ -24,6 +24,7 @@ export default function Settings() {
 
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [deletingId, setDeletingId] = useState(null);
+    const [eventId, setEventId] = useState(null);
     const cancelRef = useRef();
 
     const confirmDelete = (id) => {
@@ -43,6 +44,15 @@ export default function Settings() {
             fetchData();
         } catch (error) {
             console.error("Error deleting event:", error);
+        }
+    };
+    const handleTickets = async () => {
+
+        try {
+            const eventResponse = await axios.get(`http://localhost:8080/event/${eventId}/tickets`);
+            seteventsData(eventResponse.data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
         }
     };
 
@@ -72,6 +82,7 @@ const closeEditModal = () => {
                     columnsData={eventsData}
                     tableData={eventssData}
                     handleDelete={handleDelete}
+                    handleTickets={handleTickets}
                     cancelDelete={cancelDelete}
                     cancelRef={cancelRef}
                     confirmDelete={confirmDelete}
