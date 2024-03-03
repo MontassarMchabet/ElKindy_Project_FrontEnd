@@ -31,7 +31,6 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiEyeCloseLine } from "react-icons/ri";
 
 function SignIn() {
-  // Chakra color mode
   const textColor = useColorModeValue("navy.700", "white");
   const textColorSecondary = "gray.400";
   const textColorDetails = useColorModeValue("navy.700", "secondaryGray.600");
@@ -262,7 +261,7 @@ function SignIn() {
                     Keep me logged in
                   </FormLabel>
                 </FormControl>
-                <NavLink to='/auth/forgot-password'>
+                <NavLink to='/forgot-password'>
                   <Text
                     color={textColorBrand}
                     fontSize='sm'
