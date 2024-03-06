@@ -25,15 +25,14 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiEyeCloseLine } from "react-icons/ri";
 
 function SignUp() {
-    // Chakra color mode
     const textColor = useColorModeValue("navy.700", "white");
     const textColorSecondary = "gray.400";
     const textColorDetails = useColorModeValue("navy.700", "secondaryGray.600");
     const textColorBrand = useColorModeValue("brand.500", "white");
     const brandStars = useColorModeValue("brand.500", "brand.400");
-
-    // check if already logged in
     const history = useHistory();
+    
+    // check if already logged in
     useEffect(() => {
         const isLoggedIn = localStorage.getItem('token') !== null;
         if (isLoggedIn) {
