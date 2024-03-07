@@ -192,8 +192,7 @@ export default function ColumnsTable(props) {
         name: "",
         description: "",
         imageUrl: "",
-        startDate: "",
-        endDate: "",
+        date: "",
         location: "",
         price: "",
 
@@ -221,11 +220,8 @@ export default function ColumnsTable(props) {
             errors.price = 'price required'
         } else if (!formData.imageUrl.trim()) {
             errors.imageUrl = 'image required'
-        } else if (!formData.startDate.trim()) {
-            errors.startDate = 'startDate required'
-        } else if (!formData.room_name.trim()) {
-        } else if (!formData.endDate.trim()) {
-            errors.endDate = 'endDate required'
+        } else if (!formData.date.trim()) {
+            errors.date = 'date required'
         } else if (!formData.room_name.trim()) {
             errors.room_name = 'room required'
         } else if (!formData.room_capacity.trim()) {
@@ -354,12 +350,8 @@ export default function ColumnsTable(props) {
                                     </FormControl>
                                 </Grid>
                                 <FormControl mt={4}>
-                                    <FormLabel>Start Date</FormLabel>
-                                    <Input type="datetime-local" name="startDate" value={formData.startDate} onChange={handleChange} />
-                                </FormControl>
-                                <FormControl mt={4}>
-                                    <FormLabel>End Date</FormLabel>
-                                    <Input type="datetime-local" name="endDate" value={formData.endDate} onChange={handleChange} />
+                                    <FormLabel>Date</FormLabel>
+                                    <Input type="datetime-local" name="date" value={formData.date} onChange={handleChange} />
                                 </FormControl>
                                 <FormControl mt={4}>
                                     <FormLabel>Image</FormLabel>
@@ -373,8 +365,7 @@ export default function ColumnsTable(props) {
                             {errors.location && <Text color="red">{errors.location}</Text>}
                             {errors.price && <Text color="red">{errors.price}</Text>}
                             {errors.imageUrl && <Text color="red">{errors.imageUrl}</Text>}
-                            {errors.startDate && <Text color="red">{errors.startDate}</Text>}
-                            {errors.endDate && <Text color="red">{errors.endDate}</Text>}
+                            {errors.date && <Text color="red">{errors.date}</Text>}
                             {errors.room_name && <Text color="red">{errors.room_name}</Text>}
                             {errors.room_shape && <Text color="red">{errors.room_shape}</Text>}
                             {errors.room_capacity && <Text color="red">{errors.room_capacity}</Text>}
@@ -517,13 +508,9 @@ export default function ColumnsTable(props) {
                                                                     <FormLabel>Price</FormLabel>
                                                                     <Input type="number" value={editedEvent.price} onChange={(e) => setEditedEvent({ ...editedEvent, price: parseInt(e.target.value) })} />
                                                                 </FormControl>
-                                                                <FormControl id="startDate">
-                                                                    <FormLabel>Start Date</FormLabel>
-                                                                    <Input type="datetime-local" value={editedEvent.startDate} onChange={(e) => setEditedEvent({ ...editedEvent, startDate: e.target.value })} />
-                                                                </FormControl>
-                                                                <FormControl id="endDate">
-                                                                    <FormLabel>End Date</FormLabel>
-                                                                    <Input type="datetime-local" value={editedEvent.endDate} onChange={(e) => setEditedEvent({ ...editedEvent, endDate: e.target.value })} />
+                                                                <FormControl id="date">
+                                                                    <FormLabel>Date</FormLabel>
+                                                                    <Input type="datetime-local" value={editedEvent.date} onChange={(e) => setEditedEvent({ ...editedEvent, date: e.target.value })} />
                                                                 </FormControl>
                                                                 <FormControl id="room_name">
                                                                     <FormLabel>Room Name</FormLabel>
@@ -639,21 +626,8 @@ export default function ColumnsTable(props) {
                                                                                 // title='Date'
                                                                                 // value={eventInfo.date}
                                                                                 boxShadow={cardShadow}
-                                                                                title=' Start Date'
-                                                                                value={new Date(eventInfo.startDate).toLocaleString('fr-FR', {
-                                                                                    weekday: 'long',
-                                                                                    year: 'numeric',
-                                                                                    month: 'long',
-                                                                                    day: 'numeric',
-                                                                                    hour: 'numeric',
-                                                                                    minute: 'numeric',
-                                                                                    second: 'numeric',
-                                                                                })}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title=' End Date'
-                                                                                value={new Date(eventInfo.endDate).toLocaleString('fr-FR', {
+                                                                                title='Date'
+                                                                                value={new Date(eventInfo.date).toLocaleString('fr-FR', {
                                                                                     weekday: 'long',
                                                                                     year: 'numeric',
                                                                                     month: 'long',
@@ -697,7 +671,7 @@ export default function ColumnsTable(props) {
                                                                             <NavLink to={`/event/${eventInfo._id}/tickets`}>
                                                                                 <Button colorScheme="blue" >Tickets</Button>
                                                                             </NavLink>
-                                                                            <NavLink to={`/event/${eventInfo._id}/comments`}>
+                                                                            <NavLink to={`/${eventInfo._id}/comments`}>
                                                                                 <Button colorScheme="orange" >Comments</Button>
                                                                             </NavLink>
 

@@ -5,7 +5,9 @@ import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
 import AuthLayout from 'layouts/auth';
 import AdminLayout from 'layouts/admin';
 import HomeLayout from './FrontOffice/layouts/home'
-import TicketsLayout from './views/admin/events/components/Tickets'
+import TicketComponent from './views/admin/tickets/index'
+import CommentComponent from './views/admin/comments/index'
+import EventComponent from './views/admin/events/index'
 import SigninLayout from 'layouts/signIn'
 import SignupLayout from 'layouts/signUp'
 import RtlLayout from 'layouts/rtl';
@@ -27,9 +29,21 @@ ReactDOM.render(
 						<Route path="/home" component={HomeLayout} />
 						
 						{/* Routes accessible only to authenticated users with specific roles */}
+						
+						{/* <PrivateRoute path="/event/:eventId" component={TicketsLayout} allowedRoles={['admin']}/> */}
+						{/* <PrivateRoute path="/admin/event/:eventId/tickets" component={TicketsLayout} allowedRoles={['admin']}/> */}
+						
 						<PrivateRoute path="/admin" component={AdminLayout} allowedRoles={['admin']} />
-						<PrivateRoute path="/event/:eventId/tickets" component={TicketsLayout} allowedRoles={['admin']}/>
-						<PrivateRoute path="/tickets" component={TicketsLayout} allowedRoles={['admin']}/>
+						<Route path="/event/:eventId/tickets" component={TicketComponent} />
+						<Route path="/event/:eventId/comments" component={CommentComponent} />
+						{/* <Route path="/:eventId/tickets" component={TicketComponent} /> */}
+						{/* <Route path="admin/event">
+							<Route  index element={<EventComponent/>}/>
+							<Route  path=":eventId/tickets" element={<TicketComponent/>}/>
+							
+						</Route>  */}
+        				
+						{/* <PrivateRoute path="/tickets" component={TicketsLayout} allowedRoles={['admin']}/> */}
 						{/* Redirect any other path to home */}
 						<Redirect from="/" to="/home" />
 					</Switch>
