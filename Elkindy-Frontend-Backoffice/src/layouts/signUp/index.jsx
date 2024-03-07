@@ -151,7 +151,7 @@ function SignUp() {
 
                     localStorage.setItem('token', token);
                     localStorage.setItem('refreshToken', refreshToken);
-
+                    localStorage.removeItem('verificationCode');
                     history.push('/home');
                 }
             } catch (error) {
