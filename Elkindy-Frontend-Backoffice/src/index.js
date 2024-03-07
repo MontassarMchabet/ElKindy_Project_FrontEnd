@@ -17,6 +17,10 @@ import PrivateRoute from 'components/privateRoute/PrivateRoute';
 const App = () => {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+	const redirectToSecondProjectHome = () => {
+		window.location.href = 'http://localhost:3001';
+	};
+
 
 	return (
 		<ChakraProvider theme={theme}>
@@ -30,7 +34,7 @@ const App = () => {
 							<Route path="/signup" component={SignupLayout} />
 							<Route path="/forgot-password" component={ForgotpasswordLayout} />
 							<Route path="/passwordReset/:token" component={ResetPassword} />
-							<Route path="/home" component={HomeLayout} />
+							<Route path="/home" render={redirectToSecondProjectHome} />
 							{/* Routes accessible only to authenticated users with specific roles */}
 							<PrivateRoute path="/admin" component={AdminLayout} allowedRoles={['admin']} isLoggedIn={isLoggedIn} />
 							{/* Redirect any other path to home */}

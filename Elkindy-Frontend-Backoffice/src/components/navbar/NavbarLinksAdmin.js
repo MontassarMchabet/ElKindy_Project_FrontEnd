@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from "services/api";
 import { jwtDecode } from 'jwt-decode';
+import Cookies from 'js-cookie';
 // Chakra Imports
 import {
 	Avatar,
@@ -68,7 +69,9 @@ export default function HeaderLinks(props) {
 	const handleLogout = () => {
 		localStorage.removeItem('token');
 		localStorage.removeItem('refreshToken');
-		history.push('/home');
+		Cookies.remove('token');
+		Cookies.remove('refreshToken');
+		window.location.reload();
 	};
 
 	return (

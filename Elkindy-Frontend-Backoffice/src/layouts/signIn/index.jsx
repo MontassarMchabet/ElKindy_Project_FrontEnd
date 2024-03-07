@@ -3,7 +3,7 @@ import api from "services/api";
 import { NavLink } from "react-router-dom";
 import { useHistory } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-
+import Cookies from 'js-cookie';
 
 // Chakra imports
 import {
@@ -66,8 +66,11 @@ function SignIn() {
         : await api.post('http://localhost:9090/api/auth/loginUsername', { username: email, password });
 
       const { token, refreshToken } = response.data;
+      
       localStorage.setItem('token', token);
       localStorage.setItem('refreshToken', refreshToken);
+      Cookies.set('token', token);
+      Cookies.set('refreshToken', refreshToken);
 
       const decodedToken = jwtDecode(token);
       const { userId, role } = decodedToken;

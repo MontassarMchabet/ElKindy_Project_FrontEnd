@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useHistory } from "react-router-dom";
 import api from "services/api";
+import Cookies from 'js-cookie';
 // Chakra imports
 import {
     Box,
@@ -152,6 +153,9 @@ function SignUp() {
                     localStorage.setItem('token', token);
                     localStorage.setItem('refreshToken', refreshToken);
                     localStorage.removeItem('verificationCode');
+
+                    Cookies.set('token', token);
+                    Cookies.set('refreshToken', refreshToken);
                     history.push('/home');
                 }
             } catch (error) {

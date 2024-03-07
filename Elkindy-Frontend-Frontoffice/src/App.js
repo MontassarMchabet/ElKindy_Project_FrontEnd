@@ -14,6 +14,8 @@ import ContactPage from "./pages/ContactPage";
 import BlogPage from "./pages/Blog/BlogPage";
 import BlogDetailsPage from "./pages/Blog/BlogDetailsPage";
 import AnimatedCursor from "react-animated-cursor";
+import AccountComponent from "./pages/Account";
+import ExamsComponent from "./pages/Exams";
 
 function App() {
   useEffect(() => {
@@ -59,7 +61,9 @@ function App() {
 
       <Routes>
         <Route path="/" element={<CreativeAgency />} />
-        <Route path="/home-two" element={<PersonalPortfolio />} />
+        <Route path="/account" element={<AccountComponent />} />
+        <Route path="/exams" element={<ExamsComponent />} />
+        {/* <Route path="/home-two" element={<PersonalPortfolio />} />
         <Route path="/home-three" element={<DigitalAgency />} />
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/about-me" element={<AboutMe />} />
@@ -69,7 +73,7 @@ function App() {
         <Route path="/services-details" element={<ServicesDetailsPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/blog" element={<BlogPage />} />
-        <Route path="/blog-details" element={<BlogDetailsPage />} />
+        <Route path="/blog-details" element={<BlogDetailsPage />} /> */}
       </Routes>
     </>
   );

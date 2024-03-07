@@ -38,7 +38,7 @@ const PrivateRoute = ({ component: Component, allowedRoles, ...rest }) => {
                 userRole && allowedRoles.includes(userRole) ? (
                     <Component {...props} />
                 ) : (
-                    <Redirect to={userRole ? '/home' : '/signin'} />
+                    <Redirect to={userRole ? '/home' : '/home'} />
                 )
             }
         />
