@@ -13,6 +13,7 @@ import ServicesDetailsPage from "./pages/ServicesDetailsPage";
 import ContactPage from "./pages/ContactPage";
 import BlogPage from "./pages/Blog/BlogPage";
 import BlogDetailsPage from "./pages/Blog/BlogDetailsPage";
+import EventsPage from "./pages/Events/EventsPage.jsx";
 import AnimatedCursor from "react-animated-cursor";
 
 function App() {
@@ -70,6 +71,7 @@ function App() {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog-details" element={<BlogDetailsPage />} />
+        <Route path="/events" element={<EventsPage />} />
       </Routes>
     </>
   );

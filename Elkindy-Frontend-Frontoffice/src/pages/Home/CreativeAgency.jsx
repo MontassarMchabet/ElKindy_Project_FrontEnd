@@ -12,6 +12,7 @@ import TestimonialArea from "../../components/Testimonial/TestimonialArea";
 import Layout from "../../layouts/Layout";
 import CounterAreaTwo from "../../components/CounterArea/CounterAreaTwo";
 import ProjectAreaThree from "../../components/Project/ProjectAreaThree";
+import EventsAreaThree from "../../components/Events/AllEvents/InnerProjectArea";
 import InnerServicesArea from "../../components/ServicesArea/InnerServicesArea";
 import HistoryArea from "../../components/HistoryArea/HistoryArea";
 import ProjectDetailsArea from "../../components/Project/ProjectDetailsArea";
@@ -30,6 +31,8 @@ const CreativeAgency = () => {
       <TeamAreaTwo />
       <br /><br /><br /><br />
       <ProjectAreaThree />
+      <br /><br /><br /><br />
+      <EventsAreaThree />
 
       <TestimonialArea />
       <BlogAreaThree />
