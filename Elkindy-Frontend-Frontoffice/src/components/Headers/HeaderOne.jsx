@@ -193,6 +193,18 @@ const HeaderOne = () => {
                             </li>
                           </ul>
                         </li>
+
+                        <Link to="/shop">
+                          <li
+                            className={cn(
+                              "menu-item",
+                              ["/shop"].includes(pathname) &&
+                              "active"
+                            )}>
+                            <a>Shop</a>
+                          </li>
+                        </Link>
+
                       </ul>
                     </div>
 

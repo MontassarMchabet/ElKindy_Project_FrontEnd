@@ -56,7 +56,8 @@ export default function Settings() {
 
 
     return (
-        <Box width="3200px" pt={{ base: "130px", md: "80px", xl: "80px" }}>
+        <div style={{ overflowX: 'hidden' }}>
+        <Box  width="3250px" pt={{ base: "130px", md: "80px", xl: "80px" }}>
             <SimpleGrid
                 mb='20px'
                 columns={{ sm: 1, md: 2 }}
@@ -76,6 +77,6 @@ export default function Settings() {
                 />
             </SimpleGrid>
         </Box>
-
+        </div>
     );
 }

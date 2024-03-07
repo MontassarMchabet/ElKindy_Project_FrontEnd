@@ -77,7 +77,7 @@ export default function ColumnsTable(props) {
         initialState,
     } = tableInstance;
     initialState.pageSize = 99;
-////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
     const textColor = useColorModeValue("secondaryGray.900", "white");
     const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
     const {
@@ -150,21 +150,21 @@ export default function ColumnsTable(props) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         console.log("Submitting form");
-        
-            try {
-                const response = await axios.post(
-                    "http://localhost:8080/api/product",
-                    formData
-                );
-                fetchData()
-                closeModalPro()
-                console.log(response.data);
-            } catch (error) {
-                console.error("Error registering product:", error);
-            }
-        
+
+        try {
+            const response = await axios.post(
+                "http://localhost:8080/api/product",
+                formData
+            );
+            fetchData()
+            closeModalPro()
+            console.log(response.data);
+        } catch (error) {
+            console.error("Error registering product:", error);
+        }
+
     };
 
     return (
@@ -222,20 +222,21 @@ export default function ColumnsTable(props) {
                                             onChange={handleChange}
                                         />
                                     </FormControl>
-                                    <FormControl>
-                                        <FormLabel>Description</FormLabel>
-                                        <Input type="text"
-                                            name="description"
-                                            value={formData.description}
+                                    <FormControl >
+                                        <FormLabel>Price</FormLabel>
+                                        <Input type="number"
+                                            name="price"
+                                            value={formData.price}
                                             onChange={handleChange}
                                         />
                                     </FormControl>
+
                                 </Grid>
                                 <FormControl mt={4}>
-                                    <FormLabel>Price</FormLabel>
-                                    <Input type="number"
-                                        name="price"
-                                        value={formData.price}
+                                    <FormLabel>Description</FormLabel>
+                                    <Input type="text"
+                                        name="description"
+                                        value={formData.description}
                                         onChange={handleChange}
                                     />
                                 </FormControl>
@@ -247,11 +248,12 @@ export default function ColumnsTable(props) {
                                         onChange={handleChange}
                                     />
                                 </FormControl>
-                                <FormControl mt={4}>
+                                <FormControl>
                                     <FormLabel>Category</FormLabel>
-                                    <Select>
-                                        <option name="category" value="book">book</option>
-                                        <option name="category" value="instrument">instument</option>
+                                    <Select name="category" value={formData.category} onChange={handleChange}>
+                                        <option selected disabled >-select category-</option>
+                                        <option value="book">Book</option>
+                                        <option value="instrument">Instument</option>
                                     </Select>
                                 </FormControl>
                                 <FormControl mt={4}>
@@ -283,9 +285,83 @@ export default function ColumnsTable(props) {
 
 
 
-                {/* ////////////////////////////////////////////////table////////////////////////////////////////////////////  */}
+            {/* ////////////////////////////////////////////////table////////////////////////////////////////////////////  */}
 
 
+            <Modal isOpen={isModalViewOpen} onClose={closeModalViewA}>
+                <ModalOverlay />
+                <ModalContent maxW={'800px'}>
+                    <ModalHeader>Product Information</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        {productInfo && (
+                            <>
+                                {productInfo.profilePicture}
+                                <Card mb={{ base: "0px", "2xl": "20px" }} {...rest}>
+                                    <Text
+                                        color={textColorPrimary}
+                                        fontWeight='bold'
+                                        fontSize='2xl'
+                                        mt='10px'
+                                        mb='4px'>
+                                        {productInfo.title}
+                                    </Text>
+                                    <SimpleGrid columns='2' gap='20px'>
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='price'
+                                            value={productInfo.price}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Description'
+                                            value={productInfo.description}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Quantity'
+                                            value={productInfo.quantity}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Category'
+                                            value={productInfo.category}
+                                        />
+                                    </SimpleGrid>
+                                </Card>
+                            </>
+                        )}
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
+
+
+            <AlertDialog
+                isOpen={isDeleteDialogOpen}
+                leastDestructiveRef={cancelRef}
+                onClose={cancelDelete}
+            >
+                <AlertDialogOverlay>
+                    <AlertDialogContent>
+                        <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                            Delete Product
+                        </AlertDialogHeader>
+
+                        <AlertDialogBody>
+                            Are you sure you want to delete this product?
+                        </AlertDialogBody>
+
+                        <AlertDialogFooter>
+                            <Button ref={cancelRef} onClick={cancelDelete}>
+                                Cancel
+                            </Button>
+                            <Button colorScheme="red" onClick={handleDelete} ml={3}>
+                                Delete
+                            </Button>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialogOverlay>
+            </AlertDialog>
 
 
             <Table {...getTableProps()} variant='simple' color='gray.500' mb='24px'>
@@ -362,32 +438,7 @@ export default function ColumnsTable(props) {
                                                 /*onClick={() => handleEdit(row.original)}*/
                                                 />
                                                 {/* Delete icon */}
-                                                <AlertDialog
-                                                    isOpen={isDeleteDialogOpen}
-                                                    leastDestructiveRef={cancelRef}
-                                                    onClose={cancelDelete}
-                                                >
-                                                    <AlertDialogOverlay>
-                                                        <AlertDialogContent>
-                                                            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                                                                Delete Product
-                                                            </AlertDialogHeader>
 
-                                                            <AlertDialogBody>
-                                                                Are you sure you want to delete this product?
-                                                            </AlertDialogBody>
-
-                                                            <AlertDialogFooter>
-                                                                <Button ref={cancelRef} onClick={cancelDelete}>
-                                                                    Cancel
-                                                                </Button>
-                                                                <Button colorScheme="red" onClick={handleDelete} ml={3}>
-                                                                    Delete
-                                                                </Button>
-                                                            </AlertDialogFooter>
-                                                        </AlertDialogContent>
-                                                    </AlertDialogOverlay>
-                                                </AlertDialog>
 
                                                 <DeleteIcon
                                                     w='20px'
@@ -406,52 +457,7 @@ export default function ColumnsTable(props) {
                                                     cursor="pointer"
                                                     onClick={() => handleView(row.original)}
                                                 />
-                                                <Modal isOpen={isModalViewOpen} onClose={closeModalViewA}>
-                                                    <ModalOverlay />
-                                                    <ModalContent maxW={'800px'}>
-                                                        <ModalHeader>Product Information</ModalHeader>
-                                                        <ModalCloseButton />
-                                                        <ModalBody>
-                                                            {productInfo && (
-                                                                <>
-                                                                    {productInfo.profilePicture}
-                                                                    <Card mb={{ base: "0px", "2xl": "20px" }} {...rest}>
-                                                                        <Text
-                                                                            color={textColorPrimary}
-                                                                            fontWeight='bold'
-                                                                            fontSize='2xl'
-                                                                            mt='10px'
-                                                                            mb='4px'>
-                                                                            {productInfo.title}
-                                                                        </Text>
-                                                                        <SimpleGrid columns='2' gap='20px'>
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='price'
-                                                                                value={productInfo.price}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Description'
-                                                                                value={productInfo.description}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Quantity'
-                                                                                value={productInfo.quantity}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Category'
-                                                                                value={productInfo.category}
-                                                                            />
-                                                                        </SimpleGrid>
-                                                                    </Card>
-                                                                </>
-                                                            )}
-                                                        </ModalBody>
-                                                    </ModalContent>
-                                                </Modal>
+
                                             </Flex>
                                         );
                                     }
