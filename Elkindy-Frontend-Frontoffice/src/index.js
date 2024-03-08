@@ -12,7 +12,6 @@ import "./styles/slick.css";
 import "./styles/default.css";
 import "./styles/style.css";
 import "./styles/responsive.css";
-
 import "bootstrap/dist/js/bootstrap.bundle.min";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

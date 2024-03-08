@@ -17,11 +17,16 @@ import {
 // Admin Imports
 import MainDashboard from "views/admin/default";
 import NFTMarketplace from "views/admin/marketplace";
+import Events from "views/admin/events";
 import Profile from "views/admin/profile";
 import DataTables from "views/admin/dataTables";
 import RTL from "views/admin/rtl";
 import UserTables from "views/admin/userTables";
 import ExamTables from "views/admin/examTables";
+
+import Tickets from "views/admin/tickets";
+
+import productTable from "views/admin/productTable";
 
 // Auth Imports
 import SignInCentered from "views/auth/signIn";
@@ -58,6 +63,7 @@ const routes = [
     secondary: true,
   },
   {
+
     name: "Exams",
     layout: "/admin",
     path: "/exams",
@@ -65,6 +71,27 @@ const routes = [
       <Icon as={MdAddTask} width='20px' height='20px' color='inherit' />
     ),
     component: ExamTables,
+
+    name: "Evenements ElKindy",
+    layout: "/admin",
+    path: "/event",
+    icon: (
+      <Icon
+        as={MdOutlineShoppingCart}
+        width='20px'
+        height='20px'
+        color='inherit'
+      />
+    ),
+    component: Events,
+    secondary: true,
+
+    name: "Products",
+    layout: "/admin",
+    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+    path: "/products",
+    component: productTable,
+
   },
   {
     name: "Data Tables",
@@ -81,27 +108,12 @@ const routes = [
     component: UserTables,
   },
   {
-    name: "Sign In",
-    layout: "/auth",
-    path: "/sign-in",
-    icon: <Icon as={MdLock} width='20px' height='20px' color='inherit' />,
-    component: SignInCentered,
+    
+    layout: "/admin",
+    path: "/:eventId/tickets",
+    component: Tickets,
   },
-  {
-    name: "Sign Up",
-    layout: "/auth",
-    path: "/sign-up",
-    icon: <Icon as={MdLock} width='20px' height='20px' color='inherit' />,
-    component: SignUpCentered,
-  },
-  
-  /*{
-    name: "RTL Admin",
-    layout: "/rtl",
-    path: "/rtl-default",
-    icon: <Icon as={MdHome} width='20px' height='20px' color='inherit' />,
-    component: RTL,
-  },*/
+
 ];
 
 export default routes;

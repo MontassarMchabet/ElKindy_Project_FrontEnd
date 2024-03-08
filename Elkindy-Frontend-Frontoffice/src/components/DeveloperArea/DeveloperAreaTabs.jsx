@@ -1,9 +1,37 @@
 import React from "react";
+import { useState, useEffect } from "react";
+import { jwtDecode } from 'jwt-decode';
+import api from '../../services/api';
+import Cookies from 'js-cookie';
 
 const DeveloperAreaTabs = () => {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const storedToken = Cookies.get('token');
+        const storedRefreshToken = Cookies.get('refreshToken');
+        const decodedToken = jwtDecode(storedToken);
+        const { userId, role } = decodedToken;
+
+        const response = await api.get(`http://localhost:9090/api/auth/user/${userId}`);
+        setUser(response.data);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+    fetchUserData();
+  }, []);
+
   return (
     <>
-      <ul className="nav nav-tabs" id="myTab" role="tablist">
+      <img
+        src={`${user?.profilePicture}`}
+        style={{ boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)", width: "200px", height: "200px", borderRadius: "50%", marginLeft: "230px", marginBottom: "15px" }}
+      />
+
+      <ul className="nav nav-tabs" id="myTab" role="tablist" style={{ marginTop: "30px" }}>
         <li className="nav-item" role="presentation">
           <button
             className="nav-link active"
@@ -13,51 +41,19 @@ const DeveloperAreaTabs = () => {
             type="button"
             role="tab"
             aria-controls="details-tab-pane"
-            aria-selected="true"
-          >
+            aria-selected="true">
             My Details
-          </button>
-        </li>
-
-        <li className="nav-item" role="presentation">
-          <button
-            className="nav-link"
-            id="awards-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#awards-tab-pane"
-            type="button"
-            role="tab"
-            aria-controls="awards-tab-pane"
-            aria-selected="false"
-          >
-            My Awards
-          </button>
-        </li>
-        
-        <li className="nav-item" role="presentation">
-          <button
-            className="nav-link"
-            id="skils-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#skils-tab-pane"
-            type="button"
-            role="tab"
-            aria-controls="skils-tab-pane"
-            aria-selected="false"
-          >
-            My Skils
           </button>
         </li>
       </ul>
 
-      <div className="tab-content" id="myTabContent">
+      <div className="tab-content" id="myTabContent" >
         <div
           className="tab-pane fade show active"
           id="details-tab-pane"
           role="tabpanel"
           aria-labelledby="details-tab"
-          tabIndex="0"
-        >
+          tabIndex="0">
           <div className="developer-info-wrap">
             <div className="row">
               <div className="col-md-6">
@@ -67,8 +63,8 @@ const DeveloperAreaTabs = () => {
                       <img src="/img/icon/developer_icon01.png" alt="" />
                     </div>
                     <div className="content">
-                      <span>Name:</span>
-                      <p>Jams Robot</p>
+                      <span>Full name:</span>
+                      <p>{`${user?.name} ${user?.lastname}`}</p>
                     </div>
                   </li>
                   <li>
@@ -77,29 +73,7 @@ const DeveloperAreaTabs = () => {
                     </div>
                     <div className="content">
                       <span>Email:</span>
-                      <p>Jams Robot</p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="icon">
-                      <img src="/img/icon/developer_icon03.png" alt="" />
-                    </div>
-                    <div className="content">
-                      <span>Language:</span>
-                      <p>Jams Robot</p>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-              <div className="col-md-6">
-                <ul className="list-wrap">
-                  <li>
-                    <div className="icon">
-                      <img src="/img/icon/developer_icon04.png" alt="" />
-                    </div>
-                    <div className="content">
-                      <span>Phone No:</span>
-                      <p>8 (495) 989—20—11</p>
+                      <p>{`${user?.email}`}</p>
                     </div>
                   </li>
                   <li>
@@ -107,73 +81,8 @@ const DeveloperAreaTabs = () => {
                       <img src="/img/icon/developer_icon05.png" alt="" />
                     </div>
                     <div className="content">
-                      <span>Address:</span>
-                      <p>Ranelagh Place, L3 5UL, England</p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="icon">
-                      <img src="/img/icon/developer_icon06.png" alt="" />
-                    </div>
-                    <div className="content">
-                      <span>Nationality:</span>
-                      <p>English, Russian, Frisian</p>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          className="tab-pane fade"
-          id="awards-tab-pane"
-          role="tabpanel"
-          aria-labelledby="awards-tab"
-          tabIndex="0"
-        >
-          <div className="developer-info-wrap">
-            <div className="row">
-              <div className="col-md-6">
-                <ul className="list-wrap">
-                  <li>
-                    <div className="icon">
-                      <img src="/img/icon/developer_icon01.png" alt="" />
-                    </div>
-                    <div className="content">
-                      <span>Name:</span>
-                      <p>Jams Robot</p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="icon">
-                      <img src="/img/icon/developer_icon02.png" alt="" />
-                    </div>
-                    <div className="content">
-                      <span>Email:</span>
-                      <p>Jams Robot</p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="icon">
-                      <img src="/img/icon/developer_icon03.png" alt="" />
-                    </div>
-                    <div className="content">
-                      <span>Language:</span>
-                      <p>Jams Robot</p>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-              <div className="col-md-6">
-                <ul className="list-wrap">
-                  <li>
-                    <div className="icon">
-                      <img src="/img/icon/developer_icon04.png" alt="" />
-                    </div>
-                    <div className="content">
-                      <span>Phone No:</span>
-                      <p>8 (495) 989—20—11</p>
+                      <span>Birth date:</span>
+                      <p>{user?.dateOfBirth ? user.dateOfBirth.substring(0, 10) : ''}</p>
                     </div>
                   </li>
                   <li>
@@ -181,73 +90,8 @@ const DeveloperAreaTabs = () => {
                       <img src="/img/icon/developer_icon05.png" alt="" />
                     </div>
                     <div className="content">
-                      <span>Address:</span>
-                      <p>Ranelagh Place, L3 5UL, England</p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="icon">
-                      <img src="/img/icon/developer_icon06.png" alt="" />
-                    </div>
-                    <div className="content">
-                      <span>Nationality:</span>
-                      <p>English, Russian, Frisian</p>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          className="tab-pane fade"
-          id="skils-tab-pane"
-          role="tabpanel"
-          aria-labelledby="skils-tab"
-          tabIndex="0"
-        >
-          <div className="developer-info-wrap">
-            <div className="row">
-              <div className="col-md-6">
-                <ul className="list-wrap">
-                  <li>
-                    <div className="icon">
-                      <img src="/img/icon/developer_icon01.png" alt="" />
-                    </div>
-                    <div className="content">
-                      <span>Name:</span>
-                      <p>Jams Robot</p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="icon">
-                      <img src="/img/icon/developer_icon02.png" alt="" />
-                    </div>
-                    <div className="content">
-                      <span>Email:</span>
-                      <p>Jams Robot</p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="icon">
-                      <img src="/img/icon/developer_icon03.png" alt="" />
-                    </div>
-                    <div className="content">
-                      <span>Language:</span>
-                      <p>Jams Robot</p>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-              <div className="col-md-6">
-                <ul className="list-wrap">
-                  <li>
-                    <div className="icon">
-                      <img src="/img/icon/developer_icon04.png" alt="" />
-                    </div>
-                    <div className="content">
-                      <span>Phone No:</span>
-                      <p>8 (495) 989—20—11</p>
+                      <span>Instrument:</span>
+                      <p>{`${user?.instrument}`}</p>
                     </div>
                   </li>
                   <li>
@@ -255,8 +99,43 @@ const DeveloperAreaTabs = () => {
                       <img src="/img/icon/developer_icon05.png" alt="" />
                     </div>
                     <div className="content">
-                      <span>Address:</span>
-                      <p>Ranelagh Place, L3 5UL, England</p>
+                      <span>Father's Occupation:</span>
+                      <p>{`${user?.fatherOccupation}`}</p>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="icon">
+                      <img src="/img/icon/developer_icon05.png" alt="" />
+                    </div>
+                    <div className="content">
+                      <span>School Grade:</span>
+                      <p>{`${user?.schoolGrade}`}</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+
+
+              <div className="col-md-6">
+                <ul className="list-wrap">
+                  <li>
+                    <div className="icon">
+                      <img src="/img/icon/developer_icon03.png" alt="" />
+                    </div>
+                    <div className="content">
+                      <span>Username</span>
+                      <p>{`${user?.username}`}</p>
+                    </div>
+                  </li>
+
+                  <li>
+                    <div className="icon">
+                      <img src="/img/icon/developer_icon04.png" alt="" />
+                    </div>
+                    <div className="content">
+                      <span>Parent Phone:</span>
+                      <p>{`${user?.parentPhoneNumber}`}</p>
                     </div>
                   </li>
                   <li>
@@ -264,8 +143,26 @@ const DeveloperAreaTabs = () => {
                       <img src="/img/icon/developer_icon06.png" alt="" />
                     </div>
                     <div className="content">
-                      <span>Nationality:</span>
-                      <p>English, Russian, Frisian</p>
+                      <span>Parent CIN:</span>
+                      <p>{`${user?.parentCinNumber}`}</p>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="icon">
+                      <img src="/img/icon/developer_icon05.png" alt="" />
+                    </div>
+                    <div className="content">
+                      <span>Other Instruments:</span>
+                      <p>{`${user?.otherInstruments}`}</p>
+                    </div>
+                  </li>
+                  <li>
+                    <div className="icon">
+                      <img src="/img/icon/developer_icon05.png" alt="" />
+                    </div>
+                    <div className="content">
+                      <span>Mother's Occupation:</span>
+                      <p>{`${user?.motherOccupation}`}</p>
                     </div>
                   </li>
                 </ul>

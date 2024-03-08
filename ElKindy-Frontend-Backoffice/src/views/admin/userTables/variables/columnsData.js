@@ -17,59 +17,145 @@ export const columnsDataComplex = [
   },
 ];
 
-export const adminsData = [
+export  const adminsData = [
   {
     Header: "NAME",
     accessor: "name",
   },
   {
-    Header: "STATUS",
-    accessor: "status",
+    Header: "Lastname",
+    accessor: "lastname",
   },
   {
-    Header: "DATE",
-    accessor: "date",
+    Header: "Username",
+    accessor: "username",
   },
   {
-    Header: "PROGRESS",
-    accessor: "progress",
+    Header: "Email",
+    accessor: "email",
+  },
+  /*{
+    Header: "Password",
+    accessor: "password",
+  },*/
+  {
+    Header: "CIN",
+    accessor: "cinNumber",
+  },
+  {
+    Header: "Phone number",
+    accessor: "phoneNumber",
+  },
+  {
+    Header: "Birth date",
+    accessor: "dateOfBirth",
+  },
+  {
+    Header: "Profile picture",
+    accessor: "profilePicture",
+  },
+  {
+    Header: "Verified",
+    accessor: "isEmailVerified",
+  },
+  {
+    Header: "ACTIONS",
   },
 ];
 
-export const clientData = [
+
+export const profsData = [
   {
     Header: "NAME",
     accessor: "name",
   },
   {
-    Header: "STATUS",
-    accessor: "status",
+    Header: "Lastname",
+    accessor: "lastname",
   },
   {
-    Header: "DATE",
-    accessor: "date",
+    Header: "Username",
+    accessor: "username",
   },
   {
-    Header: "PROGRESS",
-    accessor: "progress",
+    Header: "Email",
+    accessor: "email",
+  },
+  /*{
+    Header: "Password",
+    accessor: "password",
+  },*/
+  {
+    Header: "CIN",
+    accessor: "cinNumber",
+  },
+  {
+    Header: "Phone number",
+    accessor: "phoneNumber",
+  },
+  {
+    Header: "Birth date",
+    accessor: "dateOfBirth",
+  },
+  {
+    Header: "Profile picture",
+    accessor: "profilePicture",
+  },
+  {
+    Header: "Verified",
+    accessor: "isEmailVerified",
+  },
+  {
+    Header: "ACTIONS",
   },
 ];
 
-export const profData = [
+export const clientsData = [
   {
     Header: "NAME",
     accessor: "name",
   },
   {
-    Header: "STATUS",
-    accessor: "status",
+    Header: "Lastname",
+    accessor: "lastname",
   },
   {
-    Header: "DATE",
-    accessor: "date",
+    Header: "Username",
+    accessor: "username",
   },
   {
-    Header: "PROGRESS",
-    accessor: "progress",
+    Header: "Email",
+    accessor: "email",
+  },
+  /*{
+    Header: "Password",
+    accessor: "password",
+  },*/
+  {
+    Header: "Parent phone Number",
+    accessor: "parentPhoneNumber",
+  },
+  {
+    Header: "Parent cin",
+    accessor: "parentCinNumber",
+  },
+  {
+    Header: "Subscribed",
+    accessor: "isSubscribed",
+  },
+  {
+    Header: "Birth date",
+    accessor: "dateOfBirth",
+  },
+  {
+    Header: "Profile picture",
+    accessor: "profilePicture",
+  },
+  {
+    Header: "Verified",
+    accessor: "isEmailVerified",
+  },
+  {
+    Header: "ACTIONS",
   },
 ];
