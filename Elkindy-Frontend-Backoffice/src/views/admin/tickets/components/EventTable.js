@@ -78,7 +78,7 @@ export default function ColumnsTable(props) {
     const handleSaveEdit = async () => {
         try {
             // Effectuer la requête API pour mettre à jour le cours avec les nouvelles données
-            await axios.put(`http://localhost:8080/event/update/${editedEvent._id}`, editedEvent);
+            await axios.put(`http://localhost:9090/event/update/${editedEvent._id}`, editedEvent);
             //console.log (editedEvent._id,"aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
             console.log("Course updated successfully");
             setIsEditModalOpen(false); // Fermer la modal d'édition après la sauvegarde
@@ -97,7 +97,7 @@ export default function ColumnsTable(props) {
     //         return;
     //     }
     //     try {
-    //         const response = await axios.get(`http://localhost:8080/event/${eventId}/tickets`); // Utilisez eventInfo._id
+    //         const response = await axios.get(`http://localhost:9090/event/${eventId}/tickets`); // Utilisez eventInfo._id
 
     //         const data = await response.json();
     //         setTickets(data);
@@ -111,7 +111,7 @@ export default function ColumnsTable(props) {
             return;
         }
         try {
-            const response = await axios.get(`http://localhost:8080/event/${eventId}/tickets`); // Utilisez eventInfo._id
+            const response = await axios.get(`http://localhost:9090/event/${eventId}/tickets`); // Utilisez eventInfo._id
 
             const data = response.data; // Accédez directement aux données de la réponse
             //setTickets(data);
@@ -243,7 +243,7 @@ export default function ColumnsTable(props) {
         if (isValid) {
             try {
                 const response = await axios.post(
-                    "http://localhost:8080/event/add",
+                    "http://localhost:9090/event/add",
                     formData
                 );
                 fetchData()
@@ -258,8 +258,8 @@ export default function ColumnsTable(props) {
 
     //   const handleTicketsClick = async () => {
     //     try {
-    //         const response = await fetch(`http://localhost:8080/event/${eventId._id}/tickets`);
-    //         //const response = await axios.(`http://localhost:8080/event/${eventId}/tickets`);
+    //         const response = await fetch(`http://localhost:9090/event/${eventId._id}/tickets`);
+    //         //const response = await axios.(`http://localhost:9090/event/${eventId}/tickets`);
     //         if (!response.ok) {
     //             throw new Error('Erreur lors de la récupération des tickets');
     //         }
@@ -277,7 +277,7 @@ export default function ColumnsTable(props) {
     // const [eventId, setEventId] = useState({});
     //     const handleTicketsClick = async () => {
     //         try {
-    //             const response = await axios.get(`http://localhost:8080/event/${eventId._id}/tickets`);
+    //             const response = await axios.get(`http://localhost:9090/event/${eventId._id}/tickets`);
     //             if (!response.ok) {
     //                 throw new Error('Erreur lors de la récupération des tickets');
     //             }

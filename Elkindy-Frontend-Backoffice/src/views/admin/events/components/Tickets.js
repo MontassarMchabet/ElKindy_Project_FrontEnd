@@ -73,7 +73,7 @@ export function Tickets(props) {
     useEffect(() => {
         const fetchTickets = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/event/${eventId}/tickets`);
+                const response = await axios.get(`http://localhost:9090/event/${eventId}/tickets`);
                 setTickets(response.data);
             } catch (error) {
                 console.error('Error fetching tickets:', error);
@@ -226,7 +226,7 @@ export default Tickets;
 //     useEffect(() => {
 //         const fetchTickets = async () => {
 //             try {
-//                 const response = await axios.get(`http://localhost:8080/event/${eventId}/tickets`); // Effectuer une requête GET pour récupérer les tickets
+//                 const response = await axios.get(`http://localhost:9090/event/${eventId}/tickets`); // Effectuer une requête GET pour récupérer les tickets
 //                 setTickets(response.data); // Mettre à jour l'état avec les tickets récupérés depuis la réponse
 //             } catch (error) {
 //                 console.error('Error fetching tickets:', error); // Afficher une erreur si la requête échoue

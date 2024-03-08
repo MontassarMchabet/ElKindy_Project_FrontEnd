@@ -14,7 +14,7 @@ export default function ColumnsTable(props) {
         const handleSaveEdit = async () => {
             try {
                 // Effectuer la requête API pour mettre à jour le event avec les nouvelles données
-                await axios.put(`http://localhost:8080/event/update/${editedEvent._id}`, editedEvent);
+                await axios.put(`http://localhost:9090/event/update/${editedEvent._id}`, editedEvent);
                 //console.log (editedEvent._id,"aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
                 console.log("Course updated successfully");
                 setIsEditModalOpen(false); // Fermer la modal d'édition après la sauvegarde

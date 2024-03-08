@@ -82,7 +82,7 @@
 //     // useEffect(() => {
 //     //     const fetchComments = async () => {
 //     //         try {
-//     //             const response = await axios.get(`http://localhost:8080/event/${eventId}/comments`);
+//     //             const response = await axios.get(`http://localhost:9090/event/${eventId}/comments`);
 //     //             setComments(response.data);
 //     //         } catch (error) {
 //     //             console.error('Error fetching comments:', error);
@@ -94,7 +94,7 @@
 
 //     const fetchComments = async () => {
 //         try {
-//             const response = await axios.get(`http://localhost:8080/event/${eventId}/comments`);
+//             const response = await axios.get(`http://localhost:9090/event/${eventId}/comments`);
 //             setComments(response.data);
 //         } catch (error) {
 //             console.error('Erreur lors de la récupération des commentaires :', error);
@@ -184,7 +184,7 @@
 //         if (isValid) {
 //           try {
 //             const response = await axios.post(
-//               `http://localhost:8080/comment/add/event/${eventId}`,
+//               `http://localhost:9090/comment/add/event/${eventId}`,
 //               formData
 //             );
 //             fetchComments()
@@ -523,7 +523,7 @@ export default function ColumnsTable(props) {
     // useEffect(() => {
     //     const fetchComments = async () => {
     //         try {
-    //             const response = await axios.get(`http://localhost:8080/event/${eventId}/comments`);
+    //             const response = await axios.get(`http://localhost:9090/event/${eventId}/comments`);
     //             setComments(response.data);
     //         } catch (error) {
     //             console.error('Error fetching comments:', error);
@@ -535,7 +535,7 @@ export default function ColumnsTable(props) {
 
     const fetchComments = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/event/${eventId}/comments`);
+            const response = await axios.get(`http://localhost:9090/event/${eventId}/comments`);
             setComments(response.data);
         } catch (error) {
             console.error('Erreur lors de la récupération des commentaires :', error);
@@ -625,7 +625,7 @@ export default function ColumnsTable(props) {
         if (isValid) {
           try {
             const response = await axios.post(
-              `http://localhost:8080/comment/add/event/${eventId}`,
+              `http://localhost:9090/comment/add/event/${eventId}`,
               formData
             );
             fetchComments()

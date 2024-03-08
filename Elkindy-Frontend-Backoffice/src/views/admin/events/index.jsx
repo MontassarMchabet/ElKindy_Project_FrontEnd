@@ -22,7 +22,7 @@ export default function Settings() {
 
     const fetchData = async () => {
         try {
-            const eventResponse = await axios.get('http://localhost:8080/event/all');
+            const eventResponse = await axios.get('http://localhost:9090/event/all');
             seteventsData(eventResponse.data);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -35,7 +35,7 @@ export default function Settings() {
 
     // const fetchDataCOmments = async () => {
     //     try {
-    //         const commentResponse = await axios.get('http://localhost:8080/comment/all');
+    //         const commentResponse = await axios.get('http://localhost:9090/comment/all');
     //         seteventsData(commentResponse.data);
     //     } catch (error) {
     //         console.error('Error fetching data:', error);
@@ -51,7 +51,7 @@ export default function Settings() {
 
     // const fetchDataTickets = async () => {
     //     try {
-    //         const ticketsResponse = await axios.get('http://localhost:8080/tickets');
+    //         const ticketsResponse = await axios.get('http://localhost:9090/tickets');
     //         seteventsData(ticketsResponse.data);
     //     } catch (error) {
     //         console.error('Error fetching data:', error);
@@ -70,7 +70,7 @@ export default function Settings() {
     
     //     const fetchComments = async () => {
     //         try {
-    //             const response = await axios.get(`http://localhost:8080/event/${eventId}/comments`);
+    //             const response = await axios.get(`http://localhost:9090/event/${eventId}/comments`);
     //             setCommentsData(response.data);
     //         } catch (error) {
     //             console.error('Error fetching comments:', error);
@@ -89,7 +89,7 @@ export default function Settings() {
     const handleDelete = async () => {
         setIsDeleteDialogOpen(false);
         try {
-            await axios.delete(`http://localhost:8080/event/delete/${deletingId}`);
+            await axios.delete(`http://localhost:9090/event/delete/${deletingId}`);
             console.log("Event deleted successfully");
             fetchData();
         } catch (error) {
@@ -100,7 +100,7 @@ export default function Settings() {
     const handleDeleteComments= async () => {
         setIsDeleteDialogOpen(false);
         try {
-            await axios.delete(`http://localhost:8080/comment/delete/${deletingId}`);
+            await axios.delete(`http://localhost:9090/comment/delete/${deletingId}`);
             console.log("Comment deleted successfully");
             fetchData();
         } catch (error) {
