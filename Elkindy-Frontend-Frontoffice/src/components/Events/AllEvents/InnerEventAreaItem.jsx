@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import cn from "classnames";
 
-const InnerProjectAreaItem = ({ item }) => {
+const InnerEventAreaItem = ({ item }) => {
   return (
     <>
       <div className={cn("inner-project-item horizoital-item")}>
@@ -38,4 +38,4 @@ const InnerProjectAreaItem = ({ item }) => {
   );
 };
 
-export default InnerProjectAreaItem;
+export default InnerEventAreaItem;

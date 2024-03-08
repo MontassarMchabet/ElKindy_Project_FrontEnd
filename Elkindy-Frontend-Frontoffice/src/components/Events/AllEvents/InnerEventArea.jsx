@@ -1,11 +1,12 @@
 import React from "react";
-import InnerProjectAreaItem from "./InnerProjectAreaItem";
+import InnerEventAreaItem from "./InnerEventAreaItem";
 import SlickSlider from "../../SlickSlider/SlickSlider";
 
 import { useSlickArrows } from "../../../lib/hooks/useSlickArrows";
 import cn from "classnames";
+import { Link } from "react-router-dom";
 
-const InnerProjectArea = () => {
+const InnerEventArea = () => {
   const inner_projects = [
     {
       url: "/project-details",
@@ -125,11 +126,10 @@ const InnerProjectArea = () => {
       <div className="container">
         <div className="row align-items-center">
           <div className="col-md-8">
-            <div className="section-title title-style-two mb-70">
-              <span className="sub-title">My Latest Project</span>
+            <div className="section-title title-style-two ">
+              <span className="sub-title">Our Events</span>
               <h2 className="title">
-                Our Best Professional <br />
-                UI/UX Design
+                Latest Events
               </h2>
             </div>
           </div>
@@ -159,15 +159,22 @@ const InnerProjectArea = () => {
                     index % 2 === 0 ? "inner-two-even" : "inner-two-odd"
                   )}
                 >
-                  <InnerProjectAreaItem item={x} />
+                  <InnerEventAreaItem item={x} />
                 </div>
+                
               ))}
             </SlickSlider>
           </div>
+          <div className="read-more-btn text-center mt-30">
+          <Link to="/events" className="btn">
+            Read More <span></span>
+          </Link>
         </div>
+        </div>
+        
       </div>
     </section>
   );
 };
 
-export default InnerProjectArea;
+export default InnerEventArea;
