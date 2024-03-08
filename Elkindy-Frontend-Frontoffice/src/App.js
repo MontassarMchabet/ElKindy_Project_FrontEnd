@@ -15,6 +15,7 @@ import BlogPage from "./pages/Blog/BlogPage";
 import BlogDetailsPage from "./pages/Blog/BlogDetailsPage";
 import EventsPage from "./pages/Events/EventsPage.jsx";
 import AnimatedCursor from "react-animated-cursor";
+
 import Home from "./pages/shop/pages/Home";
 import OurStore from "./pages/shop/pages/OurStore";
 import SingleProduct from "./pages/shop/pages/SingleProduct";
@@ -83,6 +84,7 @@ function App() {
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog-details" element={<BlogDetailsPage />} />
 
+
         <Route path="/events" element={<EventsPage />} />
 
         <Route path="/shop" element={<Home />} />
@@ -93,7 +95,7 @@ function App() {
 
         {/* <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog-details" element={<BlogDetailsPage />} /> */}
- 
+
       </Routes>
     </>
   );

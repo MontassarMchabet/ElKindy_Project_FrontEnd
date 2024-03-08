@@ -122,9 +122,6 @@ const HeaderOne = () => {
                         <li className={cn(isActiveClassName("/about-us"))}>
                           <Link to="/about-us">About Us</Link>
                         </li>
-                        
-                        
-
                         <li
                           className={cn(
                             "menu-item-has-children",
