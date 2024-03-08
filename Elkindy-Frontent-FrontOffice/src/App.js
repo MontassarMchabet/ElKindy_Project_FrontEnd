@@ -15,6 +15,7 @@ import BlogPage from "./pages/Blog/BlogPage";
 import BlogDetailsPage from "./pages/Blog/BlogDetailsPage";
 import AnimatedCursor from "react-animated-cursor";
 
+///testttt
 function App() {
   useEffect(() => {
     const wow = new WOW({
