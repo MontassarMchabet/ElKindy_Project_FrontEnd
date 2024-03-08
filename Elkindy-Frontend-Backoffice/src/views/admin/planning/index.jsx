@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import PlanningTable from "./components/planningTable"; // Assurez-vous d'avoir un composant PlanningTable correspondant
-import  PlanningData from "./variables/planningData";
+import PlanningData from "./variables/planningData";
+
 export default function Planning() {
     const [plannings, setPlannings] = useState([]);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -15,9 +16,8 @@ export default function Planning() {
     }, []);
 
     const fetchPlannings = async () => {
-        
         try {
-            const response = await axios.get('http://localhost:8080/api/plannings/getall');
+            const response = await axios.get('http://localhost:8080/api/planning/getall');
             setPlannings(response.data);
         } catch (error) {
             console.error('Error fetching plannings:', error);
@@ -60,15 +60,16 @@ export default function Planning() {
             <PlanningTable
                 columnsData={PlanningData}
                 tableData={plannings}
+                handleDelete={handleDelete}
+                cancelDelete={cancelDelete}
+                cancelRef={cancelRef}
+                confirmDelete={confirmDelete}
+                isDeleteDialogOpen={isDeleteDialogOpen}
                 isEditModalOpen={isEditModalOpen}
+                setIsEditModalOpen={setIsEditModalOpen}
                 editedPlanning={editedPlanning}
                 openEditModal={openEditModal}
                 closeEditModal={closeEditModal}
-                confirmDelete={confirmDelete}
-                cancelDelete={cancelDelete}
-                isDeleteDialogOpen={isDeleteDialogOpen}
-                handleDelete={handleDelete}
-                cancelRef={cancelRef}
                 fetchData={fetchPlannings} // Si vous avez besoin de rafraîchir les données après une action
             />
         </div>

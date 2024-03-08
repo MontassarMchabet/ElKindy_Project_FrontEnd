@@ -168,7 +168,7 @@ export default function ColumnsTable(props) {
         }
 
         try {
-            const emailResponse = await axios.get(`http://localhost:8080/api/auth/check/email/${formData.email}`);
+            const emailResponse = await axios.get(`http://localhost:9090/api/auth/check/email/${formData.email}`);
             if (emailResponse.data.exists) {
                 errors.email = 'Email already in use';
             }
@@ -177,7 +177,7 @@ export default function ColumnsTable(props) {
         }
 
         try {
-            const usernameResponse = await axios.get(`http://localhost:8080/api/auth/check/username/${formData.username}`);
+            const usernameResponse = await axios.get(`http://localhost:9090/api/auth/check/username/${formData.username}`);
             if (usernameResponse.data.exists) {
                 errors.username = 'Username already taken';
             }
@@ -186,7 +186,7 @@ export default function ColumnsTable(props) {
         }
 
         try {
-            const cinResponse = await axios.get(`http://localhost:8080/api/auth/check/cin/${formData.cinNumber}`);
+            const cinResponse = await axios.get(`http://localhost:9090/api/auth/check/cin/${formData.cinNumber}`);
             if (cinResponse.data.exists) {
                 errors.cinNumber = 'CIN is invalid';
             }
@@ -195,7 +195,7 @@ export default function ColumnsTable(props) {
         }
 
         try {
-            const phoneResponse = await axios.get(`http://localhost:8080/api/auth/check/phone/${formData.phoneNumber}`);
+            const phoneResponse = await axios.get(`http://localhost:9090/api/auth/check/phone/${formData.phoneNumber}`);
             if (phoneResponse.data.exists) {
                 errors.phoneNumber = 'Phone number is invalid';
             }
@@ -214,7 +214,7 @@ export default function ColumnsTable(props) {
         if (isValid) {
             try {
                 const response = await axios.post(
-                    "http://localhost:8080/api/auth/registerProf",
+                    "http://localhost:9090/api/auth/registerProf",
                     formData
                 );
                 fetchData()

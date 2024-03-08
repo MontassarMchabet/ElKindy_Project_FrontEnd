@@ -60,8 +60,8 @@ function SignIn() {
     const isEmail = /\S+@\S+\.\S+/.test(email);
     try {
       const response = isEmail
-        ? await axios.post('http://localhost:8080/api/auth/loginEmail', { email, password })
-        : await axios.post('http://localhost:8080/api/auth/loginUsername', { username: email, password });
+        ? await axios.post('http://localhost:9090/api/auth/loginEmail', { email, password })
+        : await axios.post('http://localhost:9090/api/auth/loginUsername', { username: email, password });
 
       const { token, username } = response.data;
       localStorage.setItem('token', token);
@@ -76,7 +76,7 @@ function SignIn() {
 
   const handleUserRole = async (username) => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/auth/check/username/${username}`);
+      const response = await axios.get(`http://localhost:9090/api/auth/check/username/${username}`);
       const { role } = response.data;
 
       if (role === 'admin') {

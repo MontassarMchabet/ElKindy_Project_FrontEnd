@@ -17,7 +17,7 @@ import DataTables from "views/admin/dataTables";
 import RTL from "views/admin/rtl";
 import UserTables from "views/admin/userTables";
 import Courses from "views/admin/courses";
-
+import Scheduling from "views/admin/Scheduling";
 // Auth Imports
 import SignInCentered from "views/auth/signIn";
 import SignUpCentered from "views/auth/signUp";
@@ -69,11 +69,18 @@ const routes = [
   },
   
   {
-    name: "Course Tables",
+    name: "Courses Tables",
     layout: "/admin",
     icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
     path: "/course",
     component: Courses,
+  },
+  {
+    name: "Schedule",
+    layout: "/admin",
+    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+    path: "/schedule",
+    component: Scheduling,
   },
 ];
 

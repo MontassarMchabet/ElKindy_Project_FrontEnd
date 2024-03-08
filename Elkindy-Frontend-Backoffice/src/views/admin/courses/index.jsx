@@ -17,9 +17,9 @@ export default function Settings() {
 
     const fetchData = async () => {
         try {
-            const CourseResponse = await axios.get('http://localhost:8080/api/Course/getall');
+            const CourseResponse = await axios.get('http://localhost:9090/api/Course/getall');
             setCoursesData(CourseResponse.data);
-            const RoomResponse = await axios.get('http://localhost:8080/api/Room/getall');
+            const RoomResponse = await axios.get('http://localhost:9090/api/Room/getall');
             setRoomData(RoomResponse.data);
             
         } catch (error) {
@@ -56,7 +56,7 @@ export default function Settings() {
     const handleDelete = async () => {
         setIsCourseDeleteDialogOpen(false);
         try {
-            await axios.delete(`http://localhost:8080/api/Course/delete/${deletingUserId}`);
+            await axios.delete(`http://localhost:9090/api/Course/delete/${deletingUserId}`);
             console.log("Course deleted successfully");
             setIsCourseEditModalOpen(false);
             fetchData();
@@ -70,7 +70,7 @@ export default function Settings() {
     const handleDeleteRoom = async () => {
         setIsRoomDeleteDialogOpen(false);
         try {
-            await axios.delete(`http://localhost:8080/api/Room/delete/${deletingRoomId}`);
+            await axios.delete(`http://localhost:9090/api/Room/delete/${deletingRoomId}`);
             console.log("Course deleted successfully");
             setIsRoomEditModalOpen(false);
             fetchData();

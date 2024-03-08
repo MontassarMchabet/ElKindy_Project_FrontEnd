@@ -17,11 +17,11 @@ export default function Settings() {
 
     const fetchData = async () => {
         try {
-            const adminResponse = await axios.get('http://localhost:8080/api/auth/admins');
+            const adminResponse = await axios.get('http://localhost:9090/api/auth/admins');
             setAdminsData(adminResponse.data);
-            const clientResponse = await axios.get('http://localhost:8080/api/auth/clients');
+            const clientResponse = await axios.get('http://localhost:9090/api/auth/clients');
             setClientsData(clientResponse.data);
-            const profResponse = await axios.get('http://localhost:8080/api/auth/profs');
+            const profResponse = await axios.get('http://localhost:9090/api/auth/profs');
             setProfsData(profResponse.data);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -43,7 +43,7 @@ export default function Settings() {
     const handleDelete = async () => {
         setIsDeleteDialogOpen(false);
         try {
-            await axios.delete(`http://localhost:8080/api/auth/deleteUser/${deletingUserId}`);
+            await axios.delete(`http://localhost:9090/api/auth/deleteUser/${deletingUserId}`);
             console.log("User deleted successfully");
             fetchData();
         } catch (error) {

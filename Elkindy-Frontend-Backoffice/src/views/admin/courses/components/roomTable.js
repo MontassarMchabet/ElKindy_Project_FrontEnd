@@ -38,7 +38,7 @@ export default function ColumnsTable(props) {
         const handleSaveEdit = async () => {
             try {
                 // Effectuer la requête API pour mettre à jour le cours avec les nouvelles données
-                await axios.put(`http://localhost:8080/api/Room/update/${editedRoom._id}`, editedRoom);
+                await axios.put(`http://localhost:9090/api/Room/update/${editedRoom._id}`, editedRoom);
                
                 console.log("Course updated successfully");
                 setIsEditModalOpen(false); 
@@ -153,7 +153,7 @@ export default function ColumnsTable(props) {
         if (isValid) {
             try {
                 const response = await axios.post(
-                    "http://localhost:8080/api/Room/add",
+                    "http://localhost:9090/api/Room/add",
                     formData
                 );
                 fetchData()

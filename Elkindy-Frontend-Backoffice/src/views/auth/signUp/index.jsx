@@ -70,7 +70,7 @@ function SignUp() {
         }
 
         try {
-            const emailResponse = await axios.get(`http://localhost:8080/api/auth/check/email/${formData.email}`);
+            const emailResponse = await axios.get(`http://localhost:9090/api/auth/check/email/${formData.email}`);
             if (emailResponse.data.exists) {
                 errors.email = 'Email already in use';
             }
@@ -79,7 +79,7 @@ function SignUp() {
         }
 
         try {
-            const usernameResponse = await axios.get(`http://localhost:8080/api/auth/check/username/${formData.username}`);
+            const usernameResponse = await axios.get(`http://localhost:9090/api/auth/check/username/${formData.username}`);
             if (usernameResponse.data.exists) {
                 errors.username = 'Username already taken';
             }
@@ -98,7 +98,7 @@ function SignUp() {
         if (isValid) {
             try {
                 const response = await axios.post(
-                    "http://localhost:8080/api/auth/register",
+                    "http://localhost:9090/api/auth/register",
                     formData
                 );
                 console.log(response.data);
