@@ -12,7 +12,7 @@ import Layout from "../../layouts/Layout";
 
 const AboutUs = () => {
   return (
-    <Layout header={1} footer={1} className="" mainClassName="">
+    <Layout header={4} footer={1} className="" mainClassName="">
       <BreadcrumbArea
         title="About Us"
         subtitle={"About Us"}

@@ -64,15 +64,15 @@ function App() {
         <Route path="/account" element={<AccountComponent />} />
         <Route path="/exams" element={<ExamsComponent />} />
         {/* <Route path="/home-two" element={<PersonalPortfolio />} />
-        <Route path="/home-three" element={<DigitalAgency />} />
+        <Route path="/home-three" element={<DigitalAgency />} /> */}
         <Route path="/about-us" element={<AboutUs />} />
-        <Route path="/about-me" element={<AboutMe />} />
+        {/* <Route path="/about-me" element={<AboutMe />} />
         <Route path="/team" element={<TeamPage />} />
         <Route path="/team-details" element={<TeamPageDetails />} />
         <Route path="/project-details" element={<PortfolioDetailsPage />} />
-        <Route path="/services-details" element={<ServicesDetailsPage />} />
+        <Route path="/services-details" element={<ServicesDetailsPage />} /> */}
         <Route path="/contact" element={<ContactPage />} />
-        <Route path="/blog" element={<BlogPage />} />
+        {/* <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog-details" element={<BlogDetailsPage />} /> */}
       </Routes>
     </>

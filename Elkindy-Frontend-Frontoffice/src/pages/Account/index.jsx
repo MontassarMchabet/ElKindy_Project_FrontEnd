@@ -15,11 +15,13 @@ import ProjectAreaThree from "../../components/Project/ProjectAreaThree";
 import InnerServicesArea from "../../components/ServicesArea/InnerServicesArea";
 import HistoryArea from "../../components/HistoryArea/HistoryArea";
 import ProjectDetailsArea from "../../components/Project/ProjectDetailsArea";
+import DeveloperArea from "../../components/DeveloperArea/DeveloperArea";
 
 const AccountComponent = () => {
     return (
         <Layout header={4} footer={1}>
-
+            <br /><br /><br /><br /><br /><br />
+            <DeveloperArea />
         </Layout>
     );
 };

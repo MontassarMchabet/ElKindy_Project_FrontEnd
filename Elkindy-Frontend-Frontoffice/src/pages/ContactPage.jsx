@@ -5,7 +5,7 @@ import Layout from "../layouts/Layout";
 
 const ContactPage = () => {
   return (
-    <Layout header={1} footer={3} className="" mainClassName="">
+    <Layout header={4} footer={3} className="" mainClassName="">
       <BreadcrumbArea
         title={"Contact Us"}
         subtitle={"Contact"}
