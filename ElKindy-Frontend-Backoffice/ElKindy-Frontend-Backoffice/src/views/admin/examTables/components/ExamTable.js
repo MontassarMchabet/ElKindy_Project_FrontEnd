@@ -296,15 +296,13 @@ export default function ColumnsTable(props) {
           value={formData.class}
           onChange={handleChange}
         >
-            <option value="Initiation">Initiation</option>
-            <option value="Preparatoire">Preparatoire</option>
-          <option value="1">1ere</option>
-          <option value="2">2eme</option>
-          <option value="3">3eme</option>
-          <option value="4">4eme</option>
-          <option value="5">5eme</option>
-          <option value="6">6eme</option>
-          <option value="7">7eme</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
         </Select>
       </FormControl>
                                 <FormControl mt={4} mr={4}>
