@@ -17,7 +17,7 @@ export const columnsDataComplex = [
   },
 ];
 
-export const adminsData = [
+export  const adminsData = [
   {
     Header: "NAME",
     accessor: "name",
@@ -34,10 +34,10 @@ export const adminsData = [
     Header: "Email",
     accessor: "email",
   },
-  {
+  /*{
     Header: "Password",
     accessor: "password",
-  },
+  },*/
   {
     Header: "CIN",
     accessor: "cinNumber",
@@ -81,10 +81,10 @@ export const profsData = [
     Header: "Email",
     accessor: "email",
   },
-  {
+  /*{
     Header: "Password",
     accessor: "password",
-  },
+  },*/
   {
     Header: "CIN",
     accessor: "cinNumber",
@@ -127,10 +127,10 @@ export const clientsData = [
     Header: "Email",
     accessor: "email",
   },
-  {
+  /*{
     Header: "Password",
     accessor: "password",
-  },
+  },*/
   {
     Header: "Parent phone Number",
     accessor: "parentPhoneNumber",

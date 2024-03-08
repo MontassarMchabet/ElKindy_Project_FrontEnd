@@ -100,8 +100,7 @@ const HeaderOne = () => {
                             ["/", "/home-two", "/home-three"].includes(
                               pathname
                             ) && "active"
-                          )}
-                        >
+                          )}>
 
                           <a href="#">Home</a>
                           <ul className="sub-menu">
@@ -116,14 +115,13 @@ const HeaderOne = () => {
                             >
                               <Link to="/home-three">Digital Agency</Link>
                             </li>
+                            
                           </ul>
                         </li>
 
                         <li className={cn(isActiveClassName("/about-us"))}>
                           <Link to="/about-us">About Us</Link>
                         </li>
-
-
                         <li
                           className={cn(
                             "menu-item-has-children",
@@ -192,7 +190,23 @@ const HeaderOne = () => {
                               <Link to="/blog-details">Blog Details</Link>
                             </li>
                           </ul>
+                          
                         </li>
+                        <li className={cn(isActiveClassName("/events"))}>
+                          <Link to="/events">Events</Link>
+                        </li>
+
+                        <Link to="/shop">
+                          <li
+                            className={cn(
+                              "menu-item",
+                              ["/shop"].includes(pathname) &&
+                              "active"
+                            )}>
+                            <a>Shop</a>
+                          </li>
+                        </Link>
+
                       </ul>
                     </div>
 

@@ -13,7 +13,7 @@ function AuthIllustration(props) {
   const { children, illustrationBackground } = props;
   // Chakra color mode
   return (
-    <Flex position='relative' h='max-content' style={{ backgroundColor: "white" }}>
+    <Flex position='relative' h='max-content'>
       <Flex
         h={{
           sm: "initial",
@@ -30,7 +30,7 @@ function AuthIllustration(props) {
         justifyContent='start'
         direction='column'>
         <NavLink
-          to='/home'
+          to='/admin'
           style={() => ({
             width: "fit-content",
             marginTop: "40px",
@@ -73,9 +73,11 @@ function AuthIllustration(props) {
         </Box>
         <Footer />
       </Flex>
+      <FixedPlugin />
     </Flex>
   );
 }
+// PROPS
 
 AuthIllustration.propTypes = {
   illustrationBackground: PropTypes.string,

@@ -1,5 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from "services/api";
+import { jwtDecode } from 'jwt-decode';
+import Cookies from 'js-cookie';
 // Chakra Imports
 import {
 	Avatar,
@@ -15,7 +18,6 @@ import {
 	Text,
 	useColorModeValue
 } from '@chakra-ui/react';
-import { ArrowForwardIcon } from '@chakra-ui/icons';
 // Custom Components
 import { ItemContent } from 'components/menu/ItemContent';
 import { SearchBar } from 'components/navbar/searchBar/SearchBar';
@@ -28,7 +30,7 @@ import { MdNotificationsNone, MdInfoOutline } from 'react-icons/md';
 import { FaEthereum } from 'react-icons/fa';
 import routes from 'routes.js';
 import { ThemeEditor } from './ThemeEditor';
-import { NavLink, useHistory } from 'react-router-dom';
+import { NavLink } from 'react-router-dom/cjs/react-router-dom.min';
 export default function HeaderLinks(props) {
 	const { secondary } = props;
 	// Chakra Color Mode
@@ -46,14 +48,17 @@ export default function HeaderLinks(props) {
 	);
 	const borderButton = useColorModeValue('secondaryGray.500', 'whiteAlpha.200');
 
-	const history = useHistory();
+
 	const [user, setUser] = useState(null);
 
 	useEffect(() => {
 		const fetchUserData = async () => {
 			try {
-				const username = localStorage.getItem('username');
-				const response = await axios.get(`http://localhost:8080/api/auth/check/username/${username}`);
+				const token = localStorage.getItem('token');
+				const decodedToken = jwtDecode(token);
+				const { userId, role } = decodedToken;
+
+				const response = await api.get(`http://localhost:9090/api/auth/user/${userId}`);
 				setUser(response.data);
 			} catch (error) {
 				console.error('Error fetching user data:', error);
@@ -63,8 +68,10 @@ export default function HeaderLinks(props) {
 	}, []);
 	const handleLogout = () => {
 		localStorage.removeItem('token');
-		localStorage.removeItem('username');
-		history.push('/home');
+		localStorage.removeItem('refreshToken');
+		Cookies.remove('token');
+		Cookies.remove('refreshToken');
+		window.location.reload();
 	};
 
 	return (
@@ -77,12 +84,8 @@ export default function HeaderLinks(props) {
 			p="10px"
 			borderRadius="30px"
 			boxShadow={shadow}>
-
-			<NavLink to="/home" style={{ marginRight: "20px" }}>
-				<Button style={{ backgroundColor: 'white' }}>Home page <ArrowForwardIcon /> </Button>
-			</NavLink>
 			<SearchBar mb={secondary ? { base: '10px', md: 'unset' } : 'unset'} me="10px" borderRadius="30px" />
-
+			
 			<Flex
 				bg={ethBg}
 				display={secondary ? 'flex' : 'none'}
@@ -102,10 +105,10 @@ export default function HeaderLinks(props) {
 					</Text>
 				</Text>
 			</Flex>
-
+			
 			<SidebarResponsive routes={routes} />
-
-
+			
+			
 			<Menu>
 				<MenuButton p="0px">
 					<Icon mt="6px" as={MdNotificationsNone} color={navbarIcon} w="18px" h="18px" me="10px" />
@@ -139,7 +142,7 @@ export default function HeaderLinks(props) {
 				</MenuList>
 			</Menu>
 
-
+			
 
 			<ThemeEditor navbarIcon={navbarIcon} />
 
@@ -148,7 +151,8 @@ export default function HeaderLinks(props) {
 					<Avatar
 						_hover={{ cursor: 'pointer' }}
 						color="white"
-						name={`${user?.name} ${user?.lastname}`}
+
+						src={user?.profilePicture}
 						bg="#11047A"
 						size="sm"
 						w="40px"
@@ -167,21 +171,23 @@ export default function HeaderLinks(props) {
 							fontSize="sm"
 							fontWeight="700"
 							color={textColor}>
-							👋 Hey, {`${user?.name} ${user?.lastname}`}
+							👋&nbsp; Hey, Adela
 						</Text>
 					</Flex>
 					<Flex flexDirection="column" p="10px">
-						<MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} borderRadius="8px" px="14px">
-							<Text fontSize="sm">Profile</Text>
-						</MenuItem>
 
+						<NavLink to="/admin/profile" style={{ textDecoration: "none" }}>
+							<MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} borderRadius="8px" px="14px">
+								<Text fontSize="sm">Profile</Text>
+							</MenuItem>
+						</NavLink>
 						<MenuItem
 							_hover={{ bg: 'none' }}
 							_focus={{ bg: 'none' }}
 							color="red.400"
 							borderRadius="8px"
 							px="14px">
-							<Text onClick={handleLogout} fontSize="sm">Log out</Text>
+							<Text fontSize="sm">Log out</Text>
 						</MenuItem>
 					</Flex>
 				</MenuList>

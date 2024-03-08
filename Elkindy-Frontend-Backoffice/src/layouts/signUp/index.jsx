@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useHistory } from "react-router-dom";
-import axios from 'axios';
+import api from "services/api";
+import Cookies from 'js-cookie';
 // Chakra imports
 import {
     Box,
@@ -18,24 +19,46 @@ import {
     useColorModeValue,
 } from "@chakra-ui/react";
 // Custom components
-import { HSeparator } from "components/separator/Separator";
 import DefaultAuth from "layouts/auth/Default";
 // Assets
 import illustration from "assets/img/auth/elkindey.jpg";
-import { FcGoogle } from "react-icons/fc";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiEyeCloseLine } from "react-icons/ri";
 
 function SignUp() {
-    // Chakra color mode
     const textColor = useColorModeValue("navy.700", "white");
     const textColorSecondary = "gray.400";
     const textColorDetails = useColorModeValue("navy.700", "secondaryGray.600");
     const textColorBrand = useColorModeValue("brand.500", "white");
     const brandStars = useColorModeValue("brand.500", "brand.400");
+    const [showVerification, setShowVerification] = useState(false);
+    const history = useHistory();
+
+    const handleNext = async () => {
+        const isValid = await validateForm();
+        if (isValid) {
+            try {
+                const response = await api.post("http://localhost:9090/api/auth/verificationCode", {
+                    email: formData.email,
+                    username: formData.username
+                });
+                const { verificationCode } = response.data;
+
+                const responsehashedVerificationCode =
+                    await api.post("http://localhost:9090/api/auth/hashverificationcode", {
+                        verificationCode
+                    })
+                const { hashedCode } = responsehashedVerificationCode.data;
+                localStorage.setItem('verificationCode', hashedCode);
+
+                setShowVerification(true);
+            } catch (error) {
+                console.error('Error sending verification code:', error);
+            }
+        }
+    };
 
     // check if already logged in
-    const history = useHistory();
     useEffect(() => {
         const isLoggedIn = localStorage.getItem('token') !== null;
         if (isLoggedIn) {
@@ -80,7 +103,7 @@ function SignUp() {
         }
 
         try {
-            const emailResponse = await axios.get(`http://localhost:9090/api/auth/check/email/${formData.email}`);
+            const emailResponse = await api.get(`http://localhost:9090/api/auth/check/email/${formData.email}`);
             if (emailResponse.data.exists) {
                 errors.email = 'Email already in use';
             }
@@ -89,7 +112,7 @@ function SignUp() {
         }
 
         try {
-            const usernameResponse = await axios.get(`http://localhost:9090/api/auth/check/username/${formData.username}`);
+            const usernameResponse = await api.get(`http://localhost:9090/api/auth/check/username/${formData.username}`);
             if (usernameResponse.data.exists) {
                 errors.username = 'Username already taken';
             }
@@ -104,14 +127,37 @@ function SignUp() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const isValid = await validateForm();
-        console.log("Submitting form");
         if (isValid) {
             try {
-                const response = await axios.post(
-                    "http://localhost:9090/api/auth/register",
-                    formData
-                );
-                console.log(response.data);
+                if (!formData.code.trim()) {
+                    setErrors({ code: 'Verification code is required' });
+                    return;
+                }
+                const hashedVerificationCode = localStorage.getItem('verificationCode');
+                const responseisCodeCorrect = await api.post("http://localhost:9090/api/auth/verifycode", {
+                    code: formData.code,
+                    hashedVerificationCode
+                });
+                const { isMatch } = responseisCodeCorrect.data;
+
+                if (!isMatch) {
+                    setErrors({ code: 'Invalid verification code' });
+                    return;
+                } else {
+                    const response = await api.post(
+                        "http://localhost:9090/api/auth/register",
+                        formData
+                    );
+                    const { token, refreshToken } = response.data;
+
+                    localStorage.setItem('token', token);
+                    localStorage.setItem('refreshToken', refreshToken);
+                    localStorage.removeItem('verificationCode');
+
+                    Cookies.set('token', token);
+                    Cookies.set('refreshToken', refreshToken);
+                    history.push('/home');
+                }
             } catch (error) {
                 console.error("Error registering user:", error);
             }
@@ -161,218 +207,260 @@ function SignUp() {
                     <form onSubmit={handleSubmit} noValidate>
                         <FormControl>
 
-                            <FormLabel
-                                display='flex'
-                                ms='4px'
-                                fontSize='sm'
-                                fontWeight='500'
-                                color={textColor}
-                                mb='8px'>
-                                Name<Text color={brandStars}>*</Text>
-                            </FormLabel>
-                            <Input
-                                isRequired={true}
-                                variant='auth'
-                                fontSize='sm'
-                                ms={{ base: "0px", md: "0px" }}
-                                type='text'
-                                placeholder='Name here'
-                                mb='24px'
-                                fontWeight='500'
-                                size='lg'
-                                width='200px'
+                            {showVerification ? (
+                                <>
+                                    <FormLabel
+                                        marginTop="100px"
+                                        display='flex'
+                                        ms='4px'
+                                        fontSize='sm'
+                                        fontWeight='500'
+                                        color={textColor}
+                                        mb='8px'>
+                                        Verificaiton code<Text color={brandStars}>*</Text>
+                                    </FormLabel>
+                                    <Input
+                                        isRequired={true}
+                                        variant='auth'
+                                        fontSize='sm'
+                                        ms={{ base: "0px", md: "0px" }}
+                                        type='text'
+                                        placeholder='Verification code here'
+                                        mb='24px'
+                                        fontWeight='500'
+                                        size='lg'
+                                        width='100%'
 
 
-                                name="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                            />
-
-                            <FormLabel
-                                display='flex'
-                                ms='4px'
-                                fontSize='sm'
-                                fontWeight='500'
-                                color={textColor}
-                                mb='8px'
-                                position='absolute'
-                                marginTop='-100px'
-                                left='215px'>
-                                Lastname<Text color={brandStars}>*</Text>
-                            </FormLabel>
-                            <Input
-                                isRequired={true}
-                                variant='auth'
-                                fontSize='sm'
-                                ms={{ base: "0px", md: "0px" }}
-                                type='text'
-                                placeholder='Lastname here'
-                                mb='24px'
-                                fontWeight='500'
-                                size='lg'
-                                width='200px'
-                                position='absolute'
-                                marginTop='00px'
-                                left='215px'
-
-                                name="lastname"
-                                value={formData.lastname}
-                                onChange={handleChange}
-                            />
-
-
-
-                            <FormLabel
-                                display='flex'
-                                ms='4px'
-                                fontSize='sm'
-                                fontWeight='500'
-                                color={textColor}
-                                mb='8px'>
-                                Email<Text color={brandStars}>*</Text>
-                            </FormLabel>
-                            <Input
-                                isRequired={true}
-                                variant='auth'
-                                fontSize='sm'
-                                ms={{ base: "0px", md: "0px" }}
-                                type='email'
-                                placeholder='mail@gmail.com'
-                                mb='24px'
-                                fontWeight='500'
-                                size='lg'
-                                width='200px'
-
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                            />
-
-
-                            <FormLabel
-                                display='flex'
-                                ms='4px'
-                                fontSize='sm'
-                                fontWeight='500'
-                                color={textColor}
-                                mb='8px'
-                                position='absolute'
-                                marginTop='-100px'
-                                left='215px'>
-                                Username<Text color={brandStars}>*</Text>
-                            </FormLabel>
-                            <Input
-                                isRequired={true}
-                                variant='auth'
-                                fontSize='sm'
-                                ms={{ base: "0px", md: "0px" }}
-                                type='text'
-                                placeholder='Username here'
-                                mb='24px'
-                                fontWeight='500'
-                                size='lg'
-                                width='200px'
-                                position='absolute'
-                                marginTop='00px'
-                                left='215px'
-
-                                name="username"
-                                value={formData.username}
-                                onChange={handleChange}
-                            />
-
-
-
-
-                            <FormLabel
-                                ms='4px'
-                                fontSize='sm'
-                                fontWeight='500'
-                                color={textColor}
-                                display='flex'>
-                                Password<Text color={brandStars}>*</Text>
-                            </FormLabel>
-                            <InputGroup size='md'>
-                                <Input
-                                    isRequired={true}
-                                    fontSize='sm'
-                                    placeholder='Min. 8 characters'
-                                    mb='24px'
-                                    size='lg'
-                                    type={show ? "text" : "password"}
-                                    variant='auth'
-
-                                    name="password"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                />
-
-                                <InputRightElement display='flex' alignItems='center' mt='4px'>
-                                    <Icon
-                                        color={textColorSecondary}
-                                        _hover={{ cursor: "pointer" }}
-                                        as={show ? RiEyeCloseLine : MdOutlineRemoveRedEye}
-                                        onClick={handleClick}
+                                        name="code"
+                                        value={formData.code}
+                                        onChange={handleChange}
                                     />
-                                </InputRightElement>
-                            </InputGroup>
+                                    {errors.code && <Text color="red">{errors.code}</Text>}
+                                    <Button
+                                        type="submit"
+                                        fontSize='sm'
+                                        variant='brand'
+                                        fontWeight='500'
+                                        marginTop="227px"
+                                        w='100%'
+                                        h='50'
+                                        mb='24px'>
+                                        Sign Up
+                                    </Button>
+                                </>
+                            ) : (
+                                <>
+                                    <FormLabel
+                                        display='flex'
+                                        ms='4px'
+                                        fontSize='sm'
+                                        fontWeight='500'
+                                        color={textColor}
+                                        mb='8px'>
+                                        Name<Text color={brandStars}>*</Text>
+                                    </FormLabel>
+                                    <Input
+                                        isRequired={true}
+                                        variant='auth'
+                                        fontSize='sm'
+                                        ms={{ base: "0px", md: "0px" }}
+                                        type='text'
+                                        placeholder='Name here'
+                                        mb='24px'
+                                        fontWeight='500'
+                                        size='lg'
+                                        width='200px'
 
 
-
-                            <FormLabel
-                                ms='4px'
-                                fontSize='sm'
-                                fontWeight='500'
-                                color={textColor}
-                                display='flex'>
-                                Password Confirmation<Text color={brandStars}>*</Text>
-                            </FormLabel>
-                            <InputGroup size='md'>
-                                <Input
-                                    isRequired={true}
-                                    fontSize='sm'
-                                    placeholder='Min. 8 characters'
-                                    mb='24px'
-                                    size='lg'
-                                    type={show ? "text" : "password"}
-                                    variant='auth'
-
-                                    name="confirmPassword"
-                                    value={formData.confirmPassword}
-                                    onChange={handleChange}
-                                />
-                                <InputRightElement display='flex' alignItems='center' mt='4px'>
-                                    <Icon
-                                        color={textColorSecondary}
-                                        _hover={{ cursor: "pointer" }}
-                                        as={show ? RiEyeCloseLine : MdOutlineRemoveRedEye}
-                                        onClick={handleClick}
+                                        name="name"
+                                        value={formData.name}
+                                        onChange={handleChange}
                                     />
-                                </InputRightElement>
-                            </InputGroup>
 
-                            {errors.name && <Text color="red">{errors.name}</Text>}
-                            {errors.lastname && <Text color="red">{errors.lastname}</Text>}
-                            {errors.email && <Text color="red">{errors.email}</Text>}
-                            {errors.username && <Text color="red">{errors.username}</Text>}
-                            {errors.password && <Text color="red">{errors.password}</Text>}
-                            {errors.confirmPassword && <Text color="red">{errors.confirmPassword}</Text>}
-                            <br></br>
+                                    <FormLabel
+                                        display='flex'
+                                        ms='4px'
+                                        fontSize='sm'
+                                        fontWeight='500'
+                                        color={textColor}
+                                        mb='8px'
+                                        position='absolute'
+                                        marginTop='-100px'
+                                        left='215px'>
+                                        Lastname<Text color={brandStars}>*</Text>
+                                    </FormLabel>
+                                    <Input
+                                        isRequired={true}
+                                        variant='auth'
+                                        fontSize='sm'
+                                        ms={{ base: "0px", md: "0px" }}
+                                        type='text'
+                                        placeholder='Lastname here'
+                                        mb='24px'
+                                        fontWeight='500'
+                                        size='lg'
+                                        width='200px'
+                                        position='absolute'
+                                        marginTop='00px'
+                                        left='215px'
+
+                                        name="lastname"
+                                        value={formData.lastname}
+                                        onChange={handleChange}
+                                    />
 
 
-                            <Button
-                                type="submit"
-                                fontSize='sm'
-                                variant='brand'
-                                fontWeight='500'
-                                w='100%'
-                                h='50'
-                                mb='24px'>
-                                Sign Up
-                            </Button>
+
+                                    <FormLabel
+                                        display='flex'
+                                        ms='4px'
+                                        fontSize='sm'
+                                        fontWeight='500'
+                                        color={textColor}
+                                        mb='8px'>
+                                        Email<Text color={brandStars}>*</Text>
+                                    </FormLabel>
+                                    <Input
+                                        isRequired={true}
+                                        variant='auth'
+                                        fontSize='sm'
+                                        ms={{ base: "0px", md: "0px" }}
+                                        type='email'
+                                        placeholder='mail@gmail.com'
+                                        mb='24px'
+                                        fontWeight='500'
+                                        size='lg'
+                                        width='200px'
+
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                    />
+
+
+                                    <FormLabel
+                                        display='flex'
+                                        ms='4px'
+                                        fontSize='sm'
+                                        fontWeight='500'
+                                        color={textColor}
+                                        mb='8px'
+                                        position='absolute'
+                                        marginTop='-100px'
+                                        left='215px'>
+                                        Username<Text color={brandStars}>*</Text>
+                                    </FormLabel>
+                                    <Input
+                                        isRequired={true}
+                                        variant='auth'
+                                        fontSize='sm'
+                                        ms={{ base: "0px", md: "0px" }}
+                                        type='text'
+                                        placeholder='Username here'
+                                        mb='24px'
+                                        fontWeight='500'
+                                        size='lg'
+                                        width='200px'
+                                        position='absolute'
+                                        marginTop='00px'
+                                        left='215px'
+
+                                        name="username"
+                                        value={formData.username}
+                                        onChange={handleChange}
+                                    />
+
+
+
+
+                                    <FormLabel
+                                        ms='4px'
+                                        fontSize='sm'
+                                        fontWeight='500'
+                                        color={textColor}
+                                        display='flex'>
+                                        Password<Text color={brandStars}>*</Text>
+                                    </FormLabel>
+                                    <InputGroup size='md'>
+                                        <Input
+                                            isRequired={true}
+                                            fontSize='sm'
+                                            placeholder='Min. 8 characters'
+                                            mb='24px'
+                                            size='lg'
+                                            type={show ? "text" : "password"}
+                                            variant='auth'
+
+                                            name="password"
+                                            value={formData.password}
+                                            onChange={handleChange}
+                                        />
+
+                                        <InputRightElement display='flex' alignItems='center' mt='4px'>
+                                            <Icon
+                                                color={textColorSecondary}
+                                                _hover={{ cursor: "pointer" }}
+                                                as={show ? RiEyeCloseLine : MdOutlineRemoveRedEye}
+                                                onClick={handleClick}
+                                            />
+                                        </InputRightElement>
+                                    </InputGroup>
+
+
+
+                                    <FormLabel
+                                        ms='4px'
+                                        fontSize='sm'
+                                        fontWeight='500'
+                                        color={textColor}
+                                        display='flex'>
+                                        Password Confirmation<Text color={brandStars}>*</Text>
+                                    </FormLabel>
+                                    <InputGroup size='md'>
+                                        <Input
+                                            isRequired={true}
+                                            fontSize='sm'
+                                            placeholder='Min. 8 characters'
+                                            mb='24px'
+                                            size='lg'
+                                            type={show ? "text" : "password"}
+                                            variant='auth'
+
+                                            name="confirmPassword"
+                                            value={formData.confirmPassword}
+                                            onChange={handleChange}
+                                        />
+                                        <InputRightElement display='flex' alignItems='center' mt='4px'>
+                                            <Icon
+                                                color={textColorSecondary}
+                                                _hover={{ cursor: "pointer" }}
+                                                as={show ? RiEyeCloseLine : MdOutlineRemoveRedEye}
+                                                onClick={handleClick}
+                                            />
+                                        </InputRightElement>
+                                    </InputGroup>
+
+                                    {errors.name && <Text color="red">{errors.name}</Text>}
+                                    {errors.lastname && <Text color="red">{errors.lastname}</Text>}
+                                    {errors.email && <Text color="red">{errors.email}</Text>}
+                                    {errors.username && <Text color="red">{errors.username}</Text>}
+                                    {errors.password && <Text color="red">{errors.password}</Text>}
+                                    {errors.confirmPassword && <Text color="red">{errors.confirmPassword}</Text>}
+                                    <br></br>
+
+                                    <Button
+                                        fontSize='sm'
+                                        variant='brand'
+                                        fontWeight='500'
+                                        w='100%'
+                                        h='50'
+                                        mb='24px' onClick={handleNext}>
+                                        Next
+                                    </Button>
+                                </>
+                            )}
                         </FormControl>
-
-
                     </form>
                     <Flex
                         flexDirection='column'

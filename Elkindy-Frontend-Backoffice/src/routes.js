@@ -7,22 +7,35 @@ import {
   MdHome,
   MdLock,
   MdOutlineShoppingCart,
+  MdPages,
+  MdPageview,
+  MdOutlinePages,
+  MdAddAlarm,
+  MdAddTask,
 } from "react-icons/md";
 
 // Admin Imports
 import MainDashboard from "views/admin/default";
 import NFTMarketplace from "views/admin/marketplace";
+import Events from "views/admin/events";
 import Profile from "views/admin/profile";
 import DataTables from "views/admin/dataTables";
 import RTL from "views/admin/rtl";
 import UserTables from "views/admin/userTables";
+
 import Courses from "views/admin/courses";
 import Scheduling from "views/admin/Scheduling";
+
+import ExamTables from "views/admin/examTables";
+
+import Tickets from "views/admin/tickets";
+
+import productTable from "views/admin/productTable";
+
 // Auth Imports
 import SignInCentered from "views/auth/signIn";
 import SignUpCentered from "views/auth/signUp";
 
-const isLoggedIn = !!localStorage.getItem('token');
 const routes = [
   {
     name: "Dashboard",
@@ -54,6 +67,37 @@ const routes = [
     secondary: true,
   },
   {
+
+    name: "Exams",
+    layout: "/admin",
+    path: "/exams",
+    icon: (
+      <Icon as={MdAddTask} width='20px' height='20px' color='inherit' />
+    ),
+    component: ExamTables,
+
+    name: "Evenements ElKindy",
+    layout: "/admin",
+    path: "/event",
+    icon: (
+      <Icon
+        as={MdOutlineShoppingCart}
+        width='20px'
+        height='20px'
+        color='inherit'
+      />
+    ),
+    component: Events,
+    secondary: true,
+
+    name: "Products",
+    layout: "/admin",
+    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+    path: "/products",
+    component: productTable,
+
+  },
+  {
     name: "Data Tables",
     layout: "/admin",
     icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
@@ -67,7 +111,7 @@ const routes = [
     path: "/users",
     component: UserTables,
   },
-  
+
   {
     name: "Courses Tables",
     layout: "/admin",
@@ -82,6 +126,14 @@ const routes = [
     path: "/schedule",
     component: Scheduling,
   },
+
+  {
+    
+    layout: "/admin",
+    path: "/:eventId/tickets",
+    component: Tickets,
+  },
+
 ];
 
 export default routes;

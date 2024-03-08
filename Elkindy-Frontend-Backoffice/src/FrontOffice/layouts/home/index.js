@@ -6,7 +6,6 @@ export default function FrontOffice(props) {
     return (
         <div>
             <Navbarfront />
-            <Footerfront />
         </div>
     );
 }
