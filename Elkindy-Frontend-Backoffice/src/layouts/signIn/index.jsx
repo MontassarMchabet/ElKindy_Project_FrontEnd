@@ -62,6 +62,7 @@ function SignIn() {
     const isEmail = /\S+@\S+\.\S+/.test(email);
     try {
       const response = isEmail
+
         ? await api.post('http://localhost:9090/api/auth/loginEmail', { email, password })
         : await api.post('http://localhost:9090/api/auth/loginUsername', { username: email, password });
 
@@ -85,6 +86,9 @@ function SignIn() {
 
   const handleUserRole = async (role) => {
     try {
+
+
+
       if (role === 'admin') {
         history.push('/admin/dashboard');
       } else if (role === 'client' || role === 'prof') {

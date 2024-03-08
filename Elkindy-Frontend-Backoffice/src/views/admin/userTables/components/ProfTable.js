@@ -428,6 +428,7 @@ export default function ColumnsTable(props) {
         }
 
         try {
+
             const emailResponse = await api.get(`http://localhost:9090/api/auth/check/email/${formData.email}`);
             if (emailResponse.data.exists) {
                 errors.email = 'Email already in use';
@@ -438,6 +439,7 @@ export default function ColumnsTable(props) {
 
         try {
             const usernameResponse = await api.get(`http://localhost:9090/api/auth/check/username/${formData.username}`);
+
             if (usernameResponse.data.exists) {
                 errors.username = 'Username already taken';
             }
@@ -456,6 +458,7 @@ export default function ColumnsTable(props) {
 
         try {
             const phoneResponse = await api.get(`http://localhost:9090/api/auth/check/phone/${formData.phoneNumber}`);
+
             if (phoneResponse.data.exists) {
                 errors.phoneNumber = 'Phone number is invalid';
             }

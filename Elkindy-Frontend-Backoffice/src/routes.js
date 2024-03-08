@@ -22,6 +22,10 @@ import Profile from "views/admin/profile";
 import DataTables from "views/admin/dataTables";
 import RTL from "views/admin/rtl";
 import UserTables from "views/admin/userTables";
+
+import Courses from "views/admin/courses";
+import Scheduling from "views/admin/Scheduling";
+
 import ExamTables from "views/admin/examTables";
 
 import Tickets from "views/admin/tickets";
@@ -107,6 +111,22 @@ const routes = [
     path: "/users",
     component: UserTables,
   },
+
+  {
+    name: "Courses Tables",
+    layout: "/admin",
+    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+    path: "/course",
+    component: Courses,
+  },
+  {
+    name: "Schedule",
+    layout: "/admin",
+    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+    path: "/schedule",
+    component: Scheduling,
+  },
+
   {
     
     layout: "/admin",
