@@ -14,8 +14,8 @@ import ContactPage from "./pages/ContactPage";
 import BlogPage from "./pages/Blog/BlogPage";
 import BlogDetailsPage from "./pages/Blog/BlogDetailsPage";
 import AnimatedCursor from "react-animated-cursor";
+import ViewExam from "./pages/Exams/ViewExams";
 
-///testttt
 function App() {
   useEffect(() => {
     const wow = new WOW({
@@ -71,6 +71,8 @@ function App() {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog-details" element={<BlogDetailsPage />} />
+        <Route path="/dashboard" element={<ViewExam />} />
+
       </Routes>
     </>
   );
