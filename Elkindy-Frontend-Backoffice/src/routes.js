@@ -71,7 +71,8 @@ const routes = [
     ),
     component: Events,
     secondary: true,
-
+  },
+  {
     name: "Products",
     layout: "/admin",
     icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
