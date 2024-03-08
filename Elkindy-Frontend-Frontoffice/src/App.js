@@ -18,6 +18,7 @@ import Home from "./pages/shop/pages/Home";
 import OurStore from "./pages/shop/pages/OurStore";
 import SingleProduct from "./pages/shop/pages/SingleProduct";
 import Wishlist from "./pages/shop/pages/Wishlist";
+import CompareProduct from "./pages/shop/pages/CompareProduct";
 
 function App() {
   useEffect(() => {
@@ -78,6 +79,7 @@ function App() {
         <Route path="/shop/products" element={<OurStore />} />
         <Route path="/shop/products/id" element={<SingleProduct />} />
         <Route path="/shop/wishlist" element={<Wishlist />} />
+        <Route path="/shop/compare-product" element={<CompareProduct />} />
       </Routes>
     </>
   );

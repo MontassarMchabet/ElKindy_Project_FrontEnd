@@ -13,7 +13,7 @@ export default function Settings() {
 
     const fetchData = async () => {
         try {
-            const productResponse = await axios.get('http://localhost:8080/api/product');
+            const productResponse = await axios.get('http://localhost:9090/api/product');
             setProductData(productResponse.data);
             console.log(productResponse);
         } catch (error) {
@@ -36,7 +36,7 @@ export default function Settings() {
     const handleDelete = async () => {
         setIsDeleteDialogOpen(false);
         try {
-            await axios.delete(`http://localhost:8080/api/product/${deletingId}`);
+            await axios.delete(`http://localhost:9090/api/product/${deletingId}`);
             console.log("User deleted successfully");
             fetchData();
         } catch (error) {

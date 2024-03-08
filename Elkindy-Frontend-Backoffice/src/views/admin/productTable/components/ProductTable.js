@@ -155,7 +155,7 @@ export default function ColumnsTable(props) {
 
         try {
             const response = await axios.post(
-                "http://localhost:8080/api/product",
+                "http://localhost:9090/api/product",
                 formData
             );
             fetchData()
