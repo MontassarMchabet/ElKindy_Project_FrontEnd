@@ -1,8 +1,8 @@
-import axios from "axios";
+import api from "services/api";
 import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button } from "@chakra-ui/react";
 import { ViewIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { AddIcon } from '@chakra-ui/icons'
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, ModalFooter, FormControl, FormLabel, Input, Grid, SimpleGrid } from "@chakra-ui/react";
+import { Select, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, ModalFooter, FormControl, FormLabel, Input, Grid, SimpleGrid } from "@chakra-ui/react";
 import {
     Flex,
     Table,
@@ -48,16 +48,271 @@ import Information from "views/admin/profile/components/Information";
 
 
 export default function ColumnsTable(props) {
-    const { columnsData, tableData, handleDelete, cancelDelete, cancelRef, confirmDelete, isDeleteDialogOpen,
-        isModalOpenA, openModalA, closeModalA, fetchData } = props;
+    const { columnsData, tabledata, handledelete, canceldelete, cancelref, confirmDelete, isDeleteDialogOpen,
+        isModalOpenA, openModalA, closeModalA, fetchData, isEditModalOpen, setIsEditModalOpen, closeEditModal
+    } = props;
 
+    ////////////////////////
+    ////////////////////////
+    ////////////////////////
+    const [editedUser, setEditedUser] = useState({});
+    const [originalPhoneNumber, setOriginalPhoneNumber] = useState("");
+    const [originalCIN, setOriginalCIN] = useState("");
+    const [originalUsername, setOriginalUsername] = useState("");
+    const [originalEmail, setOriginalEmail] = useState("");
+    const [profilePictureFile, setProfilePictureFile] = useState("");
+    const [errorsEdit, setErrorsEdit] = useState({
+        name: "",
+        lastname: "",
+        email: "",
+        username: "",
+        password: "",
+        confirmPassword: "",
+        cinNumber: "",
+        phoneNumber: "",
+        profilePicture: "",
+    });
+    const handleProfilePictureChange = (e) => {
+        setProfilePictureFile(e.target.files[0]);
+    };
+    const validateName = (name) => {
+        if (!name.trim()) {
+            setErrorsEdit({ ...errorsEdit, name: "Name is required" });
+            return false;
+        } else {
+            setErrorsEdit({ ...errorsEdit, name: "" });
+            return true;
+        }
+    };
+    const validateLastname = (lastname) => {
+        if (!lastname.trim()) {
+            setErrorsEdit({ ...errorsEdit, lastname: "Lastname is required" });
+            return false;
+        } else {
+            setErrorsEdit({ ...errorsEdit, lastname: "" });
+            return true;
+        }
+    };
+    const validateEmail = async (email) => {
+        const emailString = String(email).trim();
+        if (!emailString) {
+            setErrorsEdit({ ...errorsEdit, email: "Email is required" });
+            return false;
+        } else if (!/\S+@\S+\.\S+/.test(email)) {
+            setErrorsEdit({ ...errorsEdit, email: "Email is invalid" });
+            return false;
+        } else {
+            try {
+                if (email !== originalEmail) {
+                    const emailResponse = await api.get(`http://localhost:9090/api/auth/check/email/${email}`);
+                    if (emailResponse.data.exists) {
+                        setErrorsEdit({ ...errorsEdit, email: "Email is not valid" });
+                        return false;
+                    }
+                }
+                setErrorsEdit({ ...errorsEdit, email: "" });
+                return true;
+            } catch (error) {
+                console.error("Error validating phone number:", error);
+                return false;
+            }
+        }
+    };
+    const validateUsername = async (username) => {
+        const usernameString = String(username).trim();
+        if (!usernameString) {
+            setErrorsEdit({ ...errorsEdit, username: "Username is required" });
+            return false;
+        } else if (usernameString.length < 3) {
+            setErrorsEdit({ ...errorsEdit, username: "Username must be at least 3 characters long" });
+            return false;
+        } else {
+            try {
+                if (username !== originalUsername) {
+                    const usernameResponse = await api.get(`http://localhost:9090/api/auth/check/username/${username}`);
+                    if (usernameResponse.data.exists) {
+                        setErrorsEdit({ ...errorsEdit, username: "Username is not valid" });
+                        return false;
+                    }
+                }
+                setErrorsEdit({ ...errorsEdit, username: "" });
+                return true;
+            } catch (error) {
+                console.error("Error validating username:", error);
+                return false;
+            }
+        }
+    };
+    const validatePassword = (password) => {
+        const passwordString = String(password).trim();
+        if (!passwordString) {
+            setErrorsEdit({ ...errorsEdit, password: "Password is required" });
+            return false;
+        } else if (passwordString.length < 8) {
+            setErrorsEdit({ ...errorsEdit, password: "Password must be at least 8 characters" });
+            return false;
+        } else {
+            setErrorsEdit({ ...errorsEdit, password: "" });
+            return true;
+        }
+    };
+    const validateConfirmPassword = (confirmPassword) => {
+        const confirmPasswordString = String(confirmPassword).trim();
+        if (!confirmPasswordString) {
+            setErrorsEdit({ ...errorsEdit, confirmPassword: "Password confirmation is required" });
+            return false;
+        } else if (confirmPasswordString !== editedUser.password) {
+            setErrorsEdit({ ...errorsEdit, confirmPassword: "Passwords do not match" });
+            return false;
+        } else {
+            setErrorsEdit({ ...errorsEdit, confirmPassword: "" });
+            return true;
+        }
+    }
+    const validateCIN = async (cinNumber) => {
+        const cinString = String(cinNumber).trim();
+        if (!cinNumber) {
+            setErrorsEdit({ ...errorsEdit, cinNumber: "CIN is required" });
+            return false;
+        }
+        if (!cinString) {
+            setErrorsEdit({ ...errorsEdit, cinNumber: "CIN is required" });
+            return false;
+        } else if (cinString.length !== 8 || isNaN(parseInt(cinString))) {
+            setErrorsEdit({ ...errorsEdit, cinNumber: "CIN must be an 8-digit number" });
+            return false;
+        } else {
+            try {
+                if (cinNumber !== originalCIN) {
+                    const cinResponse = await api.get(`http://localhost:9090/api/auth/check/cin/${cinNumber}`);
+                    if (cinResponse.data.exists) {
+                        setErrorsEdit({ ...errorsEdit, cinNumber: "CIN number is not valid" });
+                        return false;
+                    }
+                }
+                setErrorsEdit({ ...errorsEdit, cinNumber: "" });
+                return true;
+            } catch (error) {
+                console.error("Error validating phone number:", error);
+                return false;
+            }
+        }
+    };
+    const validatePhoneNumber = async (phoneNumber) => {
+        const phoneString = String(phoneNumber).trim();
+        if (!phoneNumber) {
+            setErrorsEdit({ ...errorsEdit, phoneNumber: "Phone number is required" });
+            return false;
+        }
+        if (!phoneString) {
+            setErrorsEdit({ ...errorsEdit, phoneNumber: "Phone number is required" });
+            return false;
+        } else if (phoneString.length !== 8 || isNaN(parseInt(phoneString))) {
+            setErrorsEdit({ ...errorsEdit, phoneNumber: "Phone number must be an 8-digit number" });
+            return false;
+        } else {
+            try {
+                if (phoneNumber !== originalPhoneNumber) {
+                    const phoneResponse = await api.get(`http://localhost:9090/api/auth/check/phone/${phoneNumber}`);
+                    if (phoneResponse.data.exists) {
+                        setErrorsEdit({ ...errorsEdit, phoneNumber: "Phone number is not valid" });
+                        return false;
+                    }
+                }
+                setErrorsEdit({ ...errorsEdit, phoneNumber: "" });
+                return true;
+            } catch (error) {
+                console.error("Error validating phone number:", error);
+                return false;
+            }
+        }
+    };
+
+    const handleSaveEdit = async () => {
+        const isNameValid = validateName(editedUser.name);
+        const isLastnameValid = validateLastname(editedUser.lastname);
+        const isEmailValid = validateEmail(editedUser.email);
+        const isUsernameValid = validateUsername(editedUser.username);
+        const isCINValid = validateCIN(editedUser.cinNumber);
+        const isPhoneNumberValid = validatePhoneNumber(editedUser.phoneNumber);
+
+        if (editedUser.newPassword || editedUser.confirmPassword) {
+            const isNewPasswordValid = validatePassword(editedUser.newPassword);
+            const isConfirmPasswordValid = validateConfirmPassword(editedUser.confirmPassword);
+            if (!isNewPasswordValid || !isConfirmPasswordValid) {
+                console.log("Password validation errors detected");
+                return;
+            }
+            editedUser.password = editedUser.newPassword;
+        }
+
+        if (
+            !isNameValid ||
+            !isLastnameValid ||
+            !isEmailValid ||
+            !isUsernameValid ||
+            !isCINValid ||
+            !isPhoneNumberValid
+        ) {
+            console.log("Validation errors detected");
+            return;
+        }
+        try {
+            if (profilePictureFile) {
+                const formDataToSend = new FormData();
+                formDataToSend.append("image", profilePictureFile);
+
+                const uploadResponse = await api.post(
+                    "http://localhost:9090/api/image/uploadimage",
+                    formDataToSend,
+                    {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                    }
+                );
+                editedUser.profilePicture = uploadResponse.data.downloadURL[0];
+            }
+            await api.patch(`http://localhost:9090/api/auth/editAdminProf/${editedUser._id}`, editedUser);
+
+            setIsEditModalOpen(false);
+            fetchData();
+        } catch (error) {
+            console.error("Error updating user:", error);
+        }
+    };
+    const handleEdit = (user) => {
+        setEditedUser(user);
+        setOriginalPhoneNumber(user.phoneNumber); // Store original phone number
+        setOriginalCIN(user.cinNumber); // Store original CIN number
+        setOriginalUsername(user.username); // Store original username
+        setOriginalEmail(user.email); // Store original email
+        setErrorsEdit({
+            name: "",
+            lastname: "",
+            email: "",
+            username: "",
+            password: "",
+            confirmPassword: "",
+            cinNumber: "",
+            phoneNumber: "",
+            profilePicture: "",
+        });
+        openEditModal();
+    };
+    const openEditModal = () => {
+        setIsEditModalOpen(true);
+    };
+    ////////////////////////
+    ////////////////////////
+    ////////////////////////
     const textColorPrimary = useColorModeValue("secondaryGray.900", "white");
     const cardShadow = useColorModeValue(
         "0px 18px 40px rgba(112, 144, 176, 0.12)",
         "unset"
     );
     const columns = useMemo(() => columnsData, [columnsData]);
-    const data = useMemo(() => tableData, [tableData]);
+    const data = useMemo(() => tabledata, [tabledata]);
     const textColorSecondary = "gray.400";
     const { ...rest } = props;
     const iconColor = useColorModeValue("brand.500", "white");
@@ -136,7 +391,11 @@ export default function ColumnsTable(props) {
     });
     const [errors, setErrors] = useState({});
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        if (e.target.type === "file") {
+            setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+        } else {
+            setFormData({ ...formData, [e.target.name]: e.target.value });
+        }
     };
     const validateForm = async () => {
         let errors = {};
@@ -174,7 +433,7 @@ export default function ColumnsTable(props) {
         }
 
         try {
-            const emailResponse = await axios.get(`http://localhost:8080/api/auth/check/email/${formData.email}`);
+            const emailResponse = await api.get(`http://localhost:9090/api/auth/check/email/${formData.email}`);
             if (emailResponse.data.exists) {
                 errors.email = 'Email already in use';
             }
@@ -183,7 +442,7 @@ export default function ColumnsTable(props) {
         }
 
         try {
-            const usernameResponse = await axios.get(`http://localhost:8080/api/auth/check/username/${formData.username}`);
+            const usernameResponse = await api.get(`http://localhost:9090/api/auth/check/username/${formData.username}`);
             if (usernameResponse.data.exists) {
                 errors.username = 'Username already taken';
             }
@@ -192,7 +451,7 @@ export default function ColumnsTable(props) {
         }
 
         try {
-            const cinResponse = await axios.get(`http://localhost:8080/api/auth/check/cin/${formData.cinNumber}`);
+            const cinResponse = await api.get(`http://localhost:9090/api/auth/check/cin/${formData.cinNumber}`);
             if (cinResponse.data.exists) {
                 errors.cinNumber = 'CIN is invalid';
             }
@@ -201,7 +460,7 @@ export default function ColumnsTable(props) {
         }
 
         try {
-            const phoneResponse = await axios.get(`http://localhost:8080/api/auth/check/phone/${formData.phoneNumber}`);
+            const phoneResponse = await api.get(`http://localhost:9090/api/auth/check/phone/${formData.phoneNumber}`);
             if (phoneResponse.data.exists) {
                 errors.phoneNumber = 'Phone number is invalid';
             }
@@ -216,16 +475,30 @@ export default function ColumnsTable(props) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const isValid = await validateForm();
-        console.log("Submitting form");
         if (isValid) {
             try {
-                const response = await axios.post(
-                    "http://localhost:8080/api/auth/registerAdmin",
-                    formData
+                const formDataToSend = new FormData();
+                formDataToSend.append("image", formData.profilePicture); // Use "image" as the key
+
+                const uploadResponse = await api.post(
+                    "http://localhost:9090/api/image/uploadimage",
+                    formDataToSend,
+                    {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                    }
+                );
+
+                const profilePictureUrl = uploadResponse.data.downloadURL[0];
+                const formDataWithProfilePicture = { ...formData, profilePicture: profilePictureUrl };
+
+                const registerResponse = await api.post(
+                    "http://localhost:9090/api/auth/registerAdmin",
+                    formDataWithProfilePicture
                 );
                 fetchData()
                 closeModalA()
-                console.log(response.data);
             } catch (error) {
                 console.error("Error registering admin:", error);
             }
@@ -380,9 +653,11 @@ export default function ColumnsTable(props) {
                                     <FormLabel>Profile picture</FormLabel>
                                     <Input type="file"
                                         name="profilePicture"
-                                        value={formData.profilePicture}
                                         onChange={handleChange}
                                     />
+                                    {formData.profilePicture && (
+                                        <p>Selected file: {formData.profilePicture.name}</p>
+                                    )}
                                 </FormControl>
                             </ModalBody>
                             {errors.name && <Text color="red">{errors.name}</Text>}
@@ -407,6 +682,205 @@ export default function ColumnsTable(props) {
             </Flex>
 
 
+
+
+
+
+            <AlertDialog
+                isOpen={isDeleteDialogOpen}
+                leastDestructiveRef={cancelref}
+                onClose={canceldelete}
+            >
+                <AlertDialogOverlay>
+                    <AlertDialogContent>
+                        <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                            Delete User
+                        </AlertDialogHeader>
+
+                        <AlertDialogBody>
+                            Are you sure you want to delete this user?
+                        </AlertDialogBody>
+
+                        <AlertDialogFooter>
+                            <Button ref={cancelref} onClick={canceldelete}>
+                                Cancel
+                            </Button>
+                            <Button colorScheme="red" onClick={handledelete} ml={3}>
+                                Delete
+                            </Button>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialogOverlay>
+            </AlertDialog>
+
+
+
+
+            <Modal isOpen={isModalViewOpen} onClose={closeModalViewA}>
+                <ModalOverlay />
+                <ModalContent maxW={'800px'}>
+                    <ModalHeader>Admin Information</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        {adminInfo && (
+                            <>
+                                <img src={adminInfo.profilePicture} alt="Profile Picture" style={{ maxWidth: "250px", maxHeight: "250px", borderRadius: "50%", margin: "auto" }} />
+                                <Card mb={{ base: "0px", "2xl": "20px" }} {...rest}>
+                                    <Text
+                                        color={textColorPrimary}
+                                        fontWeight='bold'
+                                        fontSize='2xl'
+                                        mt='10px'
+                                        mb='4px'
+                                        style={{ margin: "auto" }}>
+                                        {adminInfo.name} {adminInfo.lastname}
+                                    </Text>
+                                    <Text color={textColorSecondary} fontSize='md' me='26px' mb='40px'
+                                        style={{ margin: "auto" }}>
+                                        @{adminInfo.username}
+                                    </Text>
+                                    <br />
+                                    <SimpleGrid columns='2' gap='20px'>
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Email'
+                                            value={adminInfo.email}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Role'
+                                            value={adminInfo.role}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Phone number'
+                                            value={adminInfo.phoneNumber}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='CIN'
+                                            value={adminInfo.cinNumber}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Status'
+                                            value={adminInfo.isEmailVerified ? 'Verified' : 'Not Verified'}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Birthday'
+                                            value={adminInfo.dateOfBirth ? adminInfo.dateOfBirth.substring(0, 10) : "N/A"}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Password'
+                                            value='**************'
+                                        />
+                                    </SimpleGrid>
+                                </Card>
+                            </>
+                        )}
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
+
+
+
+
+
+            <Modal isOpen={isEditModalOpen} onClose={closeEditModal}>
+                <ModalOverlay />
+                <ModalContent maxW={'800px'}>
+                    <ModalHeader>Edit User</ModalHeader>
+                    <ModalCloseButton />
+                    {editedUser && (
+                        <ModalBody>
+                            <FormControl id="profilePicture" mt={4}>
+                                <img src={editedUser.profilePicture} alt="Profile Picture" style={{ maxWidth: "250px", maxHeight: "250px", borderRadius: "50%", margin: "auto" }} />
+                                <input type="file" name="profilePicture" onChange={handleProfilePictureChange} />
+                            </FormControl>
+                            <Grid templateColumns="1fr 1fr" gap={4}>
+                                <FormControl id="name" mt={4}>
+                                    <FormLabel>Name</FormLabel>
+                                    <Input type="text" value={editedUser.name} onChange={(e) => { setEditedUser({ ...editedUser, name: e.target.value }); validateName(e.target.value); }} />
+                                </FormControl>
+                                <FormControl id="lastname" mt={4}>
+                                    <FormLabel>Lastname</FormLabel>
+                                    <Input type="text" value={editedUser.lastname} onChange={(e) => { setEditedUser({ ...editedUser, lastname: e.target.value }); validateLastname(e.target.value); }} />
+                                </FormControl>
+                            </Grid>
+                            <Grid templateColumns="1fr 1fr" gap={4}>
+                                <FormControl id="email" mt={4}>
+                                    <FormLabel>Email</FormLabel>
+                                    <Input type="email" value={editedUser.email} onChange={(e) => { setEditedUser({ ...editedUser, email: e.target.value }); validateEmail(e.target.value); }} />
+                                </FormControl>
+                                <FormControl id="username" mt={4}>
+                                    <FormLabel>Username</FormLabel>
+                                    <Input type="text" value={editedUser.username} onChange={(e) => { setEditedUser({ ...editedUser, username: e.target.value }); validateUsername(e.target.value); }} />
+                                </FormControl>
+                            </Grid>
+                            <Grid templateColumns="1fr 1fr" gap={4}>
+                                <FormControl id="password" mt={4}>
+                                    <FormLabel>Password</FormLabel>
+                                    <InputGroup size='md'>
+                                        <Input type={show ? "text" : "password"} onChange={(e) => { setEditedUser({ ...editedUser, password: e.target.value }); validatePassword(e.target.value); }} />
+                                        <InputRightElement display='flex' alignItems='center' mt='1px'>
+                                            <Icon
+                                                color={textColorSecondary}
+                                                _hover={{ cursor: "pointer" }}
+                                                as={show ? RiEyeCloseLine : MdOutlineRemoveRedEye}
+                                                onClick={handleClick}
+                                            />
+                                        </InputRightElement>
+                                    </InputGroup>
+                                </FormControl>
+
+                                <FormControl mt={4}>
+                                    <FormLabel>Password Confirmation</FormLabel>
+                                    <InputGroup size='md'>
+                                        <Input
+                                            type={show ? "text" : "password"}
+                                            onChange={(e) => { setEditedUser({ ...editedUser, confirmPassword: e.target.value }); validateConfirmPassword(e.target.value); }}
+                                        />
+                                        <InputRightElement display='flex' alignItems='center' mt='1px'>
+                                            <Icon
+                                                color={textColorSecondary}
+                                                _hover={{ cursor: "pointer" }}
+                                                as={show ? RiEyeCloseLine : MdOutlineRemoveRedEye}
+                                                onClick={handleClick}
+                                            />
+                                        </InputRightElement>
+                                    </InputGroup>
+                                </FormControl>
+                            </Grid>
+
+                            <Grid templateColumns="1fr 1fr" gap={4}>
+                                <FormControl id="phoneNumber" mt={4}>
+                                    <FormLabel>Phone Number</FormLabel>
+                                    <Input type="number" value={editedUser.phoneNumber} onChange={(e) => { setEditedUser({ ...editedUser, phoneNumber: parseInt(e.target.value) }); validatePhoneNumber(e.target.value); }} />
+                                </FormControl>
+                                <FormControl id="cinNumber" mt={4}>
+                                    <FormLabel>CIN Number</FormLabel>
+                                    <Input type="number" value={editedUser.cinNumber} onChange={(e) => { setEditedUser({ ...editedUser, cinNumber: parseInt(e.target.value) }); validateCIN(e.target.value); }} />
+                                </FormControl>
+                            </Grid>
+
+                        </ModalBody>
+                    )}
+                    {errorsEdit.name && <Text color="red">{errorsEdit.name}</Text>}
+                    {errorsEdit.lastname && <Text color="red">{errorsEdit.lastname}</Text>}
+                    {errorsEdit.email && <Text color="red">{errorsEdit.email}</Text>}
+                    {errorsEdit.username && <Text color="red">{errorsEdit.username}</Text>}
+                    {errorsEdit.password && <Text color="red">{errorsEdit.password}</Text>}
+                    {errorsEdit.confirmPassword && <Text color="red">{errorsEdit.confirmPassword}</Text>}
+                    {errorsEdit.cinNumber && <Text color="red">{errorsEdit.cinNumber}</Text>}
+                    {errorsEdit.phoneNumber && <Text color="red">{errorsEdit.phoneNumber}</Text>}
+                    <ModalFooter>
+                        <Button colorScheme="blue" mr={3} onClick={handleSaveEdit}>Save</Button>
+                        <Button onClick={closeEditModal}>Cancel</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
 
 
 
@@ -482,9 +956,7 @@ export default function ColumnsTable(props) {
                                         );
                                     } else if (cell.column.Header === "Profile picture") {
                                         data = (
-                                            <Text color={textColor} fontSize='sm' fontWeight='700'>
-                                                {cell.value}
-                                            </Text>
+                                            <img src={cell.value} alt="Profile Picture" style={{ maxWidth: "50px", maxHeight: "50px", borderRadius: "50%" }} />
                                         );
                                     } else if (cell.column.Header === "Password") {
                                         data = (
@@ -541,36 +1013,9 @@ export default function ColumnsTable(props) {
                                                     me='5px'
                                                     color={"green.500"}
                                                     cursor="pointer"
-                                                /*onClick={() => handleEdit(row.original)}*/
+                                                    onClick={() => handleEdit(row.original)}
                                                 />
                                                 {/* Delete icon */}
-                                                <AlertDialog
-                                                    isOpen={isDeleteDialogOpen}
-                                                    leastDestructiveRef={cancelRef}
-                                                    onClose={cancelDelete}
-                                                >
-                                                    <AlertDialogOverlay>
-                                                        <AlertDialogContent>
-                                                            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                                                                Delete User
-                                                            </AlertDialogHeader>
-
-                                                            <AlertDialogBody>
-                                                                Are you sure you want to delete this user?
-                                                            </AlertDialogBody>
-
-                                                            <AlertDialogFooter>
-                                                                <Button ref={cancelRef} onClick={cancelDelete}>
-                                                                    Cancel
-                                                                </Button>
-                                                                <Button colorScheme="red" onClick={handleDelete} ml={3}>
-                                                                    Delete
-                                                                </Button>
-                                                            </AlertDialogFooter>
-                                                        </AlertDialogContent>
-                                                    </AlertDialogOverlay>
-                                                </AlertDialog>
-
                                                 <DeleteIcon
                                                     w='20px'
                                                     h='20px'
@@ -588,70 +1033,6 @@ export default function ColumnsTable(props) {
                                                     cursor="pointer"
                                                     onClick={() => handleView(row.original)}
                                                 />
-                                                <Modal isOpen={isModalViewOpen} onClose={closeModalViewA}>
-                                                    <ModalOverlay />
-                                                    <ModalContent maxW={'800px'}>
-                                                        <ModalHeader>Admin Information</ModalHeader>
-                                                        <ModalCloseButton />
-                                                        <ModalBody>
-                                                            {adminInfo && (
-                                                                <>
-                                                                    {adminInfo.profilePicture}
-                                                                    <Card mb={{ base: "0px", "2xl": "20px" }} {...rest}>
-                                                                        <Text
-                                                                            color={textColorPrimary}
-                                                                            fontWeight='bold'
-                                                                            fontSize='2xl'
-                                                                            mt='10px'
-                                                                            mb='4px'>
-                                                                            {adminInfo.name} {adminInfo.lastname}
-                                                                        </Text>
-                                                                        <Text color={textColorSecondary} fontSize='md' me='26px' mb='40px'>
-                                                                            @{adminInfo.username}
-                                                                        </Text>
-                                                                        <SimpleGrid columns='2' gap='20px'>
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Email'
-                                                                                value={adminInfo.email}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Role'
-                                                                                value={adminInfo.role}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Phone number'
-                                                                                value={adminInfo.phoneNumber}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='CIN'
-                                                                                value={adminInfo.cinNumber}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Status'
-                                                                                value={adminInfo.isEmailVerified ? 'Verified' : 'Not Verified'}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Birthday'
-                                                                                value={adminInfo.dateOfBirth ? adminInfo.dateOfBirth.substring(0, 10) : "N/A"}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Password'
-                                                                                value='**************'
-                                                                            />
-                                                                        </SimpleGrid>
-                                                                    </Card>
-                                                                </>
-                                                            )}
-                                                        </ModalBody>
-                                                    </ModalContent>
-                                                </Modal>
                                             </Flex>
                                         );
                                     }

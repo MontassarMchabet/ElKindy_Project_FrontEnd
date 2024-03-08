@@ -100,8 +100,7 @@ const HeaderOne = () => {
                             ["/", "/home-two", "/home-three"].includes(
                               pathname
                             ) && "active"
-                          )}
-                        >
+                          )}>
 
                           <a href="#">Home</a>
                           <ul className="sub-menu">

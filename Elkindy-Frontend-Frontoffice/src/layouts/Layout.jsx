@@ -3,6 +3,7 @@ import FooterOne from "../components/Footers/FooterOne";
 import FooterThree from "../components/Footers/FooterThree";
 import FooterTwo from "../components/Footers/FooterTwo";
 import HeaderOne from "../components/Headers/HeaderOne";
+import HeaderElKindy from "../components/Headers/HeaderElKindy";
 import HeaderTwo from "../components/Headers/HeaderTwo";
 import Preloader from "../components/Preloader/Preloader";
 import ScrollTop from "../components/ScrollTop/ScrollTop";
@@ -16,6 +17,7 @@ const Layout = ({ children, header = 1, footer, className, mainClassName }) => {
       <div className={className}>
         {header === 1 && <HeaderOne />}
         {header === 2 && <HeaderTwo />}
+        {header === 4 && <HeaderElKindy />}
 
         <main className={mainClassName}>{children}</main>
 
