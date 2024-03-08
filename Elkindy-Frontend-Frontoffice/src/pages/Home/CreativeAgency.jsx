@@ -8,6 +8,7 @@ import TeamAreaTwo from "../../components/Team/TeamAreaTwo";
 import TestimonialArea from "../../components/Testimonial/TestimonialArea";
 import Layout from "../../layouts/Layout";
 import ProjectAreaThree from "../../components/Project/ProjectAreaThree";
+import EventsAreaThree from "../../components/Events/AllEvents/InnerEventArea";
 import InnerServicesArea from "../../components/ServicesArea/InnerServicesArea";
 import HistoryArea from "../../components/HistoryArea/HistoryArea";
 import ProjectDetailsArea from "../../components/Project/ProjectDetailsArea";
@@ -26,6 +27,8 @@ const CreativeAgency = () => {
       <TeamAreaTwo />
       <br /><br /><br /><br />
       <ProjectAreaThree />
+      
+      <EventsAreaThree />
 
       <TestimonialArea />
       <BlogAreaThree />

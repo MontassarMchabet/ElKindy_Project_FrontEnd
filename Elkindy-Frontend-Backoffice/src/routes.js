@@ -12,10 +12,14 @@ import {
 // Admin Imports
 import MainDashboard from "views/admin/default";
 import NFTMarketplace from "views/admin/marketplace";
+import Events from "views/admin/events";
 import Profile from "views/admin/profile";
 import DataTables from "views/admin/dataTables";
 import RTL from "views/admin/rtl";
 import UserTables from "views/admin/userTables";
+
+import Tickets from "views/admin/tickets";
+
 import productTable from "views/admin/productTable";
 
 // Auth Imports
@@ -54,6 +58,20 @@ const routes = [
     secondary: true,
   },
   {
+    name: "Evenements ElKindy",
+    layout: "/admin",
+    path: "/event",
+    icon: (
+      <Icon
+        as={MdOutlineShoppingCart}
+        width='20px'
+        height='20px'
+        color='inherit'
+      />
+    ),
+    component: Events,
+    secondary: true,
+
     name: "Products",
     layout: "/admin",
     icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
@@ -73,6 +91,12 @@ const routes = [
     icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
     path: "/users",
     component: UserTables,
+  },
+  {
+    
+    layout: "/admin",
+    path: "/:eventId/tickets",
+    component: Tickets,
   },
 ];
 

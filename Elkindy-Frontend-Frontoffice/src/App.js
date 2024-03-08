@@ -13,6 +13,7 @@ import ServicesDetailsPage from "./pages/ServicesDetailsPage";
 import ContactPage from "./pages/ContactPage";
 import BlogPage from "./pages/Blog/BlogPage";
 import BlogDetailsPage from "./pages/Blog/BlogDetailsPage";
+import EventsPage from "./pages/Events/EventsPage.jsx";
 import AnimatedCursor from "react-animated-cursor";
 import Home from "./pages/shop/pages/Home";
 import OurStore from "./pages/shop/pages/OurStore";
@@ -81,6 +82,9 @@ function App() {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog-details" element={<BlogDetailsPage />} />
+
+        <Route path="/events" element={<EventsPage />} />
+
         <Route path="/shop" element={<Home />} />
         <Route path="/shop/products" element={<OurStore />} />
         <Route path="/shop/products/id" element={<SingleProduct />} />

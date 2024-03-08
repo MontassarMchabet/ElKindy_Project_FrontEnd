@@ -115,13 +115,15 @@ const HeaderOne = () => {
                             >
                               <Link to="/home-three">Digital Agency</Link>
                             </li>
+                            
                           </ul>
                         </li>
 
                         <li className={cn(isActiveClassName("/about-us"))}>
                           <Link to="/about-us">About Us</Link>
                         </li>
-
+                        
+                        
 
                         <li
                           className={cn(
@@ -191,6 +193,10 @@ const HeaderOne = () => {
                               <Link to="/blog-details">Blog Details</Link>
                             </li>
                           </ul>
+                          
+                        </li>
+                        <li className={cn(isActiveClassName("/events"))}>
+                          <Link to="/events">Events</Link>
                         </li>
 
                         <Link to="/shop">
