@@ -15,6 +15,15 @@ import BlogPage from "./pages/Blog/BlogPage";
 import BlogDetailsPage from "./pages/Blog/BlogDetailsPage";
 import EventsPage from "./pages/Events/EventsPage.jsx";
 import AnimatedCursor from "react-animated-cursor";
+import Home from "./pages/shop/pages/Home";
+import OurStore from "./pages/shop/pages/OurStore";
+import SingleProduct from "./pages/shop/pages/SingleProduct";
+import Wishlist from "./pages/shop/pages/Wishlist";
+import CompareProduct from "./pages/shop/pages/CompareProduct";
+
+import AccountComponent from "./pages/Account";
+import ExamsComponent from "./pages/Exams";
+ 
 
 function App() {
   useEffect(() => {
@@ -60,18 +69,31 @@ function App() {
 
       <Routes>
         <Route path="/" element={<CreativeAgency />} />
-        <Route path="/home-two" element={<PersonalPortfolio />} />
-        <Route path="/home-three" element={<DigitalAgency />} />
+        <Route path="/account" element={<AccountComponent />} />
+        <Route path="/exams" element={<ExamsComponent />} />
+        {/* <Route path="/home-two" element={<PersonalPortfolio />} />
+        <Route path="/home-three" element={<DigitalAgency />} /> */}
         <Route path="/about-us" element={<AboutUs />} />
-        <Route path="/about-me" element={<AboutMe />} />
+        {/* <Route path="/about-me" element={<AboutMe />} />
         <Route path="/team" element={<TeamPage />} />
         <Route path="/team-details" element={<TeamPageDetails />} />
         <Route path="/project-details" element={<PortfolioDetailsPage />} />
-        <Route path="/services-details" element={<ServicesDetailsPage />} />
+        <Route path="/services-details" element={<ServicesDetailsPage />} /> */}
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog-details" element={<BlogDetailsPage />} />
+
         <Route path="/events" element={<EventsPage />} />
+
+        <Route path="/shop" element={<Home />} />
+        <Route path="/shop/products" element={<OurStore />} />
+        <Route path="/shop/products/id" element={<SingleProduct />} />
+        <Route path="/shop/wishlist" element={<Wishlist />} />
+        <Route path="/shop/compare-product" element={<CompareProduct />} />
+
+        {/* <Route path="/blog" element={<BlogPage />} />
+        <Route path="/blog-details" element={<BlogDetailsPage />} /> */}
+ 
       </Routes>
     </>
   );

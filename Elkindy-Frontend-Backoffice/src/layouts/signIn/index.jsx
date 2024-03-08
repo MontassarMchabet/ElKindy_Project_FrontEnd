@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from "services/api";
 import { NavLink } from "react-router-dom";
 import { useHistory } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
+import Cookies from 'js-cookie';
+
 // Chakra imports
 import {
   Box,
@@ -28,7 +31,6 @@ import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiEyeCloseLine } from "react-icons/ri";
 
 function SignIn() {
-  // Chakra color mode
   const textColor = useColorModeValue("navy.700", "white");
   const textColorSecondary = "gray.400";
   const textColorDetails = useColorModeValue("navy.700", "secondaryGray.600");
@@ -60,25 +62,29 @@ function SignIn() {
     const isEmail = /\S+@\S+\.\S+/.test(email);
     try {
       const response = isEmail
-        ? await axios.post('http://localhost:8080/api/auth/loginEmail', { email, password })
-        : await axios.post('http://localhost:8080/api/auth/loginUsername', { username: email, password });
+        ? await api.post('http://localhost:9090/api/auth/loginEmail', { email, password })
+        : await api.post('http://localhost:9090/api/auth/loginUsername', { username: email, password });
 
-      const { token, username } = response.data;
+      const { token, refreshToken } = response.data;
+      
       localStorage.setItem('token', token);
-      localStorage.setItem('username', username);
+      localStorage.setItem('refreshToken', refreshToken);
+      Cookies.set('token', token);
+      Cookies.set('refreshToken', refreshToken);
+
+      const decodedToken = jwtDecode(token);
+      const { userId, role } = decodedToken;
+
       setError('');
-      handleUserRole(username);
+      handleUserRole(role);
     } catch (error) {
       setError('Invalid Email, Username or password');
       console.error('Error logging in:', error);
     }
   };
 
-  const handleUserRole = async (username) => {
+  const handleUserRole = async (role) => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/auth/check/username/${username}`);
-      const { role } = response.data;
-
       if (role === 'admin') {
         history.push('/admin/dashboard');
       } else if (role === 'client' || role === 'prof') {
@@ -96,10 +102,24 @@ function SignIn() {
   const handleClick = () => setShow(!show);
 
   const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
-    const username = localStorage.getItem('username');
-    if (username) {
-      handleUserRole(username);
+    const token = localStorage.getItem('token');
+
+    if (token && typeof token === 'string') {
+      try {
+        const decodedToken = jwtDecode(token);
+        const { userId, role } = decodedToken;
+
+        if (role) {
+          handleUserRole(role);
+        } else {
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error('Error decoding token:', error);
+        setIsLoading(false);
+      }
     } else {
       setIsLoading(false);
     }
@@ -244,7 +264,7 @@ function SignIn() {
                     Keep me logged in
                   </FormLabel>
                 </FormControl>
-                <NavLink to='/auth/forgot-password'>
+                <NavLink to='/forgot-password'>
                   <Text
                     color={textColorBrand}
                     fontSize='sm'

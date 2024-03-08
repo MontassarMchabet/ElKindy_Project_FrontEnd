@@ -100,8 +100,7 @@ const HeaderOne = () => {
                             ["/", "/home-two", "/home-three"].includes(
                               pathname
                             ) && "active"
-                          )}
-                        >
+                          )}>
 
                           <a href="#">Home</a>
                           <ul className="sub-menu">
@@ -199,6 +198,18 @@ const HeaderOne = () => {
                         <li className={cn(isActiveClassName("/events"))}>
                           <Link to="/events">Events</Link>
                         </li>
+
+                        <Link to="/shop">
+                          <li
+                            className={cn(
+                              "menu-item",
+                              ["/shop"].includes(pathname) &&
+                              "active"
+                            )}>
+                            <a>Shop</a>
+                          </li>
+                        </Link>
+
                       </ul>
                     </div>
 

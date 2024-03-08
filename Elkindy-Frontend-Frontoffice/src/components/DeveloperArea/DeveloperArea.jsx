@@ -7,19 +7,19 @@ const DeveloperArea = () => {
     <section className="developr-area pb-120">
       <div className="container">
         <div className="row align-items-center justify-content-center">
-          <div className="col-lg-6 col-md-9 order-0 order-lg-2">
+          {/* <div className="col-lg-6 col-md-9 order-0 order-lg-2">
             <DeveloperExperienceArea />
-          </div>
+          </div> */}
 
           <div className="col-lg-6">
             <div className="developr-content">
-              <div className="section-title title-style-two mb-50">
+              {/* <div className="section-title title-style-two mb-50">
                 <span className="sub-title">I’m a Developer</span>
                 <h2 className="title">
                   I Develop Ideas <br />
                   That Help People
                 </h2>
-              </div>
+              </div> */}
 
               {/* tabs */}
               <DeveloperAreaTabs />

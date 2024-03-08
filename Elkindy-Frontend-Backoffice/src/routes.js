@@ -17,7 +17,10 @@ import Profile from "views/admin/profile";
 import DataTables from "views/admin/dataTables";
 import RTL from "views/admin/rtl";
 import UserTables from "views/admin/userTables";
+
 import Tickets from "views/admin/tickets";
+
+import productTable from "views/admin/productTable";
 
 // Auth Imports
 import SignInCentered from "views/auth/signIn";
@@ -68,6 +71,12 @@ const routes = [
     ),
     component: Events,
     secondary: true,
+
+    name: "Products",
+    layout: "/admin",
+    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+    path: "/products",
+    component: productTable,
   },
   {
     name: "Data Tables",
