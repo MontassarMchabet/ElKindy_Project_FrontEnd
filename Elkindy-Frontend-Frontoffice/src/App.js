@@ -14,8 +14,15 @@ import ContactPage from "./pages/ContactPage";
 import BlogPage from "./pages/Blog/BlogPage";
 import BlogDetailsPage from "./pages/Blog/BlogDetailsPage";
 import AnimatedCursor from "react-animated-cursor";
+import Home from "./pages/shop/pages/Home";
+import OurStore from "./pages/shop/pages/OurStore";
+import SingleProduct from "./pages/shop/pages/SingleProduct";
+import Wishlist from "./pages/shop/pages/Wishlist";
+import CompareProduct from "./pages/shop/pages/CompareProduct";
+
 import AccountComponent from "./pages/Account";
 import ExamsComponent from "./pages/Exams";
+ 
 
 function App() {
   useEffect(() => {
@@ -72,8 +79,17 @@ function App() {
         <Route path="/project-details" element={<PortfolioDetailsPage />} />
         <Route path="/services-details" element={<ServicesDetailsPage />} /> */}
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/blog" element={<BlogPage />} />
+        <Route path="/blog-details" element={<BlogDetailsPage />} />
+        <Route path="/shop" element={<Home />} />
+        <Route path="/shop/products" element={<OurStore />} />
+        <Route path="/shop/products/id" element={<SingleProduct />} />
+        <Route path="/shop/wishlist" element={<Wishlist />} />
+        <Route path="/shop/compare-product" element={<CompareProduct />} />
+
         {/* <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog-details" element={<BlogDetailsPage />} /> */}
+ 
       </Routes>
     </>
   );

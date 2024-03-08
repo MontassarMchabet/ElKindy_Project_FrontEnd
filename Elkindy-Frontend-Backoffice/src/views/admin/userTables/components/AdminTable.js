@@ -316,6 +316,7 @@ export default function ColumnsTable(props) {
     const textColorSecondary = "gray.400";
     const { ...rest } = props;
     const iconColor = useColorModeValue("brand.500", "white");
+    /////////////////////////////////////////////////
     const tableInstance = useTable(
         {
             columns,
@@ -335,7 +336,7 @@ export default function ColumnsTable(props) {
         initialState,
     } = tableInstance;
     initialState.pageSize = 99999999999999999;
-
+////////////////////////////////////////////////////////////////
     const textColor = useColorModeValue("secondaryGray.900", "white");
     const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
     const {
