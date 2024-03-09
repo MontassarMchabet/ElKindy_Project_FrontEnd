@@ -68,8 +68,6 @@ function SignIn() {
 
       const { token, refreshToken } = response.data;
       
-      localStorage.setItem('token', token);
-      localStorage.setItem('refreshToken', refreshToken);
       Cookies.set('token', token);
       Cookies.set('refreshToken', refreshToken);
 

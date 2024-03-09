@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import Cookies from 'js-cookie';
 
 const PrivateRoute = ({ component: Component, allowedRoles, ...rest }) => {
     const [userRole, setUserRole] = useState(null);
@@ -9,7 +10,7 @@ const PrivateRoute = ({ component: Component, allowedRoles, ...rest }) => {
     useEffect(() => {
         const fetchUserRole = async () => {
             try {
-                const token = localStorage.getItem('token');
+                const token = Cookies.get('token');
                 if (token) {
                     const decodedToken = jwtDecode(token);
                     const { role } = decodedToken;
