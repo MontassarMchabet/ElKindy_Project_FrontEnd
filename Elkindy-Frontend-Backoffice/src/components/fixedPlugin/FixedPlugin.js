@@ -22,7 +22,7 @@ export default function FixedPlugin(props) {
       right={document.documentElement.dir === "rtl" ? "" : "35px"}
       bottom='30px'
       border='1px solid'
-      borderColor='black'
+      borderColor='#6A53FF'
       borderRadius='50px'
       onClick={toggleColorMode}
       display='flex'
