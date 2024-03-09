@@ -1,5 +1,5 @@
 import React from "react";
-import { AddIcon } from '@chakra-ui/icons'
+
 // Chakra imports
 import {
   Icon,

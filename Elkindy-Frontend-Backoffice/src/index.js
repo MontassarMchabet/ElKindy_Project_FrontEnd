@@ -4,6 +4,11 @@ import 'assets/css/App.css';
 import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
 import AuthLayout from 'layouts/auth';
 import AdminLayout from 'layouts/admin';
+import TicketComponent from './views/admin/tickets/index'
+import CommentComponent from './views/admin/comments/index'
+import EventComponent from './views/admin/events/index'
+import RtlLayout from 'layouts/rtl';
+
 import HomeLayout from './FrontOffice/layouts/home';
 import SigninLayout from 'layouts/signIn';
 import SignupLayout from 'layouts/signUp';
@@ -13,6 +18,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import theme from 'theme/theme';
 import { ThemeEditorProvider } from '@hypertheme-editor/chakra-ui';
 import PrivateRoute from 'components/privateRoute/PrivateRoute';
+
 
 const App = () => {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -38,6 +44,8 @@ const App = () => {
 							{/* Routes accessible only to authenticated users with specific roles */}
 							<PrivateRoute path="/admin" component={AdminLayout} allowedRoles={['admin']} isLoggedIn={isLoggedIn} />
 							{/* Redirect any other path to home */}
+							<Route path="/event/:eventId/tickets" component={TicketComponent} />
+						<Route path="/event/:eventId/comments" component={CommentComponent} />
 							<Redirect from="/" to="/home" />
 						</Switch>
 					</HashRouter>
@@ -48,3 +56,4 @@ const App = () => {
 };
 
 ReactDOM.render(<App />, document.getElementById('root'));
+
