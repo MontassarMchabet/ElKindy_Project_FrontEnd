@@ -54,7 +54,7 @@ export default function HeaderLinks(props) {
 	useEffect(() => {
 		const fetchUserData = async () => {
 			try {
-				const token = localStorage.getItem('token');
+				const token = Cookies.get('token');
 				const decodedToken = jwtDecode(token);
 				const { userId, role } = decodedToken;
 
@@ -171,23 +171,28 @@ export default function HeaderLinks(props) {
 							fontSize="sm"
 							fontWeight="700"
 							color={textColor}>
-							👋&nbsp; Hey, Adela
+							👋&nbsp; Hey, {`${user?.name} ${user?.lastname}`}
 						</Text>
 					</Flex>
 					<Flex flexDirection="column" p="10px">
+
+						<MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} borderRadius="8px" px="14px">
+							<a href="http://localhost:3001/" fontSize="sm">Home</a>
+						</MenuItem>
 
 						<NavLink to="/admin/profile" style={{ textDecoration: "none" }}>
 							<MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} borderRadius="8px" px="14px">
 								<Text fontSize="sm">Profile</Text>
 							</MenuItem>
 						</NavLink>
+						
 						<MenuItem
 							_hover={{ bg: 'none' }}
 							_focus={{ bg: 'none' }}
 							color="red.400"
 							borderRadius="8px"
 							px="14px">
-							<Text fontSize="sm">Log out</Text>
+							<Text onClick={handleLogout} fontSize="sm">Log out</Text>
 						</MenuItem>
 					</Flex>
 				</MenuList>

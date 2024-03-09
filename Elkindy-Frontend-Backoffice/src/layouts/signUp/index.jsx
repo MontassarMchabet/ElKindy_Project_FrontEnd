@@ -150,8 +150,6 @@ function SignUp() {
                     );
                     const { token, refreshToken } = response.data;
 
-                    localStorage.setItem('token', token);
-                    localStorage.setItem('refreshToken', refreshToken);
                     localStorage.removeItem('verificationCode');
 
                     Cookies.set('token', token);

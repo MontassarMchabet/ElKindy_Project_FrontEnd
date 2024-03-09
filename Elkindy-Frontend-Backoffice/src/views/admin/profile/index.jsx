@@ -9,7 +9,7 @@ import Notifications from "views/admin/profile/components/Notifications";
 import Projects from "views/admin/profile/components/Projects";
 import Storage from "views/admin/profile/components/Storage";
 import Upload from "views/admin/profile/components/Upload";
-
+import Cookies from 'js-cookie';
 // Assets
 import banner from "assets/img/auth/eee.jpg";
 import avatar from "assets/img/avatars/avatarons.jpg";
@@ -22,7 +22,7 @@ export default function Overview() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = Cookies.get('token');
         const decodedToken = jwtDecode(token);
         const { userId, role } = decodedToken;
 

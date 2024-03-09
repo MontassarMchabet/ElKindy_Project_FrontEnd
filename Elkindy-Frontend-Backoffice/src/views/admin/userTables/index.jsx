@@ -90,6 +90,7 @@ export default function Settings() {
     const handledelete = async () => {
         setIsDeleteDialogOpen(false);
         try {
+            console.log(deletingUserId);
             await api.delete(`http://localhost:9090/api/auth/deleteUser/${deletingUserId}`);
             fetchData();
         } catch (error) {
