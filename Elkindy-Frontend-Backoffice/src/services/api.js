@@ -33,7 +33,7 @@ instance.interceptors.response.use(
                 originalConfig._retry = true;
 
                 try {
-                    const rs = await instance.post("/api/auth/refreshtoken", {
+                    const rs = await instance.post("/auth/refreshtoken", {
                         refreshToken: Cookies.get("refreshToken"),
                     });
 

@@ -201,8 +201,30 @@ const HeaderOne = () => {
                                                             </>
                                                         ) : (
                                                             <>
-                                                                <a href="http://localhost:3000/elkindy#/signin">Sign in</a>
-                                                                <a href="http://localhost:3000/elkindy#/signup">Sign up</a>
+                                                                <button style={{
+                                                                    borderRadius: "55px",
+                                                                    width: "100px",
+                                                                    height: "40px",
+                                                                    backgroundColor: "transparent",
+                                                                    border: "none"
+                                                                }}>
+                                                                    <a
+                                                                        style={{ color: "#6c757d", textDecoration: "none", display: "inline-block", width: "100%", height: "100%", lineHeight: "40px" }}
+                                                                        href="http://localhost:3000/elkindy#/signin"
+                                                                    >Sign in</a>
+                                                                </button>
+                                                                <button style={{
+                                                                    marginLeft: "10px",
+                                                                    borderRadius: "55px",
+                                                                    width: "100px",
+                                                                    backgroundColor: "transparent",
+                                                                    border: "1px solid #6c757d"
+                                                                }}>
+                                                                    <a
+                                                                        style={{ color: "#6c757d", textDecoration: "none", display: "inline-block", width: "100%", height: "100%", lineHeight: "40px" }}
+                                                                        href="http://localhost:3000/elkindy#/signup"
+                                                                    >Sign up</a>
+                                                                </button>
                                                             </>
                                                         )}
 

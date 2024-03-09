@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { jwtDecode } from 'jwt-decode';
 import api from '../../services/api';
 import Cookies from 'js-cookie';
+import { MdEdit } from "react-icons/md";
 
 const DeveloperAreaTabs = () => {
   const [user, setUser] = useState(null);
@@ -23,13 +24,27 @@ const DeveloperAreaTabs = () => {
     };
     fetchUserData();
   }, []);
+  ////////////////////////////////////////////////////////////** */
+  //EDIT ADMIN
 
   return (
     <>
-      <img
-        src={`${user?.profilePicture}`}
-        style={{ boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)", width: "200px", height: "200px", borderRadius: "50%", marginLeft: "230px", marginBottom: "15px" }}
-      />
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ display: 'inline-block' }}>
+          <img
+            src={`${user?.profilePicture}`}
+            style={{ boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)", width: "200px", height: "200px", borderRadius: "50%", marginBottom: "15px" }}
+          />
+        </div>
+        <br />
+        <div>
+          <MdEdit
+            size={30}
+            style={{ margin: "auto", display: 'block', color: "green" }}
+            // onClick={handleShow}
+          />
+        </div>
+      </div>
 
       <ul className="nav nav-tabs" id="myTab" role="tablist" style={{ marginTop: "30px" }}>
         <li className="nav-item" role="presentation">
@@ -55,122 +70,209 @@ const DeveloperAreaTabs = () => {
           aria-labelledby="details-tab"
           tabIndex="0">
           <div className="developer-info-wrap">
-            <div className="row">
-              <div className="col-md-6">
-                <ul className="list-wrap">
-                  <li>
-                    <div className="icon">
-                      <img src="/img/icon/developer_icon01.png" alt="" />
-                    </div>
-                    <div className="content">
-                      <span>Full name:</span>
-                      <p>{`${user?.name} ${user?.lastname}`}</p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="icon">
-                      <img src="/img/icon/developer_icon02.png" alt="" />
-                    </div>
-                    <div className="content">
-                      <span>Email:</span>
-                      <p>{`${user?.email}`}</p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="icon">
-                      <img src="/img/icon/developer_icon05.png" alt="" />
-                    </div>
-                    <div className="content">
-                      <span>Birth date:</span>
-                      <p>{user?.dateOfBirth ? user.dateOfBirth.substring(0, 10) : ''}</p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="icon">
-                      <img src="/img/icon/developer_icon05.png" alt="" />
-                    </div>
-                    <div className="content">
-                      <span>Instrument:</span>
-                      <p>{`${user?.instrument}`}</p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="icon">
-                      <img src="/img/icon/developer_icon05.png" alt="" />
-                    </div>
-                    <div className="content">
-                      <span>Father's Occupation:</span>
-                      <p>{`${user?.fatherOccupation}`}</p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="icon">
-                      <img src="/img/icon/developer_icon05.png" alt="" />
-                    </div>
-                    <div className="content">
-                      <span>School Grade:</span>
-                      <p>{`${user?.schoolGrade}`}</p>
-                    </div>
-                  </li>
-                </ul>
-              </div>
 
 
 
-              <div className="col-md-6">
-                <ul className="list-wrap">
-                  <li>
-                    <div className="icon">
-                      <img src="/img/icon/developer_icon03.png" alt="" />
-                    </div>
-                    <div className="content">
-                      <span>Username</span>
-                      <p>{`${user?.username}`}</p>
-                    </div>
-                  </li>
+            {(user?.role === 'admin' || user?.role === 'prof') ? (
+              <>
+                <div className="row">
+                  <div className="col-md-6">
+                    <ul className="list-wrap">
+                      <li>
+                        <div className="icon">
+                          <img src="/img/icon/developer_icon01.png" alt="" />
+                        </div>
+                        <div className="content">
+                          <span>Full name:</span>
+                          <p>{`${user?.name} ${user?.lastname}`}</p>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="icon">
+                          <img src="/img/icon/developer_icon02.png" alt="" />
+                        </div>
+                        <div className="content">
+                          <span>Email:</span>
+                          <p>{`${user?.email}`}</p>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="icon">
+                          <img src="/img/icon/developer_icon05.png" alt="" />
+                        </div>
+                        <div className="content">
+                          <span>Birth date:</span>
+                          <p>{user?.dateOfBirth ? user.dateOfBirth.substring(0, 10) : ''}</p>
+                        </div>
+                      </li>
+                    </ul>
+                  </div >
 
-                  <li>
-                    <div className="icon">
-                      <img src="/img/icon/developer_icon04.png" alt="" />
-                    </div>
-                    <div className="content">
-                      <span>Parent Phone:</span>
-                      <p>{`${user?.parentPhoneNumber}`}</p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="icon">
-                      <img src="/img/icon/developer_icon06.png" alt="" />
-                    </div>
-                    <div className="content">
-                      <span>Parent CIN:</span>
-                      <p>{`${user?.parentCinNumber}`}</p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="icon">
-                      <img src="/img/icon/developer_icon05.png" alt="" />
-                    </div>
-                    <div className="content">
-                      <span>Other Instruments:</span>
-                      <p>{`${user?.otherInstruments}`}</p>
-                    </div>
-                  </li>
-                  <li>
-                    <div className="icon">
-                      <img src="/img/icon/developer_icon05.png" alt="" />
-                    </div>
-                    <div className="content">
-                      <span>Mother's Occupation:</span>
-                      <p>{`${user?.motherOccupation}`}</p>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+
+
+                  <div className="col-md-6">
+                    <ul className="list-wrap">
+                      <li>
+                        <div className="icon">
+                          <img src="/img/icon/developer_icon03.png" alt="" />
+                        </div>
+                        <div className="content">
+                          <span>Username</span>
+                          <p>{`${user?.username}`}</p>
+                        </div>
+                      </li>
+
+                      <li>
+                        <div className="icon">
+                          <img src="/img/icon/developer_icon04.png" alt="" />
+                        </div>
+                        <div className="content">
+                          <span>Parent Phone:</span>
+                          <p>{`${user?.phoneNumber}`}</p>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="icon">
+                          <img src="/img/icon/developer_icon06.png" alt="" />
+                        </div>
+                        <div className="content">
+                          <span>Parent CIN:</span>
+                          <p>{`${user?.cinNumber}`}</p>
+                        </div>
+                      </li>
+
+                    </ul>
+                  </div>
+                </div >
+
+              </>
+            ) : (
+              <>
+
+                <div className="row">
+                  <div className="col-md-6">
+                    <ul className="list-wrap">
+                      <li>
+                        <div className="icon">
+                          <img src="/img/icon/developer_icon01.png" alt="" />
+                        </div>
+                        <div className="content">
+                          <span>Full name:</span>
+                          <p>{`${user?.name} ${user?.lastname}`}</p>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="icon">
+                          <img src="/img/icon/developer_icon02.png" alt="" />
+                        </div>
+                        <div className="content">
+                          <span>Email:</span>
+                          <p>{`${user?.email}`}</p>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="icon">
+                          <img src="/img/icon/developer_icon05.png" alt="" />
+                        </div>
+                        <div className="content">
+                          <span>Birth date:</span>
+                          <p>{user?.dateOfBirth ? user.dateOfBirth.substring(0, 10) : ''}</p>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="icon">
+                          <img src="/img/icon/developer_icon05.png" alt="" />
+                        </div>
+                        <div className="content">
+                          <span>Instrument:</span>
+                          <p>{`${user?.instrument}`}</p>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="icon">
+                          <img src="/img/icon/developer_icon05.png" alt="" />
+                        </div>
+                        <div className="content">
+                          <span>Father's Occupation:</span>
+                          <p>{`${user?.fatherOccupation}`}</p>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="icon">
+                          <img src="/img/icon/developer_icon05.png" alt="" />
+                        </div>
+                        <div className="content">
+                          <span>School Grade:</span>
+                          <p>{`${user?.level}`}</p>
+                        </div>
+                      </li>
+                    </ul>
+                  </div >
+
+
+
+                  <div className="col-md-6">
+                    <ul className="list-wrap">
+                      <li>
+                        <div className="icon">
+                          <img src="/img/icon/developer_icon03.png" alt="" />
+                        </div>
+                        <div className="content">
+                          <span>Username</span>
+                          <p>{`${user?.username}`}</p>
+                        </div>
+                      </li>
+
+                      <li>
+                        <div className="icon">
+                          <img src="/img/icon/developer_icon04.png" alt="" />
+                        </div>
+                        <div className="content">
+                          <span>Parent Phone:</span>
+                          <p>{`${user?.parentPhoneNumber}`}</p>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="icon">
+                          <img src="/img/icon/developer_icon06.png" alt="" />
+                        </div>
+                        <div className="content">
+                          <span>Parent CIN:</span>
+                          <p>{`${user?.parentCinNumber}`}</p>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="icon">
+                          <img src="/img/icon/developer_icon05.png" alt="" />
+                        </div>
+                        <div className="content">
+                          <span>Other Instruments:</span>
+                          <p>{`${user?.otherInstruments}`}</p>
+                        </div>
+                      </li>
+                      <li>
+                        <div className="icon">
+                          <img src="/img/icon/developer_icon05.png" alt="" />
+                        </div>
+                        <div className="content">
+                          <span>Mother's Occupation:</span>
+                          <p>{`${user?.motherOccupation}`}</p>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div >
+              </>
+            )}
+
+
+
+
+
+
+          </div >
+        </div >
+      </div >
     </>
   );
 };

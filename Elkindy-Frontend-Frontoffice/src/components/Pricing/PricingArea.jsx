@@ -3,12 +3,12 @@ import { Link } from "react-router-dom";
 
 const PricingArea = () => {
   return (
-    <section className="pricing-area pb-90">
+    <section className="pricing-area pb-90" style={{ backgroundColor: "#292930", overflowY: 'hidden' }}>
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-lg-10">
             <div className="section-title title-style-two text-center white-title mb-50">
-              <h2 className="title">The Right Plan for Your Business</h2>
+              <h2 className="title">Subscribe to EL Kindy</h2>
               <p>
                 Lorem ipsum dolor sit amet consectetur adipisicing sed do
                 eiusmod tempor incididunt labore
@@ -282,7 +282,7 @@ const PricingArea = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="col-lg-4 col-md-6">
                   <div className="pricing-item">
                     <div className="pricing-icon">
