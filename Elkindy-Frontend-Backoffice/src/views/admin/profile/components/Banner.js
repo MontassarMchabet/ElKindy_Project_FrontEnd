@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
 import { RiEyeCloseLine } from "react-icons/ri";
-
+import Cookies from 'js-cookie';
 export default function Banner(props) {
   const { banner, avatar, name, job, posts, followers, following } = props;
   const textColorPrimary = useColorModeValue("secondaryGray.900", "white");
@@ -31,7 +31,7 @@ export default function Banner(props) {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = Cookies.get('token');
         const decodedToken = jwtDecode(token);
         const { userId, role } = decodedToken;
 
