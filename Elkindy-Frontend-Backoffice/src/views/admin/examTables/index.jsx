@@ -1,5 +1,5 @@
 // Chakra imports
-import { Box, SimpleGrid } from "@chakra-ui/react";
+import { Box, SimpleGrid, Select, useColorModeValue } from "@chakra-ui/react";
 import ExamTable from "views/admin/examTables/components/ExamTable";
 import RevisionTable from "views/admin/examTables/components/RevisionTable";
 import React, { useState, useEffect, useRef } from "react";
@@ -7,21 +7,28 @@ import axios from "axios";
 import { ExamData } from "./variables/columnsData";
 
 export default function Settings() {
+  
+    const [selectedClass, setSelectedClass] = useState('');
     const [examData, setExamData] = useState([]);
-
     useEffect(() => {
         fetchData();
     }, []);
 
-    const fetchData = async () => {
-        try {
-            const examResponse = await axios.get('http://localhost:9090/api/exam/');
-            setExamData(examResponse.data);
-        } catch (error) {
-            console.error('Error fetching data:', error);
+    const fetchData = async (classLevel = null) => {
+        let url = 'http://localhost:9090/api/exam/';
+        if (classLevel) {
+          url = `http://localhost:9090/api/exam/byclass/${classLevel}`;
         }
-    };
+        try {
+          const examResponse = await axios.get(url);
+          setExamData(examResponse.data);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+      
 
+    
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [deletingExamId, setDeletingExamId] = useState(null);
     const cancelRef = useRef();
@@ -62,10 +69,10 @@ const closeEditModal = () => {
     return (
         <div style={{ overflowX: 'hidden'}}>
         <Box width="2300px" pt={{ base: "130px", md: "80px", xl: "80px" }}>
-            <SimpleGrid
-                mb='20px'
-                columns={{ sm: 1, md: 2 }}
-                spacing={{ base: "20px", xl: "20px" }}>
+        <SimpleGrid
+                    mb='20px'
+                    columns={{ sm: 1, md: 2 }}
+                    spacing={{ base: "20px", xl: "20px" }}>
                 <ExamTable
                     columnsData={ExamData}
                     tableData={examData}
@@ -80,7 +87,8 @@ const closeEditModal = () => {
                     fetchData={fetchData}
                     isEditModalOpen={isEditModalOpen} 
                     closeEditModal={closeEditModal} 
-                    setIsEditModalOpen={setIsEditModalOpen} 
+                    setIsEditModalOpen={setIsEditModalOpen}
+                    setExamData={setExamData} 
                 />
             </SimpleGrid>
         </Box>

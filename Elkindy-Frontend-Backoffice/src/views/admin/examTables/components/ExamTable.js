@@ -49,7 +49,7 @@ import Information from "views/admin/profile/components/Information";
 
 export default function ColumnsTable(props) {
     const { columnsData, tableData, handleDelete, cancelDelete, cancelRef, confirmDelete, isDeleteDialogOpen,
-        isModalOpenA, openModalA, closeModalA, fetchData , isEditModalOpen, closeEditModal,setIsEditModalOpen} = props;
+        isModalOpenA, openModalA, closeModalA, fetchData , isEditModalOpen, closeEditModal,setIsEditModalOpen,setExamData} = props;
 
     const textColorPrimary = useColorModeValue("secondaryGray.900", "white");
     const cardShadow = useColorModeValue(
@@ -147,23 +147,28 @@ export default function ColumnsTable(props) {
     const [formData, setFormData] = useState({
         title: "",
         description: "",
-        class:"",
+        level:"",
         type: "",
         format: "",
         pdfFile: "",
     });
-    const [selectedPdfFile, setSelectedPdfFile] = useState(null);
 
-    const handlePdfFileChange = (e) => {
-      setSelectedPdfFile(e.target.files[0]);
-      
-    };
+    const classOptions = ['Initiation', 'Préparatoire', '1ère année', '2ème année', '3ème année', '4ème année', '5ème année', '6ème année', '7ème année'];
+    const [selectedClass, setSelectedClass] = useState(''); // No default selected class
+
+    const handleClassChange = (event) => {
+        const selectedValue = event.target.value;
+        setSelectedClass(selectedValue);
+        // Call the fetchData function passed from the parent only if a class is selected
+        if (selectedValue) {
+          fetchData(selectedValue);
+        } else {
+          fetchData();
+        }
+      };
+    
     const [errors, setErrors] = useState({});
-    const handleFileChange = (e) => {
-        const selectedFile = e.target.files[0];
-        console.log("Selected file:", selectedFile);
-        setFormData({ ...formData, pdfFile: selectedFile }); 
-    };
+
     
     const handleChange = (e) => {
         if (e.target.type === "file") {
@@ -240,7 +245,25 @@ export default function ColumnsTable(props) {
                     Exam Table
                 </Text>
 
-
+                <Select
+    value={selectedClass}
+    onChange={handleClassChange}
+    bg={bgButton}
+    color={textColor}
+    _hover={bgHover}
+    _focus={bgFocus}
+    _active={bgFocus}
+    w='150px'
+    h='37px'
+    borderRadius='10px'
+    mr="10px"
+    fetchData={fetchData} // Pass the fetchData function as a prop
+>
+    <option value="" disabled>Select Class</option>
+    {classOptions.map(option => (
+        <option key={option} value={option}>{option}</option>
+    ))}
+</Select>
 
 
 
@@ -290,21 +313,16 @@ export default function ColumnsTable(props) {
                                     </FormControl>
                                 </Grid>
                                 <FormControl mt={4} mr={4}>
-        <FormLabel>Class</FormLabel>
+        <FormLabel>Level</FormLabel>
         <Select
-          name="type"
-          value={formData.class}
+          name="level"
+          value={formData.level}
           onChange={handleChange}
         >
-            <option value="Initiation">Initiation</option>
-            <option value="Preparatoire">Preparatoire</option>
-          <option value="1">1ere</option>
-          <option value="2">2eme</option>
-          <option value="3">3eme</option>
-          <option value="4">4eme</option>
-          <option value="5">5eme</option>
-          <option value="6">6eme</option>
-          <option value="7">7eme</option>
+            <option value="" disabled>Select Level</option>
+    {classOptions.map(option => (
+        <option key={option} value={option}>{option}</option>
+    ))}
         </Select>
       </FormControl>
                                 <FormControl mt={4} mr={4}>
@@ -314,6 +332,7 @@ export default function ColumnsTable(props) {
           value={formData.type}
           onChange={handleChange}
         >
+            <option value="" disabled>Select Type</option>
           <option value="revision">Revision</option>
           <option value="end of year exam">End of Year Exam</option>
           <option value="midterm exam">Midterm Exam</option>
@@ -325,7 +344,7 @@ export default function ColumnsTable(props) {
           name="format"
           value={formData.format}
           onChange={handleChange}
-        >
+        ><option value="" disabled>Select Format</option>
             <option value="quizz">Quizz</option>
           <option value="pdf">PDF</option>
         </Select>
