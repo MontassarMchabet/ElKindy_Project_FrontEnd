@@ -4,6 +4,7 @@ import { jwtDecode } from 'jwt-decode';
 import api from '../../services/api';
 import Cookies from 'js-cookie';
 import { MdEdit } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 const DeveloperAreaTabs = () => {
   const [user, setUser] = useState(null);
@@ -41,11 +42,17 @@ const DeveloperAreaTabs = () => {
           <MdEdit
             size={30}
             style={{ margin: "auto", display: 'block', color: "green" }}
-            // onClick={handleShow}
+          // onClick={handleShow}
           />
         </div>
       </div>
-
+      <br />
+      {user && !user.isSubscribed && (
+        <p style={{ marginLeft: "30px" }}>
+          You're not subscribed to EL Kindy yet.{" "}
+          <Link to="/subscribe">Click here to subscribe now!</Link>
+        </p>
+      )}
       <ul className="nav nav-tabs" id="myTab" role="tablist" style={{ marginTop: "30px" }}>
         <li className="nav-item" role="presentation">
           <button

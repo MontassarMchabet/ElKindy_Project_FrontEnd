@@ -20,10 +20,10 @@ import OurStore from "./pages/shop/pages/OurStore";
 import SingleProduct from "./pages/shop/pages/SingleProduct";
 import Wishlist from "./pages/shop/pages/Wishlist";
 import CompareProduct from "./pages/shop/pages/CompareProduct";
-
 import AccountComponent from "./pages/Account";
 import ExamsComponent from "./pages/Exams";
- 
+import Piano from "./pages/Virtualinstrument/Piano";
+import Drums from "./pages/Virtualinstrument/Drums";
 import SubscribePage from "./pages/Subscribe";
 
 function App() {
@@ -83,6 +83,8 @@ function App() {
         <Route path="/shop/wishlist" element={<Wishlist />} />
         <Route path="/shop/compare-product" element={<CompareProduct />} />
         <Route path="/subscribe" element={<SubscribePage />} />
+        <Route path="/piano" element={<Piano />} />
+        <Route path="/drums" element={<Drums />} />
 
       </Routes>
     </>
