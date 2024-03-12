@@ -6,7 +6,7 @@ import AuthLayout from 'layouts/auth';
 import AdminLayout from 'layouts/admin';
 import TicketComponent from './views/admin/tickets/index'
 import CommentComponent from './views/admin/comments/index'
-import EventComponent from './views/admin/events/index'
+// import EventComponent from './views/admin/events/index'
 import RtlLayout from 'layouts/rtl';
 
 import HomeLayout from './FrontOffice/layouts/home';

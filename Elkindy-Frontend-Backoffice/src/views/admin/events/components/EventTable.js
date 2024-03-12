@@ -3,6 +3,8 @@ import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, Ale
 import { ViewIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { AddIcon } from '@chakra-ui/icons'
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, ModalFooter, FormControl, FormLabel, Input, Grid, SimpleGrid } from "@chakra-ui/react";
+
+import api from "services/api";
 import {
     Flex,
     Table,
@@ -70,6 +72,8 @@ export default function ColumnsTable(props) {
     // const [eventId, setEventId] = useState(null);
     const eventId = '65de60ac69889e0c3cfa4bd3';
     const [eventInfo, setEventInfo] = useState(null);
+    const [image, setImage] = useState("");
+    
     const history = useHistory();
 
 
@@ -77,20 +81,80 @@ export default function ColumnsTable(props) {
     // Fonction pour sauvegarder les modifications du cours
     const handleSaveEdit = async () => {
         try {
+            if (image) {
+                const formDataToSend = new FormData();
+                formDataToSend.append("image", image);
+        
+                const uploadResponse = await api.post(
+                  "http://localhost:9090/api/image/uploadimage",
+                  formDataToSend,
+                  {
+                    headers: {
+                      "Content-Type": "multipart/form-data",
+                    },
+                  }
+                );
+                editedEvent.imageUrl = uploadResponse.data.downloadURL[0];
+              }
             // Effectuer la requête API pour mettre à jour le cours avec les nouvelles données
             await axios.put(`http://localhost:9090/event/update/${editedEvent._id}`, editedEvent);
             //console.log (editedEvent._id,"aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-            console.log("Course updated successfully");
+            console.log("Event updated successfully");
             setIsEditModalOpen(false); // Fermer la modal d'édition après la sauvegarde
             fetchData(); // Rafraîchir les données des cours
         } catch (error) {
-            console.error("Error updating course:", error);
+            console.error("Error updating Event:", error);
         }
     };
-    const handleEdit = (course) => {
-        setEditedEvent(course); // Charger les données du cours à éditer dans editedEvent
+    // const handleEdit = (event) => {
+    //     setEditedEvent(event); // Charger les données du cours à éditer dans editedEvent
+    //     openEditModal(); // Ouvrir le formulaire d'édition
+    // };
+    // const handleImageChange = (e) => {
+    //     setImage(e.target.files[0]);
+    //   };
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    // const handleSaveEdit = async () => {
+    //     try {
+    //         if (image) {
+    //             const formDataToSend = new FormData();
+    //             formDataToSend.append("image", image);
+    
+    //             const uploadResponse = await api.post(
+    //                 "http://localhost:9090/api/image/uploadimage",
+    //                 formDataToSend,
+    //                 {
+    //                     headers: {
+    //                         "Content-Type": "multipart/form-data",
+    //                     },
+    //                 }
+    //             );
+    //             // Utilisation de setEditedEvent pour mettre à jour l'URL de l'image dans editedEvent
+    //             setEditedEvent(prevEditedEvent => ({
+    //                 ...prevEditedEvent,
+    //                 imageUrl: uploadResponse.data.downloadURL[0]
+    //             }));
+    //         }
+    //         // Effectuer la requête API pour mettre à jour l'événement avec les nouvelles données
+    //         await axios.put(`http://localhost:9090/event/update/${editedEvent._id}`, editedEvent);
+    //         console.log("Event updated successfully");
+    //         setIsEditModalOpen(false); // Fermer la modal d'édition après la sauvegarde
+    //         fetchData(); // Rafraîchir les données des événements
+    //     } catch (error) {
+    //         console.error("Error updating event:", error);
+    //     }
+    // };
+    const handleEdit = (event) => {
+        setEditedEvent(event); // Charger les données du cours à éditer dans editedEvent
         openEditModal(); // Ouvrir le formulaire d'édition
     };
+    // const handleImageChange = (e) => {
+    //     setImage(e.target.files[0]);
+    //   };
+
     // const handleTicketsClick = async () => {
     //     if (!eventId) { // Vérifiez si  son ID sont définis
     //         console.error('Event info is missing or does not have an ID');
@@ -123,19 +187,7 @@ export default function ColumnsTable(props) {
         }
     };
 
-    const handleCommentsClick = async () => {
-        if (!eventId) { // Vérifiez si eventInfo ou son ID sont définis
-            console.error('Event info is missing or does not have an ID');
-            return;
-        }
-        try {
-            const response = await fetch(`/admin/event/${eventId}/comments`); // Utilisez eventInfo._id
-            const data = await response.json();
-            setComments(data);
-        } catch (error) {
-            console.error('Error fetching comments:', error);
-        }
-    };
+    
     // La fonction pour ouvrir le formulaire d'édition
     const openEditModal = () => {
         setIsEditModalOpen(true);
@@ -204,9 +256,7 @@ export default function ColumnsTable(props) {
 
     });
     const [errors, setErrors] = useState({});
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
+    
 
     const validateForm = async () => {
         let errors = {};
@@ -219,8 +269,8 @@ export default function ColumnsTable(props) {
             errors.location = 'location required'
         } else if (!formData.price.trim()) {
             errors.price = 'price required'
-        } else if (!formData.imageUrl.trim()) {
-            errors.imageUrl = 'image required'
+        // } else if (!formData.imageUrl.trim()) {
+        //     errors.imageUrl = 'image required'
         } else if (!formData.startDate.trim()) {
             errors.startDate = 'startDate required'
         } else if (!formData.room_name.trim()) {
@@ -240,24 +290,70 @@ export default function ColumnsTable(props) {
         return Object.keys(errors).length === 0;
     };
 
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     const isValid = await validateForm();
+    //     console.log("Submitting form");
+    //     if (isValid) {
+    //         try {
+    //             const response = await axios.post(
+    //                 "http://localhost:9090/event/add",
+    //                 formData
+    //             );
+    //             fetchData()
+    //             closeModalA()
+    //             console.log(response.data);
+    //         } catch (error) {
+    //             console.error("Error adding event:", error);
+    //         }
+    //     }
+    // };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const isValid = await validateForm();
         console.log("Submitting form");
         if (isValid) {
             try {
+                if (image) {
+                    // Télécharger l'image
+                    const formDataToSend = new FormData();
+                    formDataToSend.append("image", image);
+            
+                    const uploadResponse = await api.post(
+                      "http://localhost:9090/api/image/uploadimage",
+                      formDataToSend,
+                      {
+                        headers: {
+                          "Content-Type": "multipart/form-data",
+                        },
+                      }
+                    );
+                    // Ajouter l'URL de l'image téléchargée à formData
+                    formData.imageUrl = uploadResponse.data.downloadURL[0];
+                }
+                // Ajouter l'événement avec les données et l'URL de l'image
                 const response = await axios.post(
                     "http://localhost:9090/event/add",
                     formData
                 );
-                fetchData()
-                closeModalA()
-                console.log(response.data);
+                console.log("Event added successfully:", response.data);
+                fetchData();
+                closeModalA();
             } catch (error) {
                 console.error("Error adding event:", error);
+                // Gérer l'erreur ici, par exemple, en mettant à jour l'état pour afficher un message d'erreur à l'utilisateur
             }
+        } else {
+            console.log("Form validation failed");
+            // Gérer l'échec de la validation ici, par exemple, en mettant à jour l'état pour afficher des messages d'erreur à l'utilisateur
         }
     };
+    
+    const handleImageChange = (e) => {
+        setImage(e.target.files[0]);
+      };
+
     //   const [eventId, setEventId] = useState({});
 
     //   const handleTicketsClick = async () => {
@@ -362,6 +458,8 @@ export default function ColumnsTable(props) {
                                     <Input type="datetime-local" name="endDate" value={formData.endDate} onChange={handleChange} />
                                 </FormControl>
                                 <FormControl mt={4}>
+                                    
+                                    
                                     <FormLabel>Image</FormLabel>
                                     <Input type="file" name="imageUrl" value={formData.imageUrl} onChange={handleChange} />
                                 </FormControl>
@@ -379,6 +477,7 @@ export default function ColumnsTable(props) {
                             {errors.room_shape && <Text color="red">{errors.room_shape}</Text>}
                             {errors.room_capacity && <Text color="red">{errors.room_capacity}</Text>}
                             {errors.room_distributionSeats && <Text color="red">{errors.room_distributionSeats}</Text>}
+                            {errors.imageUrl && <Text color="red">{errors.imageUrl}</Text>}
 
 
 
@@ -431,7 +530,9 @@ export default function ColumnsTable(props) {
                                     if (cell.column.Header === "IMAGE") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
-                                                <img src={cell.value} alt="Event Image" />
+                                                {/* <img src={cell.value} alt="Event Image" /> */}
+                                                <img src={cell.value} alt="imageUrl" style={{ maxWidth: "100px", maxHeight: "120px", margin: "auto" }} />
+
                                             </Text>
                                         );
                                     } else if (cell.column.Header === "NAME") {
@@ -558,6 +659,22 @@ export default function ColumnsTable(props) {
                                                                     <FormLabel>Seats</FormLabel>
                                                                     <Input type="text" value={editedEvent.room_distributionSeats} onChange={(e) => setEditedEvent({ ...editedEvent, room_distributionSeats: e.target.value })} />
                                                                 </FormControl>
+                                                                 <FormControl id="imageUrl" mt={4}>
+                                                                {/* <img src={editedEvent.imageUrl} alt="imageUrl" style={{ maxWidth: "250px", maxHeight: "250px", borderRadius: "50%", margin: "auto" }} /> */}
+
+                                                                     <FormLabel>Image</FormLabel>
+                                                                    
+                                                                    <Input type="file" name="imageUrl" onChange={handleImageChange} /> 
+                                                                     
+                                                                            {/* <FormLabel>Image</FormLabel>
+                                                                            {image && (
+                                                                                <img src={URL.createObjectURL(image)} alt="Preview" style={{ maxWidth: "250px", maxHeight: "250px", margin: "auto" }} />
+                                                                            )}
+                                                                            <Input type="file" name="imageUrl" onChange={handleImageChange} />
+                                                                            */}
+                                                                    
+                                                                </FormControl> 
+                                                               
                                                             </ModalBody>
                                                         )}
                                                         <ModalFooter>
@@ -620,7 +737,10 @@ export default function ColumnsTable(props) {
                                                         <ModalBody>
                                                             {eventInfo && (
                                                                 <>
-                                                                    <img src={eventInfo.imageUrl} alt="Event Image" />
+                                                                    {/* <img src={eventInfo.imageUrl} alt="Event Image" /> */}
+                                                                    {/* <img src={eventInfo.imageUrl} alt="imageUrl" style={{ maxWidth: "250px", maxHeight: "250px", borderRadius: "50%", margin: "auto" }} /> */}
+                                                                    <img src={eventInfo.imageUrl} alt="imageUrl" style={{ Width: "10S50px", maxHeight: "250px", margin: "auto" }} />
+
                                                                     <Card mb={{ base: "0px", "2xl": "20px" }} {...rest}>
                                                                         <Text
                                                                             color={textColorPrimary}

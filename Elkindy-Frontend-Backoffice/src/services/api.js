@@ -1,4 +1,5 @@
 import axios from "axios";
+import Cookies from 'js-cookie';
 
 const instance = axios.create({
     baseURL: "http://localhost:9090/api",
@@ -9,7 +10,7 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem("token");
+        const token = Cookies.get("token");
         if (token) {
             config.headers["x-access-token"] = token;
         }
@@ -32,12 +33,12 @@ instance.interceptors.response.use(
                 originalConfig._retry = true;
 
                 try {
-                    const rs = await instance.post("/api/auth/refreshtoken", {
-                        refreshToken: localStorage.getItem("refreshToken"),
+                    const rs = await instance.post("/auth/refreshtoken", {
+                        refreshToken: Cookies.get("refreshToken"),
                     });
 
                     const { newToken } = rs.data;
-                    localStorage.setItem(newToken);
+                    Cookies.set(newToken);
 
                     return instance(originalConfig);
                 } catch (_error) {

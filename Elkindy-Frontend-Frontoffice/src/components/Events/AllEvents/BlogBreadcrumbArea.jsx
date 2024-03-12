@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useParallax } from "react-scroll-parallax";
-import EventsAreaThree from "./InnerEventArea";
 
 const EventBlogBreadcrumbArea = () => {
   const parallax = useParallax({
@@ -11,8 +10,8 @@ const EventBlogBreadcrumbArea = () => {
   });
 
   return (
-    <section className="breadcrumb-area breadcrumb-area-three parallax pt-175 pb-120">
-      <div className="container">
+    <section className="breadcrumb-area breadcrumb-area-three parallax pt-0">
+      <div>
         {/* <div className="row">
           <div className="col-12">
             <div className="breadcrumb-content">
@@ -31,7 +30,7 @@ const EventBlogBreadcrumbArea = () => {
             </div>
           </div>
         </div> */}
-<EventsAreaThree />
+      
         <div className="row justify-content-center">
           <div className="col-lg-8">
             <div className="breadcrumb-search">

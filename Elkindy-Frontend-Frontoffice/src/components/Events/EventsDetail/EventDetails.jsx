@@ -1,8 +1,8 @@
 import React from "react";
-import BlogCommentForm from "./BlogCommentForm";
-import BlogComments from "./BlogComments";
+import EventCommentForm from "./EventCommentForm";
+import EventComments from "./EventComments";
 
-const BlogDetails = () => {
+const EventDetails = () => {
   return (
     <section className="blog-details-area pt-175 pb-120">
       <div className="container">
@@ -122,10 +122,10 @@ const BlogDetails = () => {
             </div>
 
             {/* comments */}
-            <BlogComments />
+            <EventComments />
 
             {/* comment form */}
-            <BlogCommentForm />
+            <EventCommentForm />
           </div>
         </div>
       </div>
@@ -133,4 +133,4 @@ const BlogDetails = () => {
   );
 };
 
-export default BlogDetails;
+export default EventDetails;

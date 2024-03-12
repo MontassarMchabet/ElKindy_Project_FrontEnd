@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import $ from "jquery";
-import { Link, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import cn from "classnames";
 import { jwtDecode } from 'jwt-decode';
 import api from '../../services/api';
@@ -99,6 +99,14 @@ const HeaderOne = () => {
         fetchUserData();
     }, []);
 
+    const isLoggedIn = Cookies.get('token') !== undefined;
+    const handleLogout = () => {
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('token');
+        Cookies.remove('refreshToken');
+        Cookies.remove('token');
+        window.location.href = "/";
+    };
 
     return (
         <>
@@ -133,8 +141,8 @@ const HeaderOne = () => {
                                                     <Link to="/">Instruments Lab</Link>
                                                 </li>
 
-                                                <li className={cn(isActiveClassName("/"))}>
-                                                    <Link to="/">Events</Link>
+                                                <li className={cn(isActiveClassName("/events"))}>
+                                                    <Link to="/events">Events</Link>
                                                 </li>
 
                                                 <li className={cn(isActiveClassName("/"))}>
@@ -156,29 +164,48 @@ const HeaderOne = () => {
                                                 <div className="navbar-wrap main-menu d-none d-lg-flex">
                                                     <ul className="navigation">
 
-                                                        <li 
-                                                            className={cn(
-                                                                "menu-item-has-children",
-                                                                [
-                                                                    "/account",
-                                                                    
-                                                                ].includes(pathname) && "active"
-                                                            )}
-                                                        >
+                                                        {isLoggedIn ? (
+                                                            <>
+                                                                <li
+                                                                    className={cn(
+                                                                        "menu-item-has-children",
+                                                                        [
+                                                                            "/account",
 
-                                                            <a href="#">
-                                                                {`${user?.name} ${user?.lastname}`}
-                                                                <img
-                                                                    src={`${user?.profilePicture}`}
-                                                                    style={{ width: "40px", height: "40px", borderRadius: "50%", marginLeft: "10px", marginBottom: "15px" }}
-                                                                />
-                                                            </a>
-                                                            <ul className="sub-menu">
-                                                                <li className={cn(isActiveClassName("/account"))}>
-                                                                    <Link to="/account">Account</Link>
+                                                                        ].includes(pathname) && "active"
+                                                                    )}
+                                                                >
+
+                                                                    <a href="#">
+                                                                        {`${user?.name} ${user?.lastname}`}
+                                                                        <img
+                                                                            src={`${user?.profilePicture}`}
+                                                                            style={{ width: "40px", height: "40px", borderRadius: "50%", marginLeft: "10px", marginBottom: "15px" }}
+                                                                        />
+                                                                    </a>
+                                                                    <ul className="sub-menu">
+                                                                        <li className={cn(isActiveClassName("/account"))}>
+                                                                            <Link to="/account">Account</Link>
+                                                                        </li>
+                                                                        <li>
+                                                                            <a onClick={handleLogout}>Logout</a>
+                                                                        </li>
+                                                                        {user?.role === 'admin' && (
+                                                                            <li>
+                                                                                <a href="http://localhost:3000/elkindy#/admin/dashboard">Dashboard</a>
+                                                                            </li>
+                                                                        )}
+                                                                    </ul>
+
                                                                 </li>
-                                                            </ul>
-                                                        </li>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <a href="http://localhost:3000/elkindy#/signin">Sign in</a>
+                                                                <a href="http://localhost:3000/elkindy#/signup">Sign up</a>
+                                                            </>
+                                                        )}
+
                                                     </ul>
                                                 </div>
                                             </ul>

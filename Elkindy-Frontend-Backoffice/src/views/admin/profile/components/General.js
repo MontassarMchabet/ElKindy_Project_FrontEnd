@@ -7,7 +7,7 @@ import { NavLink, useHistory } from 'react-router-dom';
 import Information from "views/admin/profile/components/Information";
 import { jwtDecode } from 'jwt-decode';
 import api from "services/api";
-
+import Cookies from 'js-cookie';
 // Assets
 export default function GeneralInformation(props) {
   const { ...rest } = props;
@@ -24,7 +24,7 @@ export default function GeneralInformation(props) {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = Cookies.get('token');
         const decodedToken = jwtDecode(token);
         const { userId, role } = decodedToken;
 

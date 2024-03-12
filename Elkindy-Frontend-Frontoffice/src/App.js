@@ -14,6 +14,7 @@ import ContactPage from "./pages/ContactPage";
 import BlogPage from "./pages/Blog/BlogPage";
 import BlogDetailsPage from "./pages/Blog/BlogDetailsPage";
 import EventsPage from "./pages/Events/EventsPage.jsx";
+import EventDetailPage from "./components/Events/EventsDetail/EventDetailsPage.jsx";
 import AnimatedCursor from "react-animated-cursor";
 
 import Home from "./pages/shop/pages/Home";
@@ -86,6 +87,7 @@ function App() {
 
 
         <Route path="/events" element={<EventsPage />} />
+        <Route path="/events/:id" element={<EventDetailPage />} />
 
         <Route path="/shop" element={<Home />} />
         <Route path="/shop/products" element={<OurStore />} />

@@ -6,7 +6,7 @@ import Meta from "../components/Meta";
 import ProductCard from "../components/ProductCard";
 import ReactImageZoom from "react-image-zoom";
 import Color from "../components/Color";
-import { TbGitCompare } from "react-icons/tb";
+// import { TbGitCompare } from "react-icons/tb";
 import { AiOutlineHeart } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import watch from "../public/images/watch.jpg";
@@ -142,7 +142,7 @@ const SingleProduct = () => {
                                     <div className="d-flex align-items-center gap-15">
                                         <div>
                                             <a href="">
-                                                <TbGitCompare className="fs-5 me-2" /> Add to Compare
+                                                {/* <TbGitCompare className="fs-5 me-2" /> Add to Compare */}
                                             </a>
                                         </div>
                                         <div>
