@@ -38,7 +38,8 @@ instance.interceptors.response.use(
                     });
 
                     const { newToken } = rs.data;
-                    Cookies.set(newToken);
+                    Cookies.set("token", newToken);
+                    originalConfig.headers["x-access-token"] = newToken;
 
                     return instance(originalConfig);
                 } catch (_error) {
