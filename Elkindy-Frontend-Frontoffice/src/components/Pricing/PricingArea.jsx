@@ -3,15 +3,16 @@ import { Link } from "react-router-dom";
 
 const PricingArea = () => {
   return (
-    <section className="pricing-area pb-90" style={{ backgroundColor: "#292930", overflowY: 'hidden' }}>
+    <section className="pricing-area pb-90" style={{ backgroundColor: "#292930", overflow: 'hidden' }}>
       <div className="container">
-        <div className="row justify-content-center">
+        <div className="row justify-content-center" style={{ overflow: 'hidden' }}>
           <div className="col-lg-10">
             <div className="section-title title-style-two text-center white-title mb-50">
+              <br />
+              <br />
+              <br />
               <h2 className="title">Subscribe to EL Kindy</h2>
               <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing sed do
-                eiusmod tempor incididunt labore
               </p>
             </div>
           </div>
