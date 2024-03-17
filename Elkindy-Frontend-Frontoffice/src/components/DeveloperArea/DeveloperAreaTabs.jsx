@@ -8,6 +8,8 @@ import { Link } from "react-router-dom";
 
 const DeveloperAreaTabs = () => {
   const [user, setUser] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({});
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -26,7 +28,47 @@ const DeveloperAreaTabs = () => {
     fetchUserData();
   }, []);
   ////////////////////////////////////////////////////////////** */
-  //EDIT ADMIN
+  //EDIT PROFILE
+  const handleEditClick = () => {
+    setShowModal(true);
+    setFormData(user);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmitClient = async (e) => {
+    e.preventDefault();
+    try {
+      await api.put(`http://localhost:9090/api/auth/editClient/${user.userId}`, formData);
+      const response = await api.get(`http://localhost:9090/api/auth/user/${user.userId}`);
+      setUser(response.data);
+      setShowModal(false);
+    } catch (error) {
+      console.error('Error updating user data:', error);
+    }
+  };
+
+  const handleSubmitAdmin = async (e) => {
+    e.preventDefault();
+    try {
+      await api.put(`http://localhost:9090/api/auth/editAdminProf/${user.userId}`, formData);
+      const response = await api.get(`http://localhost:9090/api/auth/user/${user.userId}`);
+      setUser(response.data);
+      setShowModal(false);
+    } catch (error) {
+      console.error('Error updating user data:', error);
+    }
+  };
+
 
   return (
     <>
@@ -41,8 +83,8 @@ const DeveloperAreaTabs = () => {
         <div>
           <MdEdit
             size={30}
-            style={{ margin: "auto", display: 'block', color: "green" }}
-          // onClick={handleShow}
+            style={{ margin: "auto", display: 'block' }}
+           onClick={handleEditClick}
           />
         </div>
       </div>
@@ -273,13 +315,107 @@ const DeveloperAreaTabs = () => {
             )}
 
 
-
-
-
-
           </div >
         </div >
       </div >
+
+      {showModal && (
+        <div className="modal" tabIndex="-1" role="dialog" style={{ display: "block" }}>
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Edit Profile</h5>
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={handleCloseModal}>
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div className="modal-body">
+
+                {user?.role === 'client' && (
+                  <form onSubmit={handleSubmitClient}>
+                    {/* Client form fields */}
+                    <div className="form-group">
+                      <label htmlFor="name">Name</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="lastname">Lastname</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="lastname"
+                        name="lastname"
+                        value={formData.lastname}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="email">Email</label>
+                      <input
+                        type="email"
+                        className="form-control"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <button type="submit" className="btn btn-primary">Save Changes</button>
+                  </form>
+                )}
+                {(user?.role === 'admin' || user?.role === 'prof') && (
+                  <form onSubmit={handleSubmitAdmin}>
+                    {/* Admin/Prof form fields */}
+                    <div className="form-group">
+                      <label htmlFor="name">Name</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="lastname">Lastname</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="lastname"
+                        name="lastname"
+                        value={formData.lastname}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="email">Email</label>
+                      <input
+                        type="email"
+                        className="form-control"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <button type="submit" className="btn btn-primary">Save Changes</button>
+                  </form>
+                )}
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
     </>
   );
 };
