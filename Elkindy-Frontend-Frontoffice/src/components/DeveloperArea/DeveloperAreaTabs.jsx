@@ -357,6 +357,17 @@ const DeveloperAreaTabs = () => {
                       />
                     </div>
                     <div className="form-group">
+                      <label htmlFor="username">Username</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="username"
+                        name="username"
+                        value={formData.username}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="form-group">
                       <label htmlFor="email">Email</label>
                       <input
                         type="email"
@@ -364,6 +375,96 @@ const DeveloperAreaTabs = () => {
                         id="email"
                         name="email"
                         value={formData.email}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="parentPhoneNumber">Parent Phone Number</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="parentPhoneNumber"
+                        name="parentPhoneNumber"
+                        value={formData.parentPhoneNumber}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="parentCinNumber">Parent CIN Number</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="parentCinNumber"
+                        name="parentCinNumber"
+                        value={formData.parentCinNumber}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="dateOfBirth">Date of Birth</label>
+                      <input
+                        type="date"
+                        className="form-control"
+                        id="dateOfBirth"
+                        name="dateOfBirth"
+                        value={formData.dateOfBirth}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="instrument">Instrument</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="instrument"
+                        name="instrument"
+                        value={formData.instrument}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="fatherOccupation">Father's Occupation</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="fatherOccupation"
+                        name="fatherOccupation"
+                        value={formData.fatherOccupation}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="level">School Grade</label>
+                      <input
+
+                        type="text"
+                        className="form-control"
+                        id="level"
+                        name="level"
+                        value={formData.level}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="otherInstruments">Other Instruments</label>
+                      <input
+
+                        type="text"
+                        className="form-control"
+                        id="otherInstruments"
+                        name="otherInstruments"
+                        value={formData.otherInstruments}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="motherOccupation">Mother's Occupation</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="motherOccupation"
+                        name="motherOccupation"
+                        value={formData.motherOccupation}
                         onChange={handleInputChange}
                       />
                     </div>
@@ -406,10 +507,55 @@ const DeveloperAreaTabs = () => {
                         onChange={handleInputChange}
                       />
                     </div>
+                    <div className="form-group">
+                      <label htmlFor="phoneNumber">Phone Number</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="phoneNumber"
+                        name="phoneNumber"
+                        value={formData.phoneNumber}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="cinNumber">CIN Number</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="cinNumber"
+                        name="cinNumber"
+                        value={formData.cinNumber}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="dateOfBirth">Date of Birth</label>
+                      <input
+                        type="date"
+                        className="form-control"
+                        id="dateOfBirth"
+                        name="dateOfBirth"
+                        value={formData.dateOfBirth}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="username">Username</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="username"
+                        name="username"
+                        value={formData.username}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                  
+
                     <button type="submit" className="btn btn-primary">Save Changes</button>
                   </form>
                 )}
-                
               </div>
             </div>
           </div>
