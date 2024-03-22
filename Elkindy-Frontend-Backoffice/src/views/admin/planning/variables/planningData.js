@@ -8,12 +8,12 @@ const PlanningData = [
         accessor: "date",
     },
     {
-        Header: "Start Time",
-        accessor: "startTime",
+        Header: "startDate",
+        accessor: "startDate",
     },
     {
-        Header: "End Time",
-        accessor: "endTime",
+        Header: "endDate",
+        accessor: "endDate",
     },
     {
         Header: "Room ID",

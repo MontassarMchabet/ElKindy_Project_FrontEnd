@@ -2,14 +2,9 @@ import { Box, SimpleGrid } from "@chakra-ui/react";
 
 import EventTable from "views/admin/events/components/EventTable";
 import EventCalendar from "views/admin/events/components/EventCalendar";
-
-
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import eventsData from "./variables/columnsData";
-import ticketsData from "./variables/ticketColumnsData";
-import commentsData from "./variables/commentColumnsData";
-
 
 export default function Settings() {
     const [eventssData, seteventsData] = useState([]);

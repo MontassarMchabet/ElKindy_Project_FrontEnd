@@ -25,7 +25,7 @@ import UserTables from "views/admin/userTables";
 
 import Courses from "views/admin/courses";
 import Scheduling from "views/admin/Scheduling";
-
+import Planning from "views/admin/planning";
 import ExamTables from "views/admin/examTables";
 
 import Tickets from "views/admin/tickets";
@@ -76,9 +76,7 @@ const routes = [
     ),
     component: ExamTables,
 
-    },{
-
-  }, {
+    }, {
 
     name: "Evenements ElKindy",
     layout: "/admin",
@@ -92,9 +90,7 @@ const routes = [
       />
     ),
     component: Events,
-    secondary: true,HEAD
-  },{
-
+    secondary: true,
   }, {
 
     name: "Products",
@@ -133,12 +129,21 @@ const routes = [
     path: "/schedule",
     component: Scheduling,
   },
+  {
+    name: "Planning",
+    layout: "/admin",
+    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+    path: "/planning",
+    component:Planning ,
+  },
 
   {
     layout: "/admin",
     path: "/:eventId/tickets",
     component: Tickets,
-  },
+  }
+  
+  
 
 ];
 
