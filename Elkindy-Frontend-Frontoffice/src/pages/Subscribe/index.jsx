@@ -4,7 +4,7 @@ import PricingArea from "../../components/Pricing/PricingArea";
 
 const SubscribePage = () => {
     return (
-        <section className="pricing-area pb-90" style={{ overflowY: 'hidden' }}>
+        <section className="pricing-area pb-90" style={{ backgroundColor: "#292930" }}>
             <PricingArea />
         </section>
     );
