@@ -716,7 +716,16 @@ export default function ColumnsTable(props) {
                             <Tr {...row.getRowProps()} key={index}>
                                 {row.cells.map((cell, index) => {
                                     let data = "";
-                                    if  (cell.column.Header === "USERNAME") {
+                                    if  (cell.column.Header === "PICTURE") {
+                                        data = (
+                                            <Text color={textColor} fontSize='sm' fontWeight='700'>
+
+                                                {/* <img src={cell.value} alt="User Image" style={{ width: "70px", height: "60px", margin: "auto" }} /> */}
+                                                <img src={cell.value} alt="User Picture" style={{ maxWidth: "50px", maxHeight: "50px", borderRadius: "50%" }} />
+
+                                            </Text>
+                                        );
+                                        } else if  (cell.column.Header === "USERNAME") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
                                                 {cell.value}

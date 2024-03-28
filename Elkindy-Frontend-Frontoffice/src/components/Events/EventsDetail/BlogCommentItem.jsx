@@ -13,7 +13,14 @@ const BlogCommentItem = ({ item, className }) => {
 
         <span>
           <i className="fal fa-calendar-alt"></i>
-          {item.created_at}
+          
+          {new Date(item.created_at).toLocaleString('tn-TN', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: 'numeric',
+                          minute: 'numeric'
+                        })}
         </span>
 
         <p>{item.comment}</p>

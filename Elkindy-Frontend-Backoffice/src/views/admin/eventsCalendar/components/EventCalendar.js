@@ -15,7 +15,7 @@ function App(props) {
       title: event.name,
       start: new Date(event.startDate),
       end: new Date(event.endDate),
-      color: "blue",
+      color: "#4169E1",
     };
   });
   return (<>

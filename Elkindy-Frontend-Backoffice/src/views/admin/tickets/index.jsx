@@ -1,8 +1,5 @@
 import { Box, SimpleGrid } from "@chakra-ui/react";
 
-import EventTable from "views/admin/events/components/EventTable";
-import Tickets from "views/admin/events/components/Tickets";
-import Comments from "views/admin/events/components/Comments";
 
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";

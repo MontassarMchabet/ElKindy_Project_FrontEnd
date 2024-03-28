@@ -6,10 +6,20 @@ export async function getAllEvents(config) {
   return await axios.get(`${apiURL}/all`,config);
 }
 
-export async function getEventById(id,config) {
-  return await axios.get(`${apiURL}/${id}`,config);
-}
+// export async function getEventById(id,config) {
+//   return await axios.get(`${apiURL}/${id}`,config);
+// }
 
+
+export async function getEventById(id, config) {
+  try {
+    const response = await axios.get(`${apiURL}/${id}`, config);
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de la récupération de l'événement par ID :", error);
+    throw error;
+  }
+} 
 // export async function getEventById(id, config) {
 //     try {
 //       const response = await axios.get(`${apiURL}/${id}`, config);

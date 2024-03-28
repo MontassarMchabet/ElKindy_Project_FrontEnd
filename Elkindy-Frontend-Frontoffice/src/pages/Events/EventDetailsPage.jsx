@@ -1,7 +1,7 @@
 import React from "react";
-import EventDetails from "./EventDetails";
-import NewsLetterAreaTwo from "../../NewsLetter/NewsLetterAreaTwo";
-import Layout from "../../../layouts/Layout";
+
+import EventDetails from "../../components/Events/EventsDetail/EventDetails";
+import Layout from "../../layouts/Layout";
 
 const BlogDetailsPage = () => {
   return (

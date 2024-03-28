@@ -3,7 +3,7 @@
 export const eventsData = [
   {
     Header: "IMAGE",
-    accessor: "imageURL", // Utilisation de la même casse pour tous les accesseurs
+    accessor: "imageUrl", // Utilisation de la même casse pour tous les accesseurs
   },
   {
     Header: "NAME",
@@ -11,7 +11,7 @@ export const eventsData = [
   },
   {
     Header: "DATE",
-    accessor: "date",
+    accessor: "startDate",
   },
   {
     Header: "PRICE",

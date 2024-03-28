@@ -1,8 +1,13 @@
 export const commentsData = [
   {
-    Header: "USERNAME",
-    accessor: "user", 
+    Header: "PICTURE",
+    accessor: "user.profilePicture", 
   },
+  {
+    Header: "USERNAME",
+    accessor: "user.username", 
+  },
+  
   {
     Header: "COMMENT",
     accessor: "comment",

@@ -41,6 +41,7 @@ import { MdCheckCircle, MdCancel, MdOutlineError } from "react-icons/md";
 import Information from "views/admin/events/components/Information";
 
 import { useHistory } from 'react-router-dom';
+import { format } from "util";
 
 
 export default function ColumnsTable(props) {
@@ -67,43 +68,122 @@ export default function ColumnsTable(props) {
         usePagination
     );
     const [editedEvent, setEditedEvent] = useState({}); // Déclaration et initialisation
-    const [tickets, setTickets] = useState([]);
-    const [comments, setComments] = useState([]);
+
     // const [eventId, setEventId] = useState(null);
-    const eventId = '65de60ac69889e0c3cfa4bd3';
+
     const [eventInfo, setEventInfo] = useState(null);
     const [image, setImage] = useState("");
-    
+
     const history = useHistory();
+    const [errorsEdit, setErrorsEdit] = useState({});
 
+    // const validateEditForm = async () => {
+    //     let errorsEdit = {};
 
+    //     if (parseFloat(formData.price) < 0) {
+    //         errorsEdit.price = 'Price must be greater than or equal to 0';
+    //     }
+    //     else if (new Date(formData.endDate) <= new Date(formData.startDate)) {
+    //         errorsEdit.endDate = 'End date must be after start date';
+    //     }
+    //     else if (parseInt(formData.room_capacity) < 0) {
+    //         errorsEdit.room_capacity = 'Room capacity must be greater than or equal to 0';
+    //     }
+
+    //     setErrorsEdit(errorsEdit);
+    //     return Object.keys(errorsEdit).length === 0;
+    // };
+    // const validateEditForm = async () => {
+    //     let errorsEdit = {};
+
+    //     if (formData.price < 0) {
+    //         errorsEdit.price = 'Price must be greater than or equal to 0';
+    //     } else if (new Date(formData.endDate) <= new Date(formData.startDate)) {
+    //         errorsEdit.endDate = 'End date must be after start date';
+    //     } else if (formData.room_capacity < 0) {
+    //         errorsEdit.room_capacity = 'Room capacity must be greater than or equal to 0';
+    //     }
+
+    //     setErrorsEdit(errorsEdit);
+    //     return Object.keys(errorsEdit).length === 0;
+    // };
+   
+    const validateEditForm = async () => {
+        let errorsEdit = {};
+    
+        if (editedEvent.price < 0 || isNaN(editedEvent.price)) {
+            errorsEdit.price = 'Price must be greater than or equal to 0';
+        } else if (new Date(editedEvent.endDate) <= new Date(editedEvent.startDate)) {
+            errorsEdit.endDate = 'End date must be after start date';
+        } else if (parseInt(editedEvent.room_capacity) < 0 || isNaN(editedEvent.room_capacity)) {
+            errorsEdit.room_capacity = 'Room capacity must be greater than or equal to 0';
+        }
+    
+        setErrorsEdit(errorsEdit);
+        return Object.keys(errorsEdit).length === 0;
+    };
+    
     ////////////////////////
-    // Fonction pour sauvegarder les modifications du cours
+    // Fonction pour sauvegarder les modifications d'1 event
+    // const handleSaveEdit = async () => {
+    //     try {
+    //         if (image) {
+    //             const formDataToSend = new FormData();
+    //             formDataToSend.append("image", image);
+
+    //             const uploadResponse = await api.post(
+    //                 "http://localhost:9090/api/image/uploadimage",
+    //                 formDataToSend,
+    //                 {
+    //                     headers: {
+    //                         "Content-Type": "multipart/form-data",
+    //                     },
+    //                 }
+    //             );
+    //             editedEvent.imageUrl = uploadResponse.data.downloadURL[0];
+    //         }
+    //         // Effectuer la requête API pour mettre à jour le cours avec les nouvelles données
+    //         await axios.put(`http://localhost:9090/event/update/${editedEvent._id}`, editedEvent);
+    //         //console.log (editedEvent._id,"aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    //         console.log("Event updated successfully");
+    //         setIsEditModalOpen(false); // Fermer la modal d'édition après la sauvegarde
+    //         fetchData(); // Rafraîchir les données des cours
+    //     } catch (error) {
+    //         console.error("Error updating Event:", error);
+    //     }
+    // };
+
     const handleSaveEdit = async () => {
-        try {
-            if (image) {
-                const formDataToSend = new FormData();
-                formDataToSend.append("image", image);
-        
-                const uploadResponse = await api.post(
-                  "http://localhost:9090/api/image/uploadimage",
-                  formDataToSend,
-                  {
-                    headers: {
-                      "Content-Type": "multipart/form-data",
-                    },
-                  }
-                );
-                editedEvent.imageUrl = uploadResponse.data.downloadURL[0];
-              }
-            // Effectuer la requête API pour mettre à jour le cours avec les nouvelles données
-            await axios.put(`http://localhost:9090/event/update/${editedEvent._id}`, editedEvent);
-            //console.log (editedEvent._id,"aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-            console.log("Event updated successfully");
-            setIsEditModalOpen(false); // Fermer la modal d'édition après la sauvegarde
-            fetchData(); // Rafraîchir les données des cours
-        } catch (error) {
-            console.error("Error updating Event:", error);
+        const isValid = await validateEditForm();
+        console.log("Submitting form");
+        if (isValid) {
+            try {
+                if (image) {
+                    const formDataToSend = new FormData();
+                    formDataToSend.append("image", image);
+
+                    const uploadResponse = await api.post(
+                        "http://localhost:9090/api/image/uploadimage",
+                        formDataToSend,
+                        {
+                            headers: {
+                                "Content-Type": "multipart/form-data",
+                            },
+                        }
+                    );
+                    editedEvent.imageUrl = uploadResponse.data.downloadURL[0];
+                }
+                // Effectuer la requête API pour mettre à jour le cours avec les nouvelles données
+                await axios.put(`http://localhost:9090/event/update/${editedEvent._id}`, editedEvent);
+                console.log("Event updated successfully");
+                setIsEditModalOpen(false); // Fermer la modal d'édition après la sauvegarde
+                fetchData(); // Rafraîchir les données des cours
+            } catch (error) {
+                console.error("Error updating Event:", error);
+            }
+        } else {
+            console.log("Form validation failed");
+            // Gérer l'échec de la validation ici, par exemple, en mettant à jour l'état pour afficher des messages d'erreur à l'utilisateur
         }
     };
     // const handleEdit = (event) => {
@@ -122,7 +202,7 @@ export default function ColumnsTable(props) {
     //         if (image) {
     //             const formDataToSend = new FormData();
     //             formDataToSend.append("image", image);
-    
+
     //             const uploadResponse = await api.post(
     //                 "http://localhost:9090/api/image/uploadimage",
     //                 formDataToSend,
@@ -151,43 +231,15 @@ export default function ColumnsTable(props) {
         setEditedEvent(event); // Charger les données du cours à éditer dans editedEvent
         openEditModal(); // Ouvrir le formulaire d'édition
     };
-    // const handleImageChange = (e) => {
-    //     setImage(e.target.files[0]);
-    //   };
-
-    // const handleTicketsClick = async () => {
-    //     if (!eventId) { // Vérifiez si  son ID sont définis
-    //         console.error('Event info is missing or does not have an ID');
-    //         return;
-    //     }
-    //     try {
-    //         const response = await axios.get(`http://localhost:9090/event/${eventId}/tickets`); // Utilisez eventInfo._id
-
-    //         const data = await response.json();
-    //         setTickets(data);
-    //     } catch (error) {
-    //         console.error('Error fetching tickets:', error);
-    //     }
+    // const formatDateForInput = (date) => {
+    //     // Assurez-vous que la date est au format ISO 8601
+    //     return format(new Date(date), "yyyy-MM-dd'T'HH:mm");
     // };
-    const handleTicketsClick = async () => {
-        if (!eventId) { // Vérifiez si l'ID de l'événement est défini
-            console.error('Event info is missing or does not have an ID');
-            return;
-        }
-        try {
-            const response = await axios.get(`http://localhost:9090/event/${eventId}/tickets`); // Utilisez eventInfo._id
 
-            const data = response.data; // Accédez directement aux données de la réponse
-            //setTickets(data);
 
-            // Redirigez l'utilisateur vers la page des tickets en utilisant history.push()
-            history.push('/tickets');
-        } catch (error) {
-            console.error('Error fetching tickets:', error);
-        }
-    };
 
-    
+
+
     // La fonction pour ouvrir le formulaire d'édition
     const openEditModal = () => {
         setIsEditModalOpen(true);
@@ -256,36 +308,123 @@ export default function ColumnsTable(props) {
 
     });
     const [errors, setErrors] = useState({});
-    
+
+
+    // const validateForm = async () => {
+    //     let errors = {};
+
+    //     if (!formData.name.trim()) {
+    //         errors.name = 'Nameis required'
+    //     } else if (!formData.description.trim()) {
+    //         errors.description = 'Description required'
+    //     } else if (!formData.location.trim()) {
+    //         errors.location = 'location required'
+    //     } else if (!formData.price.trim()) {
+    //         errors.price = 'price required'
+    //         // } else if (!formData.imageUrl.trim()) {
+    //         //     errors.imageUrl = 'image required'
+    //     } else if (!formData.startDate.trim()) {
+    //         errors.startDate = 'startDate required'
+    //     } else if (!formData.room_name.trim()) {
+    //     } else if (!formData.endDate.trim()) {
+    //         errors.endDate = 'endDate required'
+    //     } else if (!formData.room_name.trim()) {
+    //         errors.room_name = 'room required'
+    //     } else if (!formData.room_capacity.trim()) {
+    //         errors.room_capacity = 'room capacity required'
+    //     } else if (!formData.room_shape.trim()) {
+    //         errors.room_shape = 'room shape required'
+
+    //     } else if (!formData.room_distributionSeats.trim()) {
+    //         errors.room_distributionSeats = 'Seats required'
+    //     }
+    //     setErrors(errors);
+    //     return Object.keys(errors).length === 0;
+    // };
+
+    // version avec test sur positivity
+    // const validateForm = async () => {
+    //     let errors = {};
+
+    //     if (!formData.name.trim()) {
+    //         errors.name = 'Name is required';
+    //     } 
+    //     if (!formData.description.trim()) {
+    //         errors.description = 'Description is required';
+    //     } 
+    //     if (!formData.location.trim()) {
+    //         errors.location = 'Location is required';
+    //     } 
+    //     if (!formData.price.trim()) {
+    //         errors.price = 'Price is required';
+    //     } else if (parseFloat(formData.price) < 0) {
+    //         errors.price = 'Price must be greater than or equal to 0';
+    //     }
+    //     if (!formData.startDate.trim()) {
+    //         errors.startDate = 'Start date is required';
+    //     } 
+    //     if (!formData.endDate.trim()) {
+    //         errors.endDate = 'End date is required';
+    //     } 
+    //     if (!formData.room_name.trim()) {
+    //         errors.room_name = 'Room name is required';
+    //     } 
+    //     if (!formData.room_capacity.trim()) {
+    //         errors.room_capacity = 'Room capacity is required';
+    //     } else if (parseInt(formData.room_capacity) < 0) {
+    //         errors.room_capacity = 'Room capacity must be greater than or equal to 0';
+    //     }
+    //     if (!formData.room_shape.trim()) {
+    //         errors.room_shape = 'Room shape is required';
+    //     } 
+    //     if (!formData.room_distributionSeats.trim()) {
+    //         errors.room_distributionSeats = 'Seats distribution is required';
+    //     }
+
+    //     setErrors(errors);
+    //     return Object.keys(errors).length === 0;
+    // };
 
     const validateForm = async () => {
         let errors = {};
 
         if (!formData.name.trim()) {
-            errors.name = 'Nameis required'
-        } else if (!formData.description.trim()) {
-            errors.description = 'Description required'
-        } else if (!formData.location.trim()) {
-            errors.location = 'location required'
-        } else if (!formData.price.trim()) {
-            errors.price = 'price required'
-        // } else if (!formData.imageUrl.trim()) {
-        //     errors.imageUrl = 'image required'
-        } else if (!formData.startDate.trim()) {
-            errors.startDate = 'startDate required'
-        } else if (!formData.room_name.trim()) {
-        } else if (!formData.endDate.trim()) {
-            errors.endDate = 'endDate required'
-        } else if (!formData.room_name.trim()) {
-            errors.room_name = 'room required'
-        } else if (!formData.room_capacity.trim()) {
-            errors.room_capacity = 'room capacity required'
-        } else if (!formData.room_shape.trim()) {
-            errors.room_shape = 'room shape required'
-
-        } else if (!formData.room_distributionSeats.trim()) {
-            errors.room_distributionSeats = 'Seats required'
+            errors.name = 'Name is required';
         }
+        else if (!formData.description.trim()) {
+            errors.description = 'Description is required';
+        }
+        else if (!formData.location.trim()) {
+            errors.location = 'Location is required';
+        }
+        else if (!formData.price.trim()) {
+            errors.price = 'Price is required';
+        } else if (parseFloat(formData.price) < 0) {
+            errors.price = 'Price must be greater than or equal to 0';
+        }
+        else if (!formData.startDate.trim()) {
+            errors.startDate = 'Start date is required';
+        }
+        else if (!formData.endDate.trim()) {
+            errors.endDate = 'End date is required';
+        } else if (new Date(formData.endDate) <= new Date(formData.startDate)) {
+            errors.endDate = 'End date must be after start date';
+        }
+        else if (!formData.room_name.trim()) {
+            errors.room_name = 'Room name is required';
+        }
+        else if (!formData.room_capacity.trim()) {
+            errors.room_capacity = 'Room capacity is required';
+        } else if (parseInt(formData.room_capacity) < 0) {
+            errors.room_capacity = 'Room capacity must be greater than or equal to 0';
+        }
+        else if (!formData.room_shape.trim()) {
+            errors.room_shape = 'Room shape is required';
+        }
+        else if (!formData.room_distributionSeats.trim()) {
+            errors.room_distributionSeats = 'Seats distribution is required';
+        }
+
         setErrors(errors);
         return Object.keys(errors).length === 0;
     };
@@ -319,15 +458,15 @@ export default function ColumnsTable(props) {
                     // Télécharger l'image
                     const formDataToSend = new FormData();
                     formDataToSend.append("image", image);
-            
+
                     const uploadResponse = await api.post(
-                      "http://localhost:9090/api/image/uploadimage",
-                      formDataToSend,
-                      {
-                        headers: {
-                          "Content-Type": "multipart/form-data",
-                        },
-                      }
+                        "http://localhost:9090/api/image/uploadimage",
+                        formDataToSend,
+                        {
+                            headers: {
+                                "Content-Type": "multipart/form-data",
+                            },
+                        }
                     );
                     // Ajouter l'URL de l'image téléchargée à formData
                     formData.imageUrl = uploadResponse.data.downloadURL[0];
@@ -349,10 +488,10 @@ export default function ColumnsTable(props) {
             // Gérer l'échec de la validation ici, par exemple, en mettant à jour l'état pour afficher des messages d'erreur à l'utilisateur
         }
     };
-    
+
     const handleImageChange = (e) => {
         setImage(e.target.files[0]);
-      };
+    };
 
     //   const [eventId, setEventId] = useState({});
 
@@ -416,7 +555,7 @@ export default function ColumnsTable(props) {
                                     </FormControl>
                                     <FormControl>
                                         <FormLabel>Description</FormLabel>
-                                        <Input type="text" name="description" value={formData.description} onChange={handleChange} />
+                                        <Input as="textarea" name="description" value={formData.description} onChange={handleChange} />
                                     </FormControl>
                                     <FormControl>
                                         <FormLabel>Location</FormLabel>
@@ -458,10 +597,10 @@ export default function ColumnsTable(props) {
                                     <Input type="datetime-local" name="endDate" value={formData.endDate} onChange={handleChange} />
                                 </FormControl>
                                 <FormControl mt={4}>
-                                    
-                                    
+
+
                                     <FormLabel>Image</FormLabel>
-                                    <Input type="file" name="imageUrl" value={formData.imageUrl} onChange={handleChange} />
+                                    <Input type="file" name="imageUrl" value={formData.imageUrl} onChange={handleImageChange} />
                                 </FormControl>
 
                             </ModalBody>
@@ -530,8 +669,8 @@ export default function ColumnsTable(props) {
                                     if (cell.column.Header === "IMAGE") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
-                                                {/* <img src={cell.value} alt="Event Image" /> */}
-                                                <img src={cell.value} alt="imageUrl" style={{ maxWidth: "100px", maxHeight: "120px", margin: "auto" }} />
+
+                                                <img src={cell.value} alt="Event Image" style={{ width: "70px", height: "60px", margin: "auto" }} />
 
                                             </Text>
                                         );
@@ -545,15 +684,26 @@ export default function ColumnsTable(props) {
 
                                     } else if (cell.column.Header === "DATE") {
                                         data = (
+                                            // <Text color={textColor} fontSize='sm' fontWeight='700'>
+                                            //     {new Date(cell.value).toLocaleString('tn-TN', {
+                                            //         weekday: 'long',
+                                            //         year: 'numeric',
+                                            //         month: 'long',
+                                            //         day: 'numeric',
+                                            //         hour: 'numeric',
+                                            //         minute: 'numeric'
+
+                                            //     })}
+                                            // </Text>
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
-                                                {new Date(cell.value).toLocaleString('tn-TN', {
+                                                {new Date(cell.value).toLocaleString('fr-FR', {
                                                     weekday: 'long',
                                                     year: 'numeric',
                                                     month: 'long',
                                                     day: 'numeric',
                                                     hour: 'numeric',
                                                     minute: 'numeric'
-                                                    
+
                                                 })}
                                             </Text>
                                         );
@@ -608,7 +758,7 @@ export default function ColumnsTable(props) {
                                                                 </FormControl>
                                                                 <FormControl id="description">
                                                                     <FormLabel>Description</FormLabel>
-                                                                    <Input type="text" value={editedEvent.description} onChange={(e) => setEditedEvent({ ...editedEvent, description: e.target.value })} />
+                                                                    <Input as="textarea" value={editedEvent.description} onChange={(e) => setEditedEvent({ ...editedEvent, description: e.target.value })} />
                                                                 </FormControl>
                                                                 <FormControl id="location">
                                                                     <FormLabel>Location</FormLabel>
@@ -616,16 +766,18 @@ export default function ColumnsTable(props) {
                                                                 </FormControl>
                                                                 <FormControl id="price">
                                                                     <FormLabel>Price</FormLabel>
-                                                                    <Input type="number" value={editedEvent.price} onChange={(e) => setEditedEvent({ ...editedEvent, price: parseInt(e.target.value) })} />
+                                                                    <Input type="number" value={editedEvent.price} onChange={(e) => setEditedEvent({ ...editedEvent, price: parseFloat(e.target.value) })} />
                                                                 </FormControl>
+
                                                                 <FormControl id="startDate">
                                                                     <FormLabel>Start Date</FormLabel>
-                                                                    <Input type="datetime-local" value={editedEvent.startDate} onChange={(e) => setEditedEvent({ ...editedEvent, startDate: e.target.value })} />
+                                                                    <Input type="datetime-local" value={editedEvent.startDate || ''} onChange={(e) => setEditedEvent({ ...editedEvent, startDate: e.target.value })} />
                                                                 </FormControl>
                                                                 <FormControl id="endDate">
                                                                     <FormLabel>End Date</FormLabel>
-                                                                    <Input type="datetime-local" value={editedEvent.endDate} onChange={(e) => setEditedEvent({ ...editedEvent, endDate: e.target.value })} />
+                                                                    <Input type="datetime-local" value={editedEvent.endDate || ''} onChange={(e) => setEditedEvent({ ...editedEvent, endDate: e.target.value })} />
                                                                 </FormControl>
+
                                                                 <FormControl id="room_name">
                                                                     <FormLabel>Room Name</FormLabel>
                                                                     <Input type="text" value={editedEvent.room_name} onChange={(e) => setEditedEvent({ ...editedEvent, room_name: e.target.value })} />
@@ -659,25 +811,37 @@ export default function ColumnsTable(props) {
                                                                     <FormLabel>Seats</FormLabel>
                                                                     <Input type="text" value={editedEvent.room_distributionSeats} onChange={(e) => setEditedEvent({ ...editedEvent, room_distributionSeats: e.target.value })} />
                                                                 </FormControl>
-                                                                 <FormControl id="imageUrl" mt={4}>
-                                                                {/* <img src={editedEvent.imageUrl} alt="imageUrl" style={{ maxWidth: "250px", maxHeight: "250px", borderRadius: "50%", margin: "auto" }} /> */}
+                                                                <FormControl id="imageUrl" mt={4}>
+                                                                    {/* <img src={editedEvent.imageUrl} alt="imageUrl" style={{ maxWidth: "250px", maxHeight: "250px", borderRadius: "50%", margin: "auto" }} /> */}
 
-                                                                     <FormLabel>Image</FormLabel>
-                                                                    
-                                                                    <Input type="file" name="imageUrl" onChange={handleImageChange} /> 
-                                                                     
-                                                                            {/* <FormLabel>Image</FormLabel>
+                                                                    <FormLabel>Image</FormLabel>
+
+                                                                    <Input type="file" name="imageUrl" onChange={handleImageChange} />
+
+                                                                    {/* <FormLabel>Image</FormLabel>
                                                                             {image && (
                                                                                 <img src={URL.createObjectURL(image)} alt="Preview" style={{ maxWidth: "250px", maxHeight: "250px", margin: "auto" }} />
                                                                             )}
                                                                             <Input type="file" name="imageUrl" onChange={handleImageChange} />
                                                                             */}
-                                                                    
-                                                                </FormControl> 
-                                                               
+
+                                                                </FormControl>
+
                                                             </ModalBody>
+
                                                         )}
+
+
+
+                                                        {errorsEdit.price && <Text color="red">{errorsEdit.price}</Text>}
+                                                        {errorsEdit.startDate && <Text color="red">{errorsEdit.startDate}</Text>}
+                                                        {errorsEdit.endDate && <Text color="red">{errorsEdit.endDate}</Text>}
+                                                        {errorsEdit.room_capacity && <Text color="red">{errorsEdit.room_capacity}</Text>}
+
+
+
                                                         <ModalFooter>
+
                                                             <Button colorScheme="blue" mr={3} onClick={handleSaveEdit}>Save</Button>
                                                             <Button onClick={closeEditModal}>Cancel</Button>
                                                         </ModalFooter>

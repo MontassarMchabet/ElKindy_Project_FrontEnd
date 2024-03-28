@@ -1,107 +1,4 @@
-// import React from "react";
-// import { Link } from "react-router-dom";
 
-// const BlogItem = ({ item }) => {
-//   return (
-//     <div className="inner-blog-item-1">
-//       <div className="inner-blog-thumb">
-//         <Link to={item.url}>
-//           <img src={item.imageUrl} alt="" />
-//         </Link>
-//       </div>
-
-//       <div className="inner-blog-content">
-//         <div className="blog-meta-two">
-//           <ul className="list-wrap">
-//             <li className="tag">
-//               <Link to="/events">{item.tag}</Link>
-//             </li>
-
-//             <li>
-//               <i className="fal fa-clock"/>{item.startDate}
-//             </li>
-
-//             <li>
-//               <i className="fal fa-calendar"></i>{item.endDate}
-//             </li>
-
-//             <li>
-//               By <Link to="/events">{item.author}</Link>
-//             </li>
-//           </ul>
-//         </div>
-
-//         <h2 className="title">
-//           <Link to={item.url}>
-//             {item.name}
-//           </Link>
-//         </h2>
-
-//         <p>
-//           {item.description}
-//         </p>
-
-//         <Link to={item.url} className="rade-more-btn">
-//           Read More
-//         </Link>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default BlogItem;
-// import React from "react";
-// import { Link } from "react-router-dom";
-
-// const EventItem = ({ item }) => {
-//   return (
-//     <div className="inner-blog-item-1">
-//       <div className="inner-blog-thumb">
-//         <Link to={item.url}>
-//           <img src={item.imageUrl} alt="" style={{ width: "100%", height: "auto" }} /> {/* Assurez-vous que les dimensions des images sont uniformes */}
-//         </Link>
-//       </div>
-
-//       <div className="inner-blog-content">
-//         <div className="blog-meta-two">
-//           <ul className="list-wrap">
-//             <li className="tag">
-//               <Link to="/events">{item.tag}</Link>
-//             </li>
-
-//             <li>
-//               <i className="fal fa-clock"/>{item.startDate}
-//             </li>
-
-//             <li>
-//               <i className="fal fa-calendar"></i>{item.endDate}
-//             </li>
-
-//             <li>
-//               By <Link to="/events">{item.author}</Link>
-//             </li>
-//           </ul>
-//         </div>
-
-//         <h2 className="title">
-//           <Link to={item.url}>
-//             {item.name}
-//           </Link>
-//         </h2>
-
-//         <p>
-//           {item.description}
-//         </p>
-
-//         <Link to={item.url} className="rade-more-btn">
-//           Read More
-//         </Link>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default EventItem;
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -149,11 +46,13 @@ const EventItem = ({ item }) => {
         <p>{item.description}</p>
         <ul>
 
-          <Link to="/events/1" className="rade-more-btn">
+          <Link to={`/events/${item._id}`} className="rade-more-btn">
             Read More
           </Link>
 
-          <button variant="primary">Reserve Ticket</button>{' '}
+          <button variant="primary" ><Link to={`/events/${item._id}/reserveTickets`}>
+          Reserve Ticket
+          </Link></button>{' '}
 
         </ul>
 
