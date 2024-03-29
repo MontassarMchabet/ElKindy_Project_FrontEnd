@@ -107,10 +107,10 @@ export default function ColumnsTable(props) {
     //     setErrorsEdit(errorsEdit);
     //     return Object.keys(errorsEdit).length === 0;
     // };
-   
+
     const validateEditForm = async () => {
         let errorsEdit = {};
-    
+
         if (editedEvent.price < 0 || isNaN(editedEvent.price)) {
             errorsEdit.price = 'Price must be greater than or equal to 0';
         } else if (new Date(editedEvent.endDate) <= new Date(editedEvent.startDate)) {
@@ -118,11 +118,11 @@ export default function ColumnsTable(props) {
         } else if (parseInt(editedEvent.room_capacity) < 0 || isNaN(editedEvent.room_capacity)) {
             errorsEdit.room_capacity = 'Room capacity must be greater than or equal to 0';
         }
-    
+
         setErrorsEdit(errorsEdit);
         return Object.keys(errorsEdit).length === 0;
     };
-    
+
     ////////////////////////
     // Fonction pour sauvegarder les modifications d'1 event
     // const handleSaveEdit = async () => {
@@ -298,15 +298,19 @@ export default function ColumnsTable(props) {
         imageUrl: "",
         startDate: "",
         endDate: "",
+        duration: "",
         location: "",
         price: "",
-
         room_name: "",
         room_shape: "",
         room_capacity: "",
-        room_distributionSeats: ""
+        room_distributionSeats: "",
+        series: [],
+        seat: "",
+        selectedSeats: [],
 
     });
+
     const [errors, setErrors] = useState({});
 
 
@@ -570,8 +574,7 @@ export default function ColumnsTable(props) {
                                         <Input type="text" name="room_name" value={formData.room_name} onChange={handleChange} />
                                     </FormControl>
                                     <FormControl>
-                                        <FormLabel>shape</FormLabel>
-                                        {/* <Input type="text" name="room_shape" value={formData.room_shape} onChange={handleChange} /> */}
+                                        <FormLabel>Shape</FormLabel>
                                         <Select name="room_shape" value={formData.room_shape} onChange={handleChange}>
                                             <option value="Rectangular">Rectangular</option>
                                             <option value="Triangular">Triangular</option>
@@ -583,6 +586,15 @@ export default function ColumnsTable(props) {
                                         <FormLabel>Capacity</FormLabel>
                                         <Input type="number" name="room_capacity" value={formData.room_capacity} onChange={handleChange} />
                                     </FormControl>
+                                    <FormControl id="lines">
+                                        <FormLabel>Lines</FormLabel>
+                                        <Input type="text" value={editedEvent.series ? editedEvent.series.join(',') : ''} onChange={(e) => setEditedEvent({ ...editedEvent, series: e.target.value.split(',') })} placeholder="Enter comma-separated series" />
+                                    </FormControl>
+                                    <FormControl id="seatsPerLine">
+                                        <FormLabel>Seats Per Line</FormLabel>
+                                        <Input type="number" value={editedEvent.seat} onChange={(e) => setEditedEvent({ ...editedEvent, seat: parseInt(e.target.value) })} />
+                                    </FormControl>
+
                                     <FormControl>
                                         <FormLabel>Seats</FormLabel>
                                         <Input type="text" name="room_distributionSeats" value={formData.room_distributionSeats} onChange={handleChange} />
@@ -597,32 +609,10 @@ export default function ColumnsTable(props) {
                                     <Input type="datetime-local" name="endDate" value={formData.endDate} onChange={handleChange} />
                                 </FormControl>
                                 <FormControl mt={4}>
-
-
                                     <FormLabel>Image</FormLabel>
-                                    <Input type="file" name="imageUrl" value={formData.imageUrl} onChange={handleImageChange} />
+                                    <Input type="file" name="imageUrl" onChange={handleImageChange} />
                                 </FormControl>
-
                             </ModalBody>
-
-                            {errors.name && <Text color="red">{errors.name}</Text>}
-                            {errors.description && <Text color="red">{errors.description}</Text>}
-                            {errors.location && <Text color="red">{errors.location}</Text>}
-                            {errors.price && <Text color="red">{errors.price}</Text>}
-                            {errors.imageUrl && <Text color="red">{errors.imageUrl}</Text>}
-                            {errors.startDate && <Text color="red">{errors.startDate}</Text>}
-                            {errors.endDate && <Text color="red">{errors.endDate}</Text>}
-                            {errors.room_name && <Text color="red">{errors.room_name}</Text>}
-                            {errors.room_shape && <Text color="red">{errors.room_shape}</Text>}
-                            {errors.room_capacity && <Text color="red">{errors.room_capacity}</Text>}
-                            {errors.room_distributionSeats && <Text color="red">{errors.room_distributionSeats}</Text>}
-                            {errors.imageUrl && <Text color="red">{errors.imageUrl}</Text>}
-
-
-
-
-
-
                             <ModalFooter>
                                 <Button colorScheme="blue" mr={3} onClick={closeModalA}>
                                     Close
@@ -634,6 +624,7 @@ export default function ColumnsTable(props) {
                         </form>
                     </ModalContent>
                 </Modal>
+
             </Flex>
 
 
@@ -767,6 +758,14 @@ export default function ColumnsTable(props) {
                                                                 <FormControl id="price">
                                                                     <FormLabel>Price</FormLabel>
                                                                     <Input type="number" value={editedEvent.price} onChange={(e) => setEditedEvent({ ...editedEvent, price: parseFloat(e.target.value) })} />
+                                                                </FormControl>
+                                                                <FormControl id="lines">
+                                                                    <FormLabel>Lines</FormLabel>
+                                                                    <Input value={editedEvent.series} onChange={(e) => setEditedEvent({ ...editedEvent, series: e.target.value.split('\n') })} />
+                                                                </FormControl>
+                                                                <FormControl id="seatsPerLine">
+                                                                    <FormLabel>Seats Per Line</FormLabel>
+                                                                    <Input type="number" value={editedEvent.seat} onChange={(e) => setEditedEvent({ ...editedEvent, seat: parseInt(e.target.value) })} />
                                                                 </FormControl>
 
                                                                 <FormControl id="startDate">
@@ -970,13 +969,13 @@ export default function ColumnsTable(props) {
                                                                             />
                                                                             <Information
                                                                                 boxShadow={cardShadow}
-                                                                                title='Room Capacity'
-                                                                                value={eventInfo.room_capacity}
+                                                                                title='Lines'
+                                                                                value={eventInfo.series}
                                                                             />
                                                                             <Information
                                                                                 boxShadow={cardShadow}
-                                                                                title='Seats'
-                                                                                value={eventInfo.room_distributionSeats}
+                                                                                title='Seats per Line'
+                                                                                value={eventInfo.seat}
                                                                             />
                                                                             <NavLink to={`/event/${eventInfo._id}/tickets`}>
                                                                                 <Button colorScheme="blue" >Tickets</Button>
