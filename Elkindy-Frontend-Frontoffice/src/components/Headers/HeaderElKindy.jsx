@@ -149,10 +149,18 @@ const HeaderOne = () => {
                                                     <Link to="/">Planning</Link>
                                                 </li>
 
-                                                <li className={cn(isActiveClassName("/exams"))}>
+                                               
+                                                {isLoggedIn ? (
+                                                            <>
+                                                               <li className={cn(isActiveClassName("/exams"))}>
                                                     <Link to="/exams">Exams</Link>
                                                 </li>
-
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                
+                                                            </>
+                                                        )}
                                                 <li className={cn(isActiveClassName("/"))}>
                                                     <Link to="/">Shop</Link>
                                                 </li>

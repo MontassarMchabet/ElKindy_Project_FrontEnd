@@ -15,16 +15,17 @@ import BlogPage from "./pages/Blog/BlogPage";
 import BlogDetailsPage from "./pages/Blog/BlogDetailsPage";
 import EventsPage from "./pages/Events/EventsPage.jsx";
 import AnimatedCursor from "react-animated-cursor";
-
+import ExamDetailsPage from "./pages/Exams/examdetails.jsx";
 import Home from "./pages/shop/pages/Home";
 import OurStore from "./pages/shop/pages/OurStore";
 import SingleProduct from "./pages/shop/pages/SingleProduct";
 import Wishlist from "./pages/shop/pages/Wishlist";
 import CompareProduct from "./pages/shop/pages/CompareProduct";
-
+import PassQuiz from "./pages/Exams/passquiz.jsx";
 import AccountComponent from "./pages/Account";
 import ExamsComponent from "./pages/Exams";
- 
+import AddExamsComponent from "./pages/Exams/addexam";
+import NotesPage from "./pages/Exams/notespage.jsx";
 
 function App() {
   useEffect(() => {
@@ -72,6 +73,7 @@ function App() {
         <Route path="/" element={<CreativeAgency />} />
         <Route path="/account" element={<AccountComponent />} />
         <Route path="/exams" element={<ExamsComponent />} />
+        <Route path="/addexams" element={<AddExamsComponent />} />
         {/* <Route path="/home-two" element={<PersonalPortfolio />} />
         <Route path="/home-three" element={<DigitalAgency />} /> */}
         <Route path="/about-us" element={<AboutUs />} />
@@ -83,10 +85,10 @@ function App() {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog-details" element={<BlogDetailsPage />} />
-
-
+        <Route path="/exam-details/:id" element={<ExamDetailsPage />} />
+        <Route path="/notes" element={<NotesPage />} />
         <Route path="/events" element={<EventsPage />} />
-
+        <Route path="/passquiz" element={<PassQuiz />} />
         <Route path="/shop" element={<Home />} />
         <Route path="/shop/products" element={<OurStore />} />
         <Route path="/shop/products/id" element={<SingleProduct />} />

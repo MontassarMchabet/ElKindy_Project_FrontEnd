@@ -8,9 +8,14 @@ import Cookies from 'js-cookie';
 
 
 const NavExams = () => {
+
+    const [user, setUser] = useState(null);
+        
+        
+        const isLoggedIn = Cookies.get('token') !== undefined;
     useEffect(() => {
         /*=============================================
-      =     Menu sticky & Scroll to top      =
+    =     Menu sticky & Scroll to top      =
     =============================================*/
         $(window).on("scroll", function () {
             var scroll = $(window).scrollTop();
@@ -69,18 +74,36 @@ const NavExams = () => {
                 return false;
             });
         });
+
+        const fetchUserData = async () => {
+            try {
+                const storedToken = Cookies.get('token');
+                const storedRefreshToken = Cookies.get('refreshToken');
+                const decodedToken = jwtDecode(storedToken);
+                const { userId, role } = decodedToken;
+
+                const response = await api.get(`http://localhost:9090/api/auth/user/${userId}`);
+                setUser(response.data);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+        fetchUserData();
     }, []);
 
     const { pathname } = useLocation();
 
     const isActiveClassName = (path) => {
         return path === pathname ? "active" : "";
+    
+    
+    
     };
 
 
     return (
         <>
-            <header style={{ position: "absolute", marginBottom: "860px" }}>
+             <header style={{ position: "fixed", top: 160, width: "100%", zIndex: 999 }}>
                 <div id="sticky-header" className="menu-area transparent-header" >
                     <div className="container">
                         <div className="row">
@@ -96,28 +119,26 @@ const NavExams = () => {
                                         <div className="header-action">
                                             <ul className="list-wrap">
 
-                                                <li className="header-btn">
-                                                    <a href="#!" className="btn">
-                                                        Add exam <span></span>
-                                                    </a>
-                                                </li>
+                                            {user && user.role === 'prof' &&<Link
+  to="/addexams"
+  className="btn"
+  style={{ fontSize: '18px', padding: '10px 20px' }} // Adjust the font size and padding as needed
+>
+  Add Exam <span></span>
+</Link>}
+
                                             </ul>
                                         </div>
 
                                         <div className="navbar-wrap main-menu d-none d-lg-flex">
                                             <ul className="navigation">
-                                                <li className={cn(isActiveClassName("/"))}>
-                                                    <Link to="/">My exams</Link>
-                                                </li>
-
-                                                <li className={cn(isActiveClassName("/about-us"))}>
-                                                    <Link to="/about-us">All exams</Link>
-                                                </li>
 
                                                 <li className={cn(isActiveClassName("/"))}>
                                                     <Link to="/">Planning</Link>
                                                 </li>
-
+                                                {user && user.role === 'client' &&<li className={cn(isActiveClassName("/"))}>
+                                                    <Link to="/notes">Notes</Link>
+                                                </li>}
                                                 <li className={cn(isActiveClassName("/exams"))}>
                                                     <Link to="/exams">Exams</Link>
                                                 </li>

@@ -47,5 +47,18 @@ export const RevisionData = [
   },
   {
     Header: "ACTIONS", 
-  },
+  },];
+  export const AnswersData = [
+    {
+      Header: "Students",
+      accessor: "client",
+    },
+    {
+      Header: "PDF",
+      accessor: "answerPdf",
+    },
+    {
+      Header: "Note",
+      accessor: "note",
+    },
 ];

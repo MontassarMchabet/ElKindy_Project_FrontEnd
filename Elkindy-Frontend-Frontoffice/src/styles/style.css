@@ -4951,6 +4951,19 @@ label {
   position: relative;
   z-index: 1;
 }
+/* Example CSS */
+.revision-color {
+  color: red; /* Change color based on your preference */
+}
+
+.end-of-year-exam-color {
+  color: blue; /* Change color based on your preference */
+}
+
+.midterm-exam-color {
+  color: green; /* Change color based on your preference */
+}
+
 .blog-post-content .tag {
   font-size: 15px;
   display: inline-block;
