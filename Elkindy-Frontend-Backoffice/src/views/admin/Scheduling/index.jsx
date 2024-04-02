@@ -3,8 +3,7 @@ import { render } from "react-dom";
 import ReactDOM from 'react-dom';
 import Demo from "./demo";
 export default Demo;
-//render(<Demo />, document.getElementById("root"));
-//export default CustomScheduler;
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById("Schedule");

@@ -1,5 +1,7 @@
 {
   "dependencies": {
-    "@devexpress/dx-react-scheduler-material-ui": "^4.0.8"
+    "@devexpress/dx-react-scheduler-material-ui": "^4.0.8",
+    "@syncfusion/ej2-react-buttons": "^25.1.35",
+    "@syncfusion/ej2-react-grids": "^25.1.35"
   }
 }

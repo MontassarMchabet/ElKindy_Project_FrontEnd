@@ -13,6 +13,7 @@ import {
     Thead,
     Tr,
     useColorModeValue,
+   
 } from "@chakra-ui/react";
 import React, { useMemo, useState } from "react";
 import {
@@ -28,7 +29,7 @@ import {
 } from "@chakra-ui/react";
 import Card from "components/card/Card";
 import Information from "views/admin/profile/components/Information";
-import { MdCheckCircle, MdCancel, MdOutlineError } from "react-icons/md";
+
 export default function ColumnsTable(props) {
     const { columnsData, tableData, handleDelete, cancelDelete, cancelRef, confirmDelete, isDeleteDialogOpen,
         isModalOpenP, openModalP, closeModalP, fetchData, isEditModalOpen, closeEditModal,setIsEditModalOpen} = props;
@@ -38,12 +39,12 @@ export default function ColumnsTable(props) {
         // Fonction pour sauvegarder les modifications du cours
         const handleSaveEdit = async () => {
             try {
-                await axios.put(`http://localhost:9090/api/Course/update/${editedCourse._id}`, editedCourse);
-                console.log("Course updated successfully");
+                await axios.put(`http://localhost:9090/api/classroom/update/${editedCourse._id}`, editedCourse);
+                console.log("classroom updated successfully");
                 setIsEditModalOpen(false); 
                 fetchData();
             } catch (error) {
-                console.error("Error updating course:", error);
+                console.error("Error updating classroom:", error);
             }
         };
     const handleEdit = (course) => {
@@ -118,11 +119,10 @@ export default function ColumnsTable(props) {
     
     const [formData, setFormData] = useState({
         name: "",
-        type: "",
-        duration: "",
-        startDate: "",
-        endDate: "",
-        capacity: "",
+        level: "",
+        capacity: 15,
+        users: []
+       
     });
     const [errors, setErrors] = useState({});
     const handleChange = (e) => {
@@ -133,10 +133,8 @@ export default function ColumnsTable(props) {
 
         if (!formData.name.trim()) {
             errors.name = 'All fields are required'
-        } else if (!formData.type.trim()) {
-            errors.type = 'All fields are required'
-        } else if (!formData.duration.trim()) {
-            errors.duration = 'All fields are required'
+        } else if (!formData.level.trim()) {
+            errors.level = 'All fields are required'
         } else if (!formData.capacity.trim()) {
             errors.capacity = 'All fields are required'
         } 
@@ -151,14 +149,14 @@ export default function ColumnsTable(props) {
         if (isValid) {
             try {
                 const response = await axios.post(
-                    "http://localhost:9090/api/Course/add",
+                    "http://localhost:9090/api/classroom/add",
                     formData
                 );
                 fetchData()
                 closeModalP()
                 console.log(response.data);
             } catch (error) {
-                console.error("Error registering prof:", error);
+                console.error("Error registering classroom:", error);
             }
         }
     };
@@ -174,7 +172,7 @@ export default function ColumnsTable(props) {
                     fontSize='22px'
                     fontWeight='700'
                     lineHeight='100%'>
-                    Courses Table
+                    Classroom Table
                 </Text>
                 <Menu isOpen={isOpen1} onClose={onClose1}>
                     <MenuButton
@@ -199,7 +197,7 @@ export default function ColumnsTable(props) {
                     <ModalOverlay />
                     <ModalContent>
                         <form onSubmit={handleSubmit} noValidate>
-                            <ModalHeader>Add Course</ModalHeader>
+                            <ModalHeader>Add New Classroom</ModalHeader>
                             <ModalCloseButton />
                             <ModalBody>
                                 <Grid templateColumns="1fr 1fr" gap={4}>
@@ -213,36 +211,37 @@ export default function ColumnsTable(props) {
                                     </FormControl>
                         
                                     <FormControl>
-                                    <FormLabel>Type</FormLabel>
-                                        <Select name="type" value={formData.type} onChange={handleChange}>
-                                            <option value="group">group</option>
-                                            <option value="individual">individual</option>
+                                    <FormLabel>Level</FormLabel>
+                                        <Select name="level" value={formData.level} onChange={handleChange}>
+                                        <option value="">Select level</option>
+                                            <option value="Initiation">Initiation</option>
+                                            <option value="Préparatoire">Préparatoire</option>
+                                            <option value="1ère année">1ère année</option>
+                                            <option value="2ème année">2ème année</option>
+                                            <option value="3ème année">3ème année</option>
+                                            <option value="4ème année">4ème année</option>
+                                            <option value="5ème année">5ème année</option>
+                                            <option value="6ème année">6ème année</option>
+                                            <option value="7ème année">7ème année</option>
                                         </Select>
                                      </FormControl>
-                                </Grid>
-                                <FormControl mt={4}>
-                                    <FormLabel>Duration</FormLabel>
-                                    <Input type="text"
-                                        name="duration"
-                                        value={formData.duration}
-                                        onChange={handleChange}
-                                    />
-                                </FormControl>               
-                                <FormControl mt={4}>
-                                    <FormLabel>Capacity</FormLabel>
-                                    <Input type="number"
-                                        name="capacity"
-                                        value={formData.capacity}
-                                        onChange={handleChange}
-                                    />
-                                </FormControl>
-                                
+                                </Grid>            
+                                <FormControl>
+                                        <FormLabel>Capacity</FormLabel>
+                                        <Input type="number"
+                                            name="capacity"
+                                            value={formData.capacity}
+                                            onChange={handleChange}
+                                            min={0}
+                                            max={30}
+                                        />
+                                    </FormControl>
+                                                                    
                             </ModalBody>
                             {errors.name && <Text color="red">{errors.name}</Text>}
-                            {errors.type && <Text color="red">{errors.type}</Text>}
-                            {errors.duration && <Text color="red">{errors.duration}</Text>}
-                           
+                            {errors.level && <Text color="red">{errors.level}</Text>}
                             {errors.capacity && <Text color="red">{errors.capacity}</Text>}
+                           
                             <ModalFooter>
                                 <Button colorScheme="blue" mr={3} onClick={closeModalP}>
                                     Close
@@ -256,10 +255,14 @@ export default function ColumnsTable(props) {
                 </Modal>
             </Flex>
             <Table {...getTableProps()} variant='simple' color='gray.500' mb='24px'>
-                <Thead>
-                    {headerGroups.map((headerGroup, index) => (
-                        <Tr {...headerGroup.getHeaderGroupProps()} key={index}>
-                            {headerGroup.headers.map((column, index) => (
+            <Thead>
+            {headerGroups.map((headerGroup, index) => (
+                <Tr {...headerGroup.getHeaderGroupProps()} key={index}>
+                    {headerGroup.headers.map((column, index) => {
+                        // Vérifier si la colonne doit être affichée
+                        if (column.id === "name" || column.id === "level" || column.id === "capacity") {
+                            // Si oui, afficher la colonne
+                            return (
                                 <Th
                                     {...column.getHeaderProps(column.getSortByToggleProps())}
                                     pe='10px'
@@ -273,10 +276,16 @@ export default function ColumnsTable(props) {
                                         {column.render("Header")}
                                     </Flex>
                                 </Th>
-                            ))}
-                        </Tr>
-                    ))}
-                </Thead>
+                            );
+                        } else {
+                            // Sinon, ignorer la colonne
+                            return null;
+                        }
+                    })}
+                </Tr>
+            ))}
+        </Thead>
+
              <Tbody {...getTableBodyProps()}>
                     {page.map((row, index) => {
                         prepareRow(row);
@@ -290,19 +299,13 @@ export default function ColumnsTable(props) {
                                                 {cell.value}
                                             </Text>
                                         );
-                                    } else if (cell.column.Header === "type") {
+                                    } else if (cell.column.Header === "level") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
                                                 {cell.value}
                                             </Text>
                                         );
-                                    } else if (cell.column.Header === "duration") {
-                                        data = (
-                                            <Text color={textColor} fontSize='sm' fontWeight='700'>
-                                                {cell.value}
-                                            </Text>
-                                        );
-                                    }
+                                    } 
                                      else if (cell.column.Header === "capacity") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
@@ -325,7 +328,7 @@ export default function ColumnsTable(props) {
                                            <Modal isOpen={isEditModalOpen} onClose={closeEditModal}>
                                             <ModalOverlay />
                                                 <ModalContent maxW={'800px'}>
-                                                    <ModalHeader>Edit Course</ModalHeader>
+                                                    <ModalHeader>Edit Classroom</ModalHeader>
                                                     <ModalCloseButton />
                                                     {editedCourse && ( // Vérifiez si editedCourse est disponible
                                                         <ModalBody>
@@ -334,13 +337,20 @@ export default function ColumnsTable(props) {
                                                                 <FormLabel>Name</FormLabel>
                                                                 <Input type="text" value={editedCourse.name} onChange={(e) => setEditedCourse({ ...editedCourse, name: e.target.value })} />
                                                             </FormControl>
-                                                            <FormControl id="type">
-                                                                <FormLabel>Type</FormLabel>
-                                                                <Input type="text" value={editedCourse.type} onChange={(e) => setEditedCourse({ ...editedCourse, type: e.target.value })} />
-                                                            </FormControl>
-                                                            <FormControl id="duration">
-                                                                <FormLabel>Duration</FormLabel>
-                                                                <Input type="number" value={editedCourse.duration} onChange={(e) => setEditedCourse({ ...editedCourse, duration: parseInt(e.target.value) })} />
+                                                            <FormControl>
+                                                            <FormLabel>Level</FormLabel>
+                                                                <Select name="level" value={editedCourse.level} onChange={(e) => setEditedCourse({ ...editedCourse, level: e.target.value })}>
+                                                                <option value="">Select level</option>
+                                                                    <option value="Initiation">Initiation</option>
+                                                                    <option value="Préparatoire">Préparatoire</option>
+                                                                    <option value="1ère année">1ère année</option>
+                                                                    <option value="2ème année">2ème année</option>
+                                                                    <option value="3ème année">3ème année</option>
+                                                                    <option value="4ème année">4ème année</option>
+                                                                    <option value="5ème année">5ème année</option>
+                                                                    <option value="6ème année">6ème année</option>
+                                                                    <option value="7ème année">7ème année</option>
+                                                                </Select>
                                                             </FormControl>
                                                             <FormControl id="capacity">
                                                                 <FormLabel>Capacity</FormLabel>
@@ -363,11 +373,11 @@ export default function ColumnsTable(props) {
                                                     <AlertDialogOverlay>
                                                         <AlertDialogContent>
                                                             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                                                                Delete Course
+                                                                Delete Classroom
                                                             </AlertDialogHeader>
 
                                                             <AlertDialogBody>
-                                                                Are you sure you want to delete this course?
+                                                                Are you sure you want to delete this classroom?
                                                             </AlertDialogBody>
 
                                                             <AlertDialogFooter>
@@ -402,7 +412,7 @@ export default function ColumnsTable(props) {
                                                 <Modal isOpen={isModalViewOpen} onClose={closeModalViewA}>
                                                     <ModalOverlay />
                                                     <ModalContent maxW={'800px'}>
-                                                        <ModalHeader>Course Information</ModalHeader>
+                                                        <ModalHeader>Classroom Information</ModalHeader>
                                                         <ModalCloseButton />
                                                         <ModalBody>
                                                             {profInfo && (
@@ -421,19 +431,11 @@ export default function ColumnsTable(props) {
                                                                         <SimpleGrid columns='2' gap='20px'>
                                                                             <Information
                                                                                 boxShadow={cardShadow}
-                                                                                title='Name'
-                                                                                value={profInfo.name}
+                                                                                title='level'
+                                                                                value={profInfo.level}
                                                                             />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Type'
-                                                                                value={profInfo.type}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Duration'
-                                                                                value={profInfo.duration }
-                                                                            />
+                                                                            
+                                                                            
                                                                             <Information
                                                                                 boxShadow={cardShadow}
                                                                                 title='Capaciity'

@@ -219,6 +219,8 @@ export default function ColumnsTable(props) {
                                             name="capacity"
                                             value={formData.capacity}
                                             onChange={handleChange}
+                                            min={0}
+                                            max={30}
                                         />
                                     </FormControl>
                                 </Grid>

@@ -24,6 +24,7 @@ import CompareProduct from "./pages/shop/pages/CompareProduct";
 
 import AccountComponent from "./pages/Account";
 import ExamsComponent from "./pages/Exams";
+import PlanningComponent from "./pages/Planning";
  
 
 function App() {
@@ -83,7 +84,7 @@ function App() {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog-details" element={<BlogDetailsPage />} />
-
+        <Route path="/planning" element={<PlanningComponent />} />
 
         <Route path="/events" element={<EventsPage />} />
 

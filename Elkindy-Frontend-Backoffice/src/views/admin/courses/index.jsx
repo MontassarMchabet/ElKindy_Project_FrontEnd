@@ -17,7 +17,7 @@ export default function Settings() {
 
     const fetchData = async () => {
         try {
-            const CourseResponse = await axios.get('http://localhost:9090/api/Course/getall');
+            const CourseResponse = await axios.get('http://localhost:9090/api/classroom/getall');
             setCoursesData(CourseResponse.data);
             const RoomResponse = await axios.get('http://localhost:9090/api/Room/getall');
             setRoomData(RoomResponse.data);
@@ -56,7 +56,7 @@ export default function Settings() {
     const handleDelete = async () => {
         setIsCourseDeleteDialogOpen(false);
         try {
-            await axios.delete(`http://localhost:9090/api/Course/delete/${deletingUserId}`);
+            await axios.delete(`http://localhost:9090/api/classroom/delete/${deletingUserId}`);
             console.log("Course deleted successfully");
             setIsCourseEditModalOpen(false);
             fetchData();

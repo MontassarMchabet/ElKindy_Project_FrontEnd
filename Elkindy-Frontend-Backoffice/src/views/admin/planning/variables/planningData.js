@@ -1,31 +1,38 @@
 const PlanningData = [
-    {
-        Header: "Course ID",
-        accessor: "courseId",
-    },
+  
     {
         Header: "Date",
         accessor: "date",
     },
     {
-        Header: "startDate",
+        Header: "startTime",
         accessor: "startDate",
     },
     {
-        Header: "endDate",
+        Header: "endTime",
         accessor: "endDate",
     },
+    ,
     {
-        Header: "Room ID",
+        Header: "type",
+        accessor: "type",
+    },
+    {
+        Header: "Room ",
         accessor: "roomId",
     },
     {
-        Header: "Teacher ID",
+        Header: "Teacher ",
         accessor: "teacherId",
     },
     {
-        Header: "Student IDs",
+        Header: "Student ",
         accessor: "studentIds",
+    },
+    ,
+    {
+        Header: "Classroom",
+        accessor: "classroomId",
     },
     {
         Header: "ACTIONS",

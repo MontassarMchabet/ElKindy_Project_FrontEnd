@@ -19,7 +19,7 @@
     "@mui/lab": "^5.0.0-alpha.117",
     "@mui/material": "^5.11.6",
     "@mui/x-date-pickers": "^5.0.15",
-    "@syncfusion/ej2-react-schedule": "^24.2.8",
+    "@syncfusion/ej2-react-schedule": "^25.1.35",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",

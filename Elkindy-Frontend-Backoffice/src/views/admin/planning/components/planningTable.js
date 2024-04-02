@@ -1,8 +1,7 @@
 import axios from "axios";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button } from "@chakra-ui/react";
-import { ViewIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import { ViewIcon, DeleteIcon, EditIcon,Icon } from "@chakra-ui/icons";
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, ModalFooter, FormControl, FormLabel, Input, Grid, SimpleGrid } from "@chakra-ui/react";
 import { AddIcon } from '@chakra-ui/icons'
 import {
@@ -14,7 +13,7 @@ import {
     Th,
     Thead,
     Tr,
-    useColorModeValue,Select 
+    useColorModeValue,Select ,Checkbox
 } from "@chakra-ui/react";
 import React, { useEffect,useMemo, useState } from "react";
 import {
@@ -30,23 +29,59 @@ import {
 } from "@chakra-ui/react";
 import Card from "components/card/Card";
 import Information from "views/admin/profile/components/Information";
-import { MdCheckCircle, MdCancel, MdOutlineError } from "react-icons/md";
 export default function ColumnsTable(props) {
     const { columnsData, tableData, handleDelete, cancelDelete, cancelRef, confirmDelete, isDeleteDialogOpen,
-        isModalOpenR, openModalR, closeModalR, fetchData, isEditModalOpen, closeEditModal,setIsEditModalOpen,courseOptions,roomOptions,teacherOptions,studentOptions} = props;
+        isModalOpenR, openModalR, closeModalR, fetchData, isEditModalOpen, closeEditModal,setIsEditModalOpen,roomOptions,teacherOptions,studentOptions,classroomoptions} = props;
     const textColorPrimary = useColorModeValue("secondaryGray.900", "white");
     const [editedRoom, seteditedRoom] = useState({}); 
  
         const handleSaveEdit = async () => {
+            const isRoomAvailable = await checkRoomAvailability(editedRoom.roomId, editedRoom.date, editedRoom.startDate, editedRoom.endDate);
+        if (!isRoomAvailable) {
+            openRoomAvailablePopup();
+            return; // Arrêtez le traitement si la salle n'est pas disponible
+        }
+        const isTeacherAvailable = await checkTeacherAvailability(editedRoom.teacherId, editedRoom.date, editedRoom.startDate, editedRoom.endDate);
+        if (!isTeacherAvailable) {
+            openTecherAvailablePopup();
+            return; // Arrêtez le traitement si la salle n'est pas disponible
+        }
+        
+        if(editedRoom.type==="instrument"){
+                const isStudentAvailable = await checkStudentAvailability(editedRoom.studentIds, editedRoom.date, editedRoom.startDate, editedRoom.endDate);
+                if (!isStudentAvailable) {
+                    openStudentAvailablePopup();
+                    return; // Arrêtez le traitement si la salle n'est pas disponible
+                }
+                const TotalIndividualStudy = await calculateTotalIndividualStudyHours(editedRoom.studentIds, editedRoom.date,editedRoom.type);
+                if (!TotalIndividualStudy) {
+                    openIndividualStudyPopup();
+                    return; // Arrêtez le traitement si la salle n'est pas disponible
+                }
+         }
+        const isCorrectDuration = await checkDurationOfCourse(editedRoom.startDate, editedRoom.endDate,editedRoom.type);
+    
+    // Afficher une alerte en fonction du résultat
+        if (!isCorrectDuration) {
+           openDurationPopup();
+           return;
+        }
+        if(editedRoom.type==="solfège"){
+                const TotalStudyHours = await calculateTotalStudyHours(editedRoom.classroomId, editedRoom.date, editedRoom.startDate, editedRoom.endDate);
+                if (!TotalStudyHours) {
+                    openTotalStudyHoursPopup();
+                    return; // Arrêtez le traitement si la salle n'est pas disponible
+                }
+        }
             try {
                 // Effectuer la requête API pour mettre à jour le cours avec les nouvelles données
-                await axios.put(`http://localhost:9090/api/Room/update/${editedRoom._id}`, editedRoom);
+                await axios.put(`http://localhost:9090/api/plannings/update/${editedRoom._id}`, editedRoom);
                
-                console.log("Course updated successfully");
+                console.log("plannings updated successfully");
                 setIsEditModalOpen(false); 
                 fetchData(); 
             } catch (error) {
-                console.error("Error updating course:", error);
+                console.error("Error updating plannings:", error);
             }
         };
 
@@ -109,19 +144,19 @@ const checkStudentAvailability = async (studentIds, date, startTime, endTime) =>
         return false;
     }
 };
-const checkDurationOfCourse = async (startTime, endTime) => {
+const checkDurationOfCourse = async (startTime, endTime,type) => {
     try {
-        const response = await axios.get(`http://localhost:9090/api/plannings/CheckDuration/${startTime}/${endTime}`);
+        const response = await axios.get(`http://localhost:9090/api/plannings/CheckDuration/${startTime}/${endTime}/${type}`);
         return response.data.correctDuration;
     } catch (error) {
         console.error('Error checking course duration:', error);
         return false;
     }
 };
-const calculateTotalIndividualStudyHours  = async (studentIds,date,startTime, endTime,courseId) => {
-    console.log(courseId)
+const calculateTotalIndividualStudyHours  = async (studentIds,date,type) => {
+    
     try {
-        const response = await axios.get(`http://localhost:9090/api/plannings/TotalIndividualStudy/${studentIds}/${date}/${startTime}/${endTime}/${courseId}`);
+        const response = await axios.get(`http://localhost:9090/api/plannings/TotalIndividualStudy/${studentIds}/${date}/${type}`);
         console.log(response.data.TotalIndividualStudy);
         return response.data.TotalIndividualStudy;
     } catch (error) {
@@ -129,9 +164,9 @@ const calculateTotalIndividualStudyHours  = async (studentIds,date,startTime, en
         return false;
     }
 };
-const calculateTotalStudyHours  = async (studentIds,date,startTime, endTime) => {
+const calculateTotalStudyHours  = async (classroomId,date,startTime, endTime) => {
     try {
-        const response = await axios.get(`http://localhost:9090/api/plannings/TotalStudyHours/${studentIds}/${date}/${startTime}/${endTime}`);
+        const response = await axios.get(`http://localhost:9090/api/plannings/TotalStudyHours/${classroomId}/${date}/${startTime}/${endTime}`);
         console.log(response.data.totalStudyHoursPerWeek);
         return response.data.totalStudyHoursPerWeek;
     } catch (error) {
@@ -199,11 +234,6 @@ const calculateTotalStudyHours  = async (studentIds,date,startTime, endTime) => 
         { bg: "whiteAlpha.100" }
     );
     const [show, setShow] = React.useState(false);
-    const handleClick = () => setShow(!show);
-
-
-
-
     const [isModalViewOpen, setIsModalViewOpen] = useState(false);
     const [profInfo, setProfInfo] = useState(null);
     const handleView = (userData) => {
@@ -215,25 +245,34 @@ const calculateTotalStudyHours  = async (studentIds,date,startTime, endTime) => 
     };
     
     const [formData, setFormData] = useState({
-        courseId: "",
+       
         date: "",
         startDate: "",
         endDate:"",
+        type:"",
         roomId:"",
         teacherId:"",
-        studentIds:[],
+        studentIds:"",
+        classroomId:""
 
 
        
     });
     const [errors, setErrors] = useState({});
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value,checked } = e.target;
 
         if (name === "studentIds") {
             const selectedStudents = Array.from(e.target.selectedOptions, option => option.value);
             setFormData({ ...formData, [name]: selectedStudents });
-        } else {
+        }
+        if (name === "type") {
+            setFormData({
+                ...formData,
+                [name]: checked ? value : undefined
+            });
+        }
+         else {
             setFormData({ ...formData, [name]: value });
         }
     };
@@ -241,27 +280,27 @@ const calculateTotalStudyHours  = async (studentIds,date,startTime, endTime) => 
     const validateForm = async () => {
         let errors = {};
     
-        if (!formData.courseId.trim()) {
-            errors.courseId = 'Course ID is required';
+        if (!formData.type) {
+            errors.type = 'type is required';
         }
         if (!formData.date) {
             errors.date = 'Date is required';
         }
         if (!formData.startDate.trim()) {
-            errors.startDate = 'Start Date is required';
+            errors.startDate = 'Start Time is required';
         }
         if (!formData.endDate.trim()) {
-            errors.endDate = 'End Date is required';
+            errors.endDate = 'End Time is required';
         }
         if (!formData.roomId.trim()) {
-            errors.roomId = 'Room ID is required';
+            errors.roomId = 'Room Name is required';
         }
         if (!formData.teacherId.trim()) {
-            errors.teacherId = 'Teacher ID is required';
+            errors.teacherId = 'Teacher Name is required';
         }
-        if (!formData.studentIds.length) {
+        /* if (!formData.studentIds.length) {
             errors.studentIds = 'Student IDs are required';
-        }
+        } */
         setErrors(errors);
         return Object.keys(errors).length === 0;
     };
@@ -283,27 +322,32 @@ const calculateTotalStudyHours  = async (studentIds,date,startTime, endTime) => 
             openTecherAvailablePopup();
             return; // Arrêtez le traitement si la salle n'est pas disponible
         }
-        const isStudentAvailable = await checkStudentAvailability(formData.studentIds, formData.date, formData.startDate, formData.endDate);
-        if (!isStudentAvailable) {
-            openStudentAvailablePopup();
-            return; // Arrêtez le traitement si la salle n'est pas disponible
-        }
-        const isCorrectDuration = await checkDurationOfCourse(formData.startDate, formData.endDate);
+        
+        if(formData.type==="instrument"){
+                const isStudentAvailable = await checkStudentAvailability(formData.studentIds, formData.date, formData.startDate, formData.endDate);
+                if (!isStudentAvailable) {
+                    openStudentAvailablePopup();
+                    return; // Arrêtez le traitement si la salle n'est pas disponible
+                }
+                const TotalIndividualStudy = await calculateTotalIndividualStudyHours(formData.studentIds, formData.date,formData.type);
+                if (!TotalIndividualStudy) {
+                    openIndividualStudyPopup();
+                    return; // Arrêtez le traitement si la salle n'est pas disponible
+                }
+         }
+        const isCorrectDuration = await checkDurationOfCourse(formData.startDate, formData.endDate,formData.type);
     
     // Afficher une alerte en fonction du résultat
         if (!isCorrectDuration) {
            openDurationPopup();
            return;
         }
-        const TotalIndividualStudy = await calculateTotalIndividualStudyHours(formData.studentIds, formData.date, formData.startDate, formData.endDate,formData.courseId);
-        if (!TotalIndividualStudy) {
-            openIndividualStudyPopup();
-            return; // Arrêtez le traitement si la salle n'est pas disponible
-        }
-        const TotalStudyHours = await calculateTotalStudyHours(formData.studentIds, formData.date, formData.startDate, formData.endDate);
-        if (!TotalStudyHours) {
-            openTotalStudyHoursPopup();
-            return; // Arrêtez le traitement si la salle n'est pas disponible
+        if(formData.type==="solfège"){
+                const TotalStudyHours = await calculateTotalStudyHours(formData.classroomId, formData.date, formData.startDate, formData.endDate);
+                if (!TotalStudyHours) {
+                    openTotalStudyHoursPopup();
+                    return; // Arrêtez le traitement si la salle n'est pas disponible
+                }
         }
         try {
             const response = await axios.post(
@@ -348,8 +392,6 @@ const calculateTotalStudyHours  = async (studentIds,date,startTime, endTime) => 
                         <AddIcon color={iconColor} w='20px' h='20px' />
                     </MenuButton>
                 </Menu>
-{/* 
-                {/* Modal for adding  */}
                 <Modal isOpen={isModalOpenR} onClose={closeModalR}>
     <ModalOverlay />
     <ModalContent>
@@ -357,18 +399,26 @@ const calculateTotalStudyHours  = async (studentIds,date,startTime, endTime) => 
             <ModalHeader>Add Planning</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-                      <FormControl>
-                        <FormLabel>Course ID</FormLabel>
-                        <Select
-                            name="courseId"
-                            value={formData.courseId}
+                 
+                    
+                    <FormControl>
+                        <FormLabel>Type </FormLabel>
+                        <Checkbox
+                            name="type"
+                            isChecked={formData.type === 'solfège'}
                             onChange={handleChange}
+                            value="solfège"
                         >
-                            {courseOptions.map(course => (
-                                <option key={course.id} value={course._id}>{course.name}</option>
-                            ))}
-                        </Select>
-                        {errors.courseId && <Text color="red">{errors.courseId}</Text>}
+                            Solfège
+                        </Checkbox>
+                        <Checkbox
+                            name="type"
+                            isChecked={formData.type === 'instrument'}
+                            onChange={handleChange}
+                            value="instrument"
+                        >
+                            Instrument
+                        </Checkbox>
                     </FormControl>
                      <FormControl>
                     <FormLabel>Date</FormLabel>
@@ -380,8 +430,9 @@ const calculateTotalStudyHours  = async (studentIds,date,startTime, endTime) => 
                                     />
                     {errors.date && <Text color="red">{errors.date}</Text>}
                 </FormControl>
+                <Grid templateColumns="1fr 1fr" gap={4}>
                 <FormControl>
-                    <FormLabel>Start Date</FormLabel>
+                    <FormLabel>StartTime</FormLabel>
                     <Input
                         type="time"
                         name="startDate"
@@ -391,7 +442,7 @@ const calculateTotalStudyHours  = async (studentIds,date,startTime, endTime) => 
                     {errors.startDate && <Text color="red">{errors.startDate}</Text>}
                 </FormControl>
                 <FormControl>
-                    <FormLabel>End Date</FormLabel>
+                    <FormLabel>EndTime</FormLabel>
                     <Input
                         type="time"
                         name="endDate"
@@ -400,13 +451,15 @@ const calculateTotalStudyHours  = async (studentIds,date,startTime, endTime) => 
                     />
                     {errors.endDate && <Text color="red">{errors.endDate}</Text>}
                 </FormControl>
+                </Grid>
                 <FormControl>
-                    <FormLabel>Room ID</FormLabel>
+                    <FormLabel>Room Name</FormLabel>
                     <Select
                         name="roomId"
                         value={formData.roomId}
                         onChange={handleChange}
                     >
+                        <option value="">Select Room</option>
                         {roomOptions.map(room => (
                             <option key={room.id} value={room._id}>{room.room_number}</option>
                         ))}
@@ -414,7 +467,7 @@ const calculateTotalStudyHours  = async (studentIds,date,startTime, endTime) => 
                     {errors.roomId && <Text color="red">{errors.roomId}</Text>}
                 </FormControl>
                 <FormControl>
-                    <FormLabel>Teacher ID</FormLabel>
+                    <FormLabel>Teacher Name</FormLabel>
                     <Select
                         name="teacherId"
                         value={formData.teacherId}
@@ -428,22 +481,37 @@ const calculateTotalStudyHours  = async (studentIds,date,startTime, endTime) => 
                     </Select>
                     {errors.teacherId && <Text color="red">{errors.teacherId}</Text>}
                 </FormControl>
-                <FormControl>
-                    <FormLabel>Student IDs</FormLabel>
-                    <Select
-                        name="studentIds"
-                          
-                        value={formData.studentIds.join(",")} 
-                        onChange={handleChange}
-                       
-                        
-                    >
-                        {studentOptions.map(student => (
-                            <option key={student.id} value={student._id}>{student.name}</option>
-                        ))}
-                    </Select>
-                    {errors.studentIds && <Text color="red">{errors.studentIds}</Text>}
-                </FormControl>
+                                {formData.type === 'instrument' ? (
+                    <FormControl>
+                        <FormLabel>Student Name</FormLabel>
+                        <Select
+                            name="studentIds"
+                            value={formData.studentIds}
+                            onChange={handleChange}
+                        >
+                            <option value="">Select Sudent</option>
+                            {studentOptions.map(student => (
+                                <option key={student.id} value={student._id}>{student.name}</option>
+                            ))}
+                        </Select>
+                        {errors.studentIds && <Text color="red">{errors.studentIds}</Text>}
+                    </FormControl>
+                ) : (
+                    <FormControl>
+                        <FormLabel>Classroom</FormLabel>
+                        <Select
+                            name="classroomId"
+                            value={formData.classroomId}
+                            onChange={handleChange}
+                        >
+                            <option value="">Select classroom</option>
+                            {classroomoptions.map(classroom => (
+                                <option key={classroom.id} value={classroom._id}>{classroom.name}</option>
+                            ))}
+                        </Select>
+                        {errors.classroomId && <Text color="red">{errors.classroomId}</Text>}
+                    </FormControl>
+                )}
             </ModalBody>
             <ModalFooter>
                 <Button colorScheme="blue" mr={3} onClick={closeModalR}>
@@ -457,119 +525,125 @@ const calculateTotalStudyHours  = async (studentIds,date,startTime, endTime) => 
     </ModalContent>
 </Modal>
 
-<AlertDialog
-    isOpen={isRoomAvailablePopupOpen}
-    leastDestructiveRef={cancelRef}
-    onClose={() => setIsRoomAvailablePopupOpen(false)}
->
-    <AlertDialogOverlay>
-        <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                Room Availability
-            </AlertDialogHeader>
-            <AlertDialogBody>
-                La salle de cours est déjà réservée à ce moment-là.
-            </AlertDialogBody>
-            <AlertDialogFooter>
-                <Button onClick={() => setIsRoomAvailablePopupOpen(false)}>Close</Button>
-            </AlertDialogFooter>
+<AlertDialog  isOpen={isRoomAvailablePopupOpen} leastDestructiveRef={cancelRef} onClose={() => setIsRoomAvailablePopupOpen(false)}>
+      <AlertDialogOverlay>
+        <AlertDialogContent bg="white" borderRadius="lg" shadow="md">
+          <AlertDialogHeader fontSize="lg" fontWeight="bold" display="flex" justifyContent="space-between">
+            <div>Room Unavailable</div>
+            <Icon viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-5.707l-7-7a1 1 0 00-1.414 1.414L6.3 12 5 13.707a1 1 0 001.414 1.414L10 14.142l3.707-3.707a1 1 0 001.414-1.414z" clipRule="evenodd" />
+            </Icon>
+          </AlertDialogHeader>
+          <AlertDialogBody fontSize="md">
+          The room is already booked for this date and time.Please choose a different date or room .
+          </AlertDialogBody>
+          <AlertDialogFooter>
+            <Button onClick={() => setIsRoomAvailablePopupOpen(false)} colorScheme="blue">
+              Close
+            </Button>
+          </AlertDialogFooter>
         </AlertDialogContent>
-    </AlertDialogOverlay>
+      </AlertDialogOverlay>
 </AlertDialog>
-<AlertDialog
-    isOpen={isTeacherAvailablePopupOpen}
-    leastDestructiveRef={cancelRef}
-    onClose={() => setIsTeacherAvailablePopupOpen(false)}
->
-    <AlertDialogOverlay>
-        <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                Teacher Availability
-            </AlertDialogHeader>
-            <AlertDialogBody>
-                this teacher is not availabile now .
-            </AlertDialogBody>
-            <AlertDialogFooter>
-                <Button onClick={() => setIsTeacherAvailablePopupOpen(false)}>Close</Button>
-            </AlertDialogFooter>
+<AlertDialog  isOpen={isTeacherAvailablePopupOpen} leastDestructiveRef={cancelRef} onClose={() => setIsTeacherAvailablePopupOpen(false)}>
+      <AlertDialogOverlay>
+        <AlertDialogContent bg="white" borderRadius="lg" shadow="md">
+          <AlertDialogHeader fontSize="lg" fontWeight="bold" display="flex" justifyContent="space-between">
+            <div>Teacher Availability</div>
+            <Icon viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-5.707l-7-7a1 1 0 00-1.414 1.414L6.3 12 5 13.707a1 1 0 001.414 1.414L10 14.142l3.707-3.707a1 1 0 001.414-1.414z" clipRule="evenodd" />
+            </Icon>
+          </AlertDialogHeader>
+          <AlertDialogBody fontSize="md">
+          this teacher is not availabile now .
+          </AlertDialogBody>
+          <AlertDialogFooter>
+            <Button onClick={() => setIsTeacherAvailablePopupOpen(false)} colorScheme="blue">
+              Close
+            </Button>
+          </AlertDialogFooter>
         </AlertDialogContent>
-    </AlertDialogOverlay>
+      </AlertDialogOverlay>
 </AlertDialog>
-<AlertDialog
-    isOpen={isStudentAvailablePopupOpen}
-    leastDestructiveRef={cancelRef}
-    onClose={() => setIsStudentAvailablePopupOpen(false)}
->
-    <AlertDialogOverlay>
-        <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                Student Availability
-            </AlertDialogHeader>
-            <AlertDialogBody>
-                this Student is not availabile now .
-            </AlertDialogBody>
-            <AlertDialogFooter>
-                <Button onClick={() => setIsStudentAvailablePopupOpen(false)}>Close</Button>
-            </AlertDialogFooter>
+<AlertDialog  isOpen={isStudentAvailablePopupOpen} leastDestructiveRef={cancelRef} onClose={() => setIsStudentAvailablePopupOpen(false)}>
+      <AlertDialogOverlay>
+        <AlertDialogContent bg="white" borderRadius="lg" shadow="md">
+          <AlertDialogHeader fontSize="lg" fontWeight="bold" display="flex" justifyContent="space-between">
+            <div>Student Availability</div>
+            <Icon viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-5.707l-7-7a1 1 0 00-1.414 1.414L6.3 12 5 13.707a1 1 0 001.414 1.414L10 14.142l3.707-3.707a1 1 0 001.414-1.414z" clipRule="evenodd" />
+            </Icon>
+          </AlertDialogHeader>
+          <AlertDialogBody fontSize="md">
+          this Student is not availabile now .
+          </AlertDialogBody>
+          <AlertDialogFooter>
+            <Button onClick={() => setIsStudentAvailablePopupOpen(false)} colorScheme="blue">
+              Close
+            </Button>
+          </AlertDialogFooter>
         </AlertDialogContent>
-    </AlertDialogOverlay>
+      </AlertDialogOverlay>
 </AlertDialog>
-<AlertDialog
-    isOpen={checkDurationPopupOpen}
-    leastDestructiveRef={cancelRef}
-    onClose={() => setcheckDurationPopupOpen(false)}
->
-    <AlertDialogOverlay>
-        <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            Course Duration Alert
-            </AlertDialogHeader>
-            <AlertDialogBody>
-            La durée du cours ne doit pas dépasser 30 minutes et l'heure de fin doit être postérieure à l'heure de début.
-            </AlertDialogBody>
-            <AlertDialogFooter>
-                <Button onClick={() => setcheckDurationPopupOpen(false)}>Close</Button>
-            </AlertDialogFooter>
+<AlertDialog  isOpen={checkDurationPopupOpen} leastDestructiveRef={cancelRef} onClose={() => setcheckDurationPopupOpen(false)}>
+      <AlertDialogOverlay>
+        <AlertDialogContent bg="white" borderRadius="lg" shadow="md">
+          <AlertDialogHeader fontSize="lg" fontWeight="bold" display="flex" justifyContent="space-between">
+            <div>Course Duration Alert</div>
+            <Icon viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-5.707l-7-7a1 1 0 00-1.414 1.414L6.3 12 5 13.707a1 1 0 001.414 1.414L10 14.142l3.707-3.707a1 1 0 001.414-1.414z" clipRule="evenodd" />
+            </Icon>
+          </AlertDialogHeader>
+          <AlertDialogBody fontSize="md">
+          tLa durée du cours ne doit pas dépasser 30 minutes et l'heure de fin doit être postérieure à l'heure de début.
+          </AlertDialogBody>
+          <AlertDialogFooter>
+            <Button onClick={() => setcheckDurationPopupOpen(false)} colorScheme="blue">
+              Close
+            </Button>
+          </AlertDialogFooter>
         </AlertDialogContent>
-    </AlertDialogOverlay>
+      </AlertDialogOverlay>
 </AlertDialog>
-<AlertDialog
-    isOpen={TotalIndividualStudyPopupOpen}
-    leastDestructiveRef={cancelRef}
-    onClose={() => setTotalIndividualStudyPopupOpen(false)}
->
-    <AlertDialogOverlay>
-        <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            Indivual Course Alert
-            </AlertDialogHeader>
-            <AlertDialogBody>
-            cette utilisateur est deja affecte à une seance individuel dans cette semaine
-            </AlertDialogBody>
-            <AlertDialogFooter>
-                <Button onClick={() => setTotalIndividualStudyPopupOpen(false)}>Close</Button>
-            </AlertDialogFooter>
+<AlertDialog  isOpen={TotalIndividualStudyPopupOpen} leastDestructiveRef={cancelRef} onClose={() => setTotalIndividualStudyPopupOpen(false)}>
+      <AlertDialogOverlay>
+        <AlertDialogContent bg="white" borderRadius="lg" shadow="md">
+          <AlertDialogHeader fontSize="lg" fontWeight="bold" display="flex" justifyContent="space-between">
+            <div>Indivual Course Alert</div>
+            <Icon viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-5.707l-7-7a1 1 0 00-1.414 1.414L6.3 12 5 13.707a1 1 0 001.414 1.414L10 14.142l3.707-3.707a1 1 0 001.414-1.414z" clipRule="evenodd" />
+            </Icon>
+          </AlertDialogHeader>
+          <AlertDialogBody fontSize="md">
+          cette utilisateur est deja affecte à une seance individuel dans cette semaine.
+          </AlertDialogBody>
+          <AlertDialogFooter>
+            <Button onClick={() => setTotalIndividualStudyPopupOpen(false)} colorScheme="blue">
+              Close
+            </Button>
+          </AlertDialogFooter>
         </AlertDialogContent>
-    </AlertDialogOverlay>
+      </AlertDialogOverlay>
 </AlertDialog>
-<AlertDialog
-    isOpen={TotalStudyHoursPopupOpen}
-    leastDestructiveRef={cancelRef}
-    onClose={() => setTotalStudyHoursPopupOpen(false)}
->
-    <AlertDialogOverlay>
-        <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            Total study hours Alert
-            </AlertDialogHeader>
-            <AlertDialogBody>
-            cette utilisateur est depassé de nombre duree dans cette semaine 
-            </AlertDialogBody>
-            <AlertDialogFooter>
-                <Button onClick={() => setTotalStudyHoursPopupOpen(false)}>Close</Button>
-            </AlertDialogFooter>
+<AlertDialog  isOpen={TotalStudyHoursPopupOpen} leastDestructiveRef={cancelRef} onClose={() => setTotalStudyHoursPopupOpen(false)}>
+      <AlertDialogOverlay>
+        <AlertDialogContent bg="white" borderRadius="lg" shadow="md">
+          <AlertDialogHeader fontSize="lg" fontWeight="bold" display="flex" justifyContent="space-between">
+            <div>Total study hours for solfege course Alert</div>
+            <Icon viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-5.707l-7-7a1 1 0 00-1.414 1.414L6.3 12 5 13.707a1 1 0 001.414 1.414L10 14.142l3.707-3.707a1 1 0 001.414-1.414z" clipRule="evenodd" />
+            </Icon>
+          </AlertDialogHeader>
+          <AlertDialogBody fontSize="md">
+          vous avez depasse le nombre d'heure pour cette semaine .
+          </AlertDialogBody>
+          <AlertDialogFooter>
+            <Button onClick={() => setTotalStudyHoursPopupOpen(false)} colorScheme="blue">
+              Close
+            </Button>
+          </AlertDialogFooter>
         </AlertDialogContent>
-    </AlertDialogOverlay>
+      </AlertDialogOverlay>
 </AlertDialog>
             </Flex>
             <Table {...getTableProps()} variant='simple' color='gray.500' mb='24px'>
@@ -615,38 +689,53 @@ const calculateTotalStudyHours  = async (studentIds,date,startTime, endTime) => 
                                                 {formattedDate}
                                             </Text>
                                         );
-                                    } else if (cell.column.Header === "startDate") {
+                                    } else if (cell.column.Header === "startTime") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
                                                 {cell.value}
                                             </Text>
                                         );
                                     }
-                                    else if (cell.column.Header === "endDate") {
+                                    else if (cell.column.Header === "endTime") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
                                                 {cell.value}
                                             </Text>
                                         );
                                     }
-                                    else if (cell.column.Header === "Room ID") {
+                                    
+                                    else if (cell.column.Header === "type") {
+                                        data = (
+                                            <Text color={textColor} fontSize='sm' fontWeight='700'>
+                                                {cell.value}
+                                            </Text>
+                                        );
+                                    }
+                                    else if (cell.column.Header === "Room ") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
                                                 {row.original.RoomName}
                                             </Text>
                                         );
                                     }
-                                    else if (cell.column.Header === "Teacher ID") {
+                                    else if (cell.column.Header === "Teacher ") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
                                                 {row.original.TeacherName}
                                             </Text>
                                         );
                                     }
-                                    else if (cell.column.Header === "Student IDs") {
+                                    else if (cell.column.Header === "Student ") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
                                                 {row.original.studentName}
+                                            </Text>
+                                        );
+                                    }
+                                    else if (cell.column.Header === "Classroom") {
+                                        data = (
+                                            <Text color={textColor} fontSize='sm' fontWeight='700'>
+                                                {row.original.courseName}
                                             </Text>
                                         );
                                     }
@@ -667,23 +756,125 @@ const calculateTotalStudyHours  = async (studentIds,date,startTime, endTime) => 
                                            <Modal isOpen={isEditModalOpen} onClose={closeEditModal}>
                                             <ModalOverlay />
                                                 <ModalContent maxW={'800px'}>
-                                                    <ModalHeader>Edit Room</ModalHeader>
+                                                    <ModalHeader>Edit Planning</ModalHeader>
                                                     <ModalCloseButton />
                                                     {editedRoom && ( // Vérifiez si editedRoom est disponible
+                                                         
                                                         <ModalBody>
-                                                            {/* Formulaire pour l'édition du cours */}
-                                                            <FormControl id="room_number">
-                                                                <FormLabel>Room Number</FormLabel>
-                                                                <Input type="text" value={editedRoom.room_number} onChange={(e) => seteditedRoom({ ...editedRoom, room_number: e.target.value })} />
+                                                            <FormControl>
+                                                                <FormLabel>Type </FormLabel>
+                                                                <Checkbox
+                                                                    name="type"
+                                                                    isChecked={editedRoom.type === 'solfège'}
+                                                                    onChange={(e) => seteditedRoom({ ...editedRoom, type: e.target.checked ? 'solfège' : 'instrument' })}
+                                                                    value="solfège"
+                                                                >
+                                                                    Solfège
+                                                                </Checkbox>
+                                                                <Checkbox
+                                                                    name="type"
+                                                                    isChecked={editedRoom.type === 'instrument'}
+                                                                    onChange={(e) => seteditedRoom({ ...editedRoom, type: e.target.checked ? 'instrument' : 'solfège' })}
+                                                                    value="instrument"
+                                                                >
+                                                                    Instrument
+                                                                </Checkbox>
                                                             </FormControl>
-                                                            <FormControl id="capacity">
-                                                                <FormLabel>Capacity</FormLabel>
-                                                                <Input type="number" value={editedRoom.capacity} onChange={(e) => seteditedRoom({ ...editedRoom, capacity: e.target.value })} />
+                                                            <FormControl>
+                                                            
+                
+                                                                <FormLabel>Date</FormLabel>
+                                                                
+                                                                <Input
+                                                                   
+                                                                    type="date"
+                                                                    name="date"
+                                                                    value={editedRoom?.date?.slice(0, 10)}
+                                                                    onChange={(e) => seteditedRoom({ ...editedRoom, date: e.target.value })}
+                                                                />
+                                                                {/* {editErrors.date && <Text color="red">{editErrors.date}</Text>} */}
                                                             </FormControl>
-                                                            <FormControl id="location">
-                                                                <FormLabel>Location</FormLabel>
-                                                                <Input type="text" value={editedRoom.location} onChange={(e) => seteditedRoom({ ...editedRoom, location: parseInt(e.target.value) })} />
+                                                            <Grid templateColumns="1fr 1fr" gap={4}>
+                                                                <FormControl>
+                                                                    <FormLabel>StartTime</FormLabel>
+                                                                    <Input
+                                                                        type="time"
+                                                                        name="startTime"
+                                                                        value={editedRoom.startDate}
+                                                                        onChange={(e) => seteditedRoom({ ...editedRoom, startDate: e.target.value })}
+                                                                    />
+                                                                   {/*  {editErrors.startTime && <Text color="red">{editErrors.startTime}</Text>} */}
+                                                                </FormControl>
+                                                                <FormControl>
+                                                                    <FormLabel>EndTime</FormLabel>
+                                                                    <Input
+                                                                        type="time"
+                                                                        name="endTime"
+                                                                        value={editedRoom.endDate}
+                                                                        onChange={(e) => seteditedRoom({ ...editedRoom, endDate: e.target.value })}
+                                                                    />
+                                                                    {/* {editErrors.endTime && <Text color="red">{editErrors.endTime}</Text>} */}
+                                                                </FormControl>
+                                                            </Grid>
+                                                            <FormControl>
+                                                                <FormLabel>Room Name</FormLabel>
+                                                                <Select
+                                                                    name="roomId"
+                                                                    value={editedRoom.roomId}
+                                                                    onChange={(e) => seteditedRoom({ ...editedRoom, roomId: e.target.value })}
+                                                                >
+                                                                    <option value="">Select Room</option>
+                                                                    {roomOptions.map(room => (
+                                                                        <option key={room.id} value={room._id}>{room.room_number}</option>
+                                                                    ))}
+                                                                </Select>
+                                                                {/* {editErrors.roomId && <Text color="red">{editErrors.roomId}</Text>} */}
                                                             </FormControl>
+                                                            <FormControl>
+                                                                <FormLabel>Teacher Name</FormLabel>
+                                                                <Select
+                                                                    name="teacherId"
+                                                                    value={editedRoom.teacherId}
+                                                                    onChange={(e) => seteditedRoom({ ...editedRoom, teacherId: e.target.value })}
+                                                                >
+                                                                    <option value="">Select Teacher</option>
+                                                                    {teacherOptions.map(teacher => (
+                                                                        <option key={teacher.id} value={teacher._id}>{teacher.name}</option>
+                                                                    ))}
+                                                                </Select>
+                                                                {/* {editErrors.teacherId && <Text color="red">{editErrors.teacherId}</Text>} */}
+                                                            </FormControl>
+                                                            {editedRoom.type === 'instrument' ? (
+                                                                    <FormControl>
+                                                                        <FormLabel>Student Name</FormLabel>
+                                                                        <Select
+                                                                            name="studentIds"
+                                                                            value={editedRoom.studentIds}
+                                                                            onChange={(e) => seteditedRoom({ ...editedRoom, studentIds: e.target.value })}
+                                                                        >
+                                                                            <option value="">Select Student</option>
+                                                                            {studentOptions.map(student => (
+                                                                                <option key={student.id} value={student._id}>{student.name}</option>
+                                                                            ))}
+                                                                        </Select>
+                                                                       {/*  {editErrors.studentIds && <Text color="red">{editErrors.studentIds}</Text>} */}
+                                                                    </FormControl>
+                                                                ) : (
+                                                                    <FormControl>
+                                                                        <FormLabel>Classroom</FormLabel>
+                                                                        <Select
+                                                                            name="classroomId"
+                                                                            value={editedRoom.classroomId}
+                                                                            onChange={(e) => seteditedRoom({ ...editedRoom, classroomId: e.target.value })}
+                                                                        >
+                                                                            <option value="">Select Classroom</option>
+                                                                            {classroomoptions.map(classroom => (
+                                                                                <option key={classroom.id} value={classroom._id}>{classroom.name}</option>
+                                                                            ))}
+                                                                        </Select>
+                                                                        {/* {editErrors.classroomId && <Text color="red">{editErrors.classroomId}</Text>} */}
+                                                                    </FormControl>
+                                                                )}
                                                            
                                                         </ModalBody>
                                                     )}
@@ -702,7 +893,7 @@ const calculateTotalStudyHours  = async (studentIds,date,startTime, endTime) => 
                                                     <AlertDialogOverlay>
                                                         <AlertDialogContent>
                                                             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                                                                Delete Room
+                                                                Delete Planning
                                                             </AlertDialogHeader>
 
                                                             <AlertDialogBody>
@@ -738,41 +929,79 @@ const calculateTotalStudyHours  = async (studentIds,date,startTime, endTime) => 
                                                     cursor="pointer"
                                                     onClick={() => handleView(row.original)}
                                                 />
-                                               {/*  <Modal isOpen={isModalViewOpen} onClose={closeModalViewA}>
+                                                 <Modal isOpen={isModalViewOpen} onClose={closeModalViewA}>
                                                     <ModalOverlay />
                                                     <ModalContent maxW={'800px'}>
-                                                        <ModalHeader>Room Information</ModalHeader>
+                                                        <ModalHeader>Planning Information</ModalHeader>
                                                         <ModalCloseButton />
                                                         <ModalBody>
                                                             {profInfo && (
+                                                                
                                                                 <>
-                                                                    
+                                                                
                                                                     <Card mb={{ base: "0px", "2xl": "20px" }} {...rest}>
-                                                                        <Text
-                                                                            color={textColorPrimary}
-                                                                            fontWeight='bold'
-                                                                            fontSize='2xl'
-                                                                            mt='10px'
-                                                                            mb='4px'>
-                                                                            {profInfo.room_number} 
-                                                                        </Text>
                                                                         
+                                                                          {profInfo.type === 'instrument' && (
+                                                                              <Text
+                                                                              color={textColorPrimary}
+                                                                              fontWeight='bold'
+                                                                              fontSize='2xl'
+                                                                              mt='10px'
+                                                                              mb='4px'>
+                                                                               Student Name : {profInfo.studentName} 
+                                                                          </Text>
+                                                                        )}
+                                                                         {profInfo.type === 'solfège' && (
+                                                                              <Text
+                                                                              color={textColorPrimary}
+                                                                              fontWeight='bold'
+                                                                              fontSize='2xl'
+                                                                              mt='10px'
+                                                                              mb='4px'>
+                                                                             Classroom  : {profInfo.courseName} 
+                                                                          </Text>
+                                                                        )}
+                                                                        <SimpleGrid columns='2' gap='20px'>
+                                                                            
+                                                                            <Information
+                                                                                boxShadow={cardShadow}
+                                                                                title='Date'
+                                                                                value={profInfo.date}
+                                                                            />
+                                                                            <Information
+                                                                                boxShadow={cardShadow}
+                                                                                title='Type'
+                                                                                value={profInfo.type}
+                                                                            />
+                                                                           
+                                                                            
+                                                                        </SimpleGrid>
                                                                         <SimpleGrid columns='2' gap='20px'>
                                                                             <Information
                                                                                 boxShadow={cardShadow}
-                                                                                title='room_number'
-                                                                                value={profInfo.room_number}
+                                                                                title='StartTime'
+                                                                                value={profInfo.startDate}
                                                                             />
                                                                             <Information
                                                                                 boxShadow={cardShadow}
-                                                                                title='capacity'
-                                                                                value={profInfo.capacity}
+                                                                                title='EndTime'
+                                                                                value={profInfo.endDate}
+                                                                            />
+                                                                           
+                                                                            
+                                                                        </SimpleGrid>
+                                                                        <SimpleGrid columns='2' gap='20px'>
+                                                                            <Information
+                                                                                boxShadow={cardShadow}
+                                                                                title='Room Name'
+                                                                                value={profInfo.RoomName}
                                                                             />
                                                                             <Information
                                                                                 boxShadow={cardShadow}
-                                                                                title='location'
-                                                                                value={profInfo.location }
+                                                                                title='Teacher Name'
+                                                                                value={profInfo.TeacherName}
                                                                             />
+                                                                           
                                                                             
                                                                         </SimpleGrid>
                                                                     </Card>
@@ -780,7 +1009,7 @@ const calculateTotalStudyHours  = async (studentIds,date,startTime, endTime) => 
                                                             )}
                                                         </ModalBody>
                                                     </ModalContent>
-                                                </Modal> */}
+                                                </Modal> 
                                             </Flex>
                                         );
                                     }

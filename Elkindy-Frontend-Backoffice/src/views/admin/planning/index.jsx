@@ -9,18 +9,20 @@ export default function Planning() {
     const [editedPlanning, setEditedPlanning] = useState(null);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [deletingPlanningId, setDeletingPlanningId] = useState(null);
-    const [courseOptions, setCourseOptions] = useState([]);
+    //const [courseOptions, setCourseOptions] = useState([]);
     const [roomOptions, setRoomOptions] = useState([]);
     const [teacherOptions, setTeacherOptions] = useState([]);
     const [studentOptions, setStudentOptions] = useState([]);
+    const [classroomOptions, setclassroomOptions] = useState([]);
     const cancelRef = useRef();
 
     useEffect(() => {
         fetchPlannings();
-        fetchCourseOptions();
+        //fetchCourseOptions();
         fetchRoomOptions();
         fetchTeacherOptions();
         fetchStudentOptions();
+        fetchClassroomOptions();
     }, []);
 
     const fetchPlannings = async () => {
@@ -29,17 +31,30 @@ export default function Planning() {
             // Pour chaque planning, récupérez le nom du cours
             const updatedPlannings = await Promise.all(response.data.map(async (planning) => {
                 // Récupérez le nom du cours pour ce planning
-                const courseResponse = await axios.get(`http://localhost:9090/api/Course/getById/${planning.courseId}`);
+                //const courseResponse = await axios.get(`http://localhost:9090/api/classroom/getById/${planning.classroomId}`);
+                let ClassroomName = "";
+                if (planning.classroomId === undefined) {
+                    ClassroomName = "Individual";
+                } else {
+                    const studentResponse = await axios.get(`http://localhost:9090/api/classroom/getById/${planning.classroomId}`);
+                    ClassroomName = studentResponse.data.name;
+                }
                 // Ajoutez le nom du cours au planning
                 const RoomResponse = await axios.get(`http://localhost:9090/api/Room/getById/${planning.roomId}`);
                 const teacherResponse = await axios.get(`http://localhost:9090/api/auth/user/${planning.teacherId}`);
-                const StudentResponse = await axios.get(`http://localhost:9090/api/auth/user/${planning.studentIds}`);
+                let studentName = "";
+                if (planning.studentIds === undefined) {
+                    studentName = "solfege";
+                } else {
+                    const studentResponse = await axios.get(`http://localhost:9090/api/auth/user/${planning.studentIds}`);
+                    studentName = studentResponse.data.name;
+                }
                 return {
                     ...planning,
-                    courseName: courseResponse.data.name,
+                     courseName: ClassroomName, 
                     RoomName: RoomResponse.data.room_number,
                     TeacherName: teacherResponse.data.name,
-                    studentName: StudentResponse.data.name,
+                    studentName: studentName,
                 };
             }));
             setPlannings(updatedPlannings);
@@ -48,12 +63,20 @@ export default function Planning() {
         }
     };
     
-    const fetchCourseOptions = async () => {
+  /*   const fetchCourseOptions = async () => {
         try {
-            const response = await axios.get('http://localhost:9090/api/Course/getall');
+            const response = await axios.get('http://localhost:9090/api/classroom/getall');
             setCourseOptions(response.data);
         } catch (error) {
             console.error('Error fetching courses:', error);
+        }
+    }; */
+    const fetchClassroomOptions = async () => {
+        try {
+            const response = await axios.get('http://localhost:9090/api/classroom/getall');
+            setclassroomOptions(response.data);
+        } catch (error) {
+            console.error('Error fetching classroom:', error);
         }
     };
     const fetchRoomOptions  = async () => {
@@ -141,10 +164,11 @@ export default function Planning() {
                 isEditModalOpen={isEditModalOpen}
                 closeEditModal={closeEditModal}
                 setIsEditModalOpen={setIsEditModalOpen}
-                courseOptions={courseOptions}
+                //courseOptions={courseOptions}
                 roomOptions={roomOptions}
                 teacherOptions={teacherOptions}
                 studentOptions={studentOptions}
+                classroomoptions={classroomOptions}
             />
          </SimpleGrid>
      
