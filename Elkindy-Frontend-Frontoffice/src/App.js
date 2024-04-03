@@ -24,6 +24,11 @@ import CompareProduct from "./pages/shop/pages/CompareProduct";
 
 import AccountComponent from "./pages/Account";
 import ExamsComponent from "./pages/Exams";
+import Cart from "./pages/shop/pages/Cart.jsx";
+import Checkout from "./pages/shop/pages/Checkout.jsx";
+import Success from "./pages/shop/pages/Success.jsx";
+import Fail from "./pages/shop/pages/Fail.jsx";
+import Orders from "./pages/shop/pages/Orders.jsx";
  
 
 function App() {
@@ -89,9 +94,14 @@ function App() {
 
         <Route path="/shop" element={<Home />} />
         <Route path="/shop/products" element={<OurStore />} />
-        <Route path="/shop/products/id" element={<SingleProduct />} />
+        <Route path="/shop/products/:id" element={<SingleProduct />} />
         <Route path="/shop/wishlist" element={<Wishlist />} />
         <Route path="/shop/compare-product" element={<CompareProduct />} />
+        <Route path="/shop/cart" element={<Cart />} />
+        <Route path="/shop/my-orders" element={<Orders />} />
+        <Route path="/shop/checkout" element={<Checkout />} />
+        <Route path="/success" element={<Success />} />
+        <Route path="/fail" element={<Fail />} />
 
         {/* <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog-details" element={<BlogDetailsPage />} /> */}

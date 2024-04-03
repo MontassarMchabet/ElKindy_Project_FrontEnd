@@ -31,6 +31,7 @@ import ExamTables from "views/admin/examTables";
 import Tickets from "views/admin/tickets";
 
 import productTable from "views/admin/productTable";
+import ordersTable from "views/admin/ordersTable";
 
 // Auth Imports
 import SignInCentered from "views/auth/signIn";
@@ -89,12 +90,21 @@ const routes = [
     ),
     component: Events,
     secondary: true,
-  }, {
-    name: "Products",
+  },
+  {
+    name: "Products Table",
     layout: "/admin",
     icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
     path: "/products",
     component: productTable,
+
+  },
+  {
+    name: "Orders Table",
+    layout: "/admin",
+    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+    path: "/orders",
+    component: ordersTable,
 
   },
   {

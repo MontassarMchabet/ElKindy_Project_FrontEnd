@@ -160,41 +160,7 @@ export default function ColumnsTable(props) {
         return Object.keys(errors).length === 0;
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const isValid = await validateForm();
-        if (isValid) {
-            try {
 
-                const formDataToSend = new FormData();
-                formDataToSend.append("image", formData.images); // Use "image" as the key
-
-                const uploadResponse = await axios.post(
-                    "http://localhost:9090/api/image/uploadimage",
-                    formDataToSend,
-                    {
-                        headers: {
-                            "Content-Type": "multipart/form-data",
-                        },
-                    }
-                );
-
-                const imagesUrl = uploadResponse.data.downloadURL[0];
-                const formDataWithImages = { ...formData, images: imagesUrl };
-
-                const response = await axios.post(
-                    "http://localhost:9090/api/product",
-                    formDataWithImages
-
-                );
-                fetchData()
-                closeModalPro()
-                console.log(response.data);
-            } catch (error) {
-                console.error("Error registering product:", error);
-            }
-        }
-    };
 
 
 
@@ -261,103 +227,6 @@ export default function ColumnsTable(props) {
                     Products Table
                 </Text>
 
-
-                <Menu isOpen={isOpen1} onClose={onClose1}>
-                    <MenuButton
-                        align='center'
-                        justifyContent='center'
-                        bg={bgButton}
-                        _hover={bgHover}
-                        _focus={bgFocus}
-                        _active={bgFocus}
-                        w='37px'
-                        h='37px'
-                        lineHeight='100%'
-                        onClick={openModalPro}
-                        borderRadius='10px'
-                        {...rest}>
-                        <AddIcon color={iconColor} w='20px' h='20px' />
-                    </MenuButton>
-                </Menu>
-
-                {/*////////////////////////////////// Modal for adding product ///////////////////////////////////////*/}
-                <Modal isOpen={isModalOpenPro} onClose={closeModalPro}>
-                    <ModalOverlay />
-                    <ModalContent>
-                        <form onSubmit={handleSubmit} noValidate>
-                            <ModalHeader>Add Product</ModalHeader>
-                            <ModalCloseButton />
-                            <ModalBody>
-                                <Grid templateColumns="1fr 1fr" gap={4}>
-                                    <FormControl>
-                                        <FormLabel>Title</FormLabel>
-                                        <Input type="text"
-                                            name="title"
-                                            value={formData.title}
-                                            onChange={handleChange}
-                                        />
-                                    </FormControl>
-                                    <FormControl >
-                                        <FormLabel>Price</FormLabel>
-                                        <Input type="number"
-                                            name="price"
-                                            value={formData.price}
-                                            onChange={handleChange}
-                                        />
-                                    </FormControl>
-
-                                </Grid>
-                                <FormControl mt={4}>
-                                    <FormLabel>Description</FormLabel>
-                                    <Textarea type="text"
-                                        name="description"
-                                        value={formData.description}
-                                        onChange={handleChange}
-                                    />
-                                </FormControl>
-                                <FormControl mt={4}>
-                                    <FormLabel>Quantity</FormLabel>
-                                    <Input type="number"
-                                        name="quantity"
-                                        value={formData.quantity}
-                                        onChange={handleChange}
-                                    />
-                                </FormControl>
-                                <FormControl>
-                                    <FormLabel>Category</FormLabel>
-                                    <Select name="category" value={formData.category} onChange={handleChange}>
-                                        <option selected disabled >-select category-</option>
-                                        <option value="book">Book</option>
-                                        <option value="instrument">Instument</option>
-                                    </Select>
-                                </FormControl>
-                                <FormControl mt={4}>
-                                    <FormLabel>Product Images</FormLabel>
-                                    <Input type="file"
-                                        name="images"
-                                        onChange={handleChange}
-                                    />
-                                    {formData.images && (
-                                        <p>Selected file: {formData.images.name}</p>
-                                    )}
-                                </FormControl>
-                            </ModalBody>
-                            {errors.title && <Text color="red">{errors.title}</Text>}
-                            {errors.description && <Text color="red">{errors.description}</Text>}
-                            {errors.price && <Text color="red">{errors.price}</Text>}
-                            {errors.quantity && <Text color="red">{errors.quantity}</Text>}
-                            {errors.category && <Text color="red">{errors.category}</Text>}
-                            <ModalFooter>
-                                <Button colorScheme="blue" mr={3} onClick={closeModalPro}>
-                                    Close
-                                </Button>
-                                <Button type="submit" colorScheme="green">
-                                    Save
-                                </Button>
-                            </ModalFooter>
-                        </form>
-                    </ModalContent>
-                </Modal>
             </Flex>
 
 
@@ -422,11 +291,11 @@ export default function ColumnsTable(props) {
                 <AlertDialogOverlay>
                     <AlertDialogContent>
                         <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                            Delete Product
+                            Delete Order
                         </AlertDialogHeader>
 
                         <AlertDialogBody>
-                            Are you sure you want to delete this product?
+                            Are you sure you want to delete this order?
                         </AlertDialogBody>
 
                         <AlertDialogFooter>
@@ -493,13 +362,18 @@ export default function ColumnsTable(props) {
                                     <option value="instrument">Instument</option>
                                 </Select>
                             </FormControl>
+                            {/*<FormControl mt={4}>
+                            <FormLabel>Product Images</FormLabel>
+                            <Input type="file"
+                                name="images"
+                                value={editedProduct.title} onChange={(e) => setEditedProduct({ ...editedProduct, title: e.target.value })}
+                            />
+                            {formData.images && (
+                                <p>Selected file: {formData.images.name}</p>
+                            )}
+                            </FormControl>*/}
                         </ModalBody>
                     )}
-                    {errors.title && <Text color="red">{errors.title}</Text>}
-                    {errors.description && <Text color="red">{errors.description}</Text>}
-                    {errors.price && <Text color="red">{errors.price}</Text>}
-                    {errors.quantity && <Text color="red">{errors.quantity}</Text>}
-                    {errors.category && <Text color="red">{errors.category}</Text>}
                     <ModalFooter>
                         <Button colorScheme="blue" mr={3} onClick={handleSaveEdit}>Save</Button>
                         <Button onClick={closeEditModal}>Cancel</Button>
@@ -539,35 +413,33 @@ export default function ColumnsTable(props) {
                             <Tr {...row.getRowProps()} key={index}>
                                 {row.cells.map((cell, index) => {
                                     let data = "";
-                                    if (cell.column.Header === "Image") {
-                                        data = (
-                                            <img src={cell.value} alt="Image" style={{ maxWidth: "50px", maxHeight: "50px" }} />
-                                        );
-                                    } else if (cell.column.Header === "title") {
+                                    if (cell.column.Header === "user") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
                                                 {cell.value}
                                             </Text>
                                         );
-                                    } else if (cell.column.Header === "description") {
+                                    } else if (cell.column.Header === "totalPrice") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
                                                 {cell.value}
                                             </Text>
                                         );
-                                    } else if (cell.column.Header === "price") {
+                                    } else if (cell.column.Header === "totalPriceAfterDiscount") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
                                                 {cell.value}
                                             </Text>
                                         );
-                                    } else if (cell.column.Header === "quantity") {
+                                    } else if (cell.column.Header === "paidAt") {
+                                        const date = new Date(cell.value);
+                                        const formattedDate = date.toISOString().split('T')[0];
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
-                                                {cell.value}
+                                                {formattedDate}
                                             </Text>
                                         );
-                                    } else if (cell.column.Header === "category") {
+                                    } else if (cell.column.Header === "orderStatus") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
                                                 {cell.value}

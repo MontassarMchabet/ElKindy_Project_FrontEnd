@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../App.css";
 import BreadCrumb from "../components/BreadCrumb.jsx";
 import Meta from "../components/Meta";
@@ -10,13 +10,25 @@ import gr2 from "../public/images/gr2.svg";
 import gr3 from "../public/images/gr3.svg";
 import gr4 from "../public/images/gr4.svg";
 import Layout from "../../../layouts/Layout.jsx";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllProducts } from "../features/productSlice.js";
 
 
 const OurStore = () => {
     const [grid, setGrid] = useState(4);
+    const productState=useSelector((state) => state?.product?.product);
+    const dispatch = useDispatch();
+    useEffect(() => {
+        getProducts();
+    }, []);
+    const getProducts = () => {
+        dispatch(getAllProducts());
+    };
+    
     return (
         <>
-            <Layout header={1} footer={3} className="" mainClassName="">
+            <Layout header={4} footer={3} className="" mainClassName="">
+                <br />
                 <br />
                 <br />
                 <br />
@@ -150,7 +162,7 @@ const OurStore = () => {
                             </div>
                             <div className="products-list pb-5">
                                 <div className="d-flex gap-10 flex-wrap">
-                                    <ProductCard grid={grid} />
+                                    <ProductCard data={productState} grid={grid} />
                                 </div>
                             </div>
                         </div>
