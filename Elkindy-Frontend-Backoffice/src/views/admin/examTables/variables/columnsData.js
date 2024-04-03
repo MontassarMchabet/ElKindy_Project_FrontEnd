@@ -62,3 +62,16 @@ export const RevisionData = [
       accessor: "note",
     },
 ];
+export const QuizesData = [
+  {
+    Header: "Title",
+    accessor: "quizTitle",
+  },
+  {
+    Header: "Nbr of Questions",
+    accessor: "nrOfQuestions",
+  },
+  {
+    Header: "Actions",
+  },
+];

@@ -16,14 +16,24 @@ const NoteTable = ({ notes }) => {
                     <tbody>
                         {notes.map((note, index) => (
                             <tr key={index}>
-                                <td style={{ padding: '10px', borderBottom: '1px solid #ccc' }}>{note.exam.title}</td>
+                                <td style={{ padding: '10px', borderBottom: '1px solid #ccc' }}>
+  {note.exam ? note.exam.title : note.quizz.quizTitle}
+</td>
+
                                 <td style={{ padding: '10px', borderBottom: '1px solid #ccc' }}>{note.content}</td>
                                 <td style={{ padding: '10px', borderBottom: '1px solid #ccc' }}>{note.score}</td>
                                 <td style={{ padding: '10px', borderBottom: '1px solid #ccc' }}>
                                 {/* Eye icon for viewing */}
-                                <a href={note.answer.answerPdf} target="_blank" rel="noopener noreferrer">
-                    <i className="fal fa-eye" style={{ color: 'blue', marginRight: '10px', cursor: 'pointer' }}></i>
-                </a>
+                                {note.answer?.answerPdf !== undefined && note.answer?.answerPdf !== null ? (
+    <a href={note.answer.answerPdf} target="_blank" rel="noopener noreferrer">
+        <i className="fal fa-eye" style={{ color: 'blue', marginRight: '10px', cursor: 'pointer' }}></i>
+    </a>
+) : (
+    <span>No PDF for quizz</span>
+)}
+
+
+
                                 {/* Report icon for reporting */}
                                {/*  <i className="fal fa-exclamation-triangle" style={{ color: 'red', cursor: 'pointer' }}></i>*/}
                             </td>

@@ -160,36 +160,48 @@ const [isModalOpenB, setIsModalOpenB] = useState(false);
 // Define handleSubmitB function
 const handleSubmitB = async (e) => {
     e.preventDefault();
-    try {
-        // Construct the quiz data object
-        const dataToSend = {
-            quizTitle: quizData.quizTitle,
-            quizSynopsis: 'test',
-            nrOfQuestions: questions.length,
-            questions: questions.map(question => ({
-                question: question.question,
-                questionType: question.questionType,
-                answers: question.answers,
-                correctAnswer: question.correctAnswer,
-                messageForCorrectAnswer: question.messageForCorrectAnswer,
-                messageForIncorrectAnswer: question.messageForIncorrectAnswer,
-                explanation: question.explanation,
-                point: question.point
-            }))
-        };
+    const isValid = await validateFormQ();
+    // Call the form validation function
+    
 
-        // Make a POST request to save the quiz data
-        const response = await axios.post('http://localhost:9090/api/quiz/quizzes', dataToSend);
+    // Check if there are any errors
+    if (isValid) {
+        try {
+            // Construct the quiz data object
+            const dataToSend = {
+                quizTitle: quizData.quizTitle,
+                quizSynopsis: 'test',
+                nrOfQuestions: questions.length,
+                questions: questions.map(question => ({
+                    question: question.question,
+                    questionType: question.questionType,
+                    answers: question.answers,
+                    correctAnswer: question.correctAnswer,
+                    messageForCorrectAnswer: question.messageForCorrectAnswer,
+                    messageForIncorrectAnswer: question.messageForIncorrectAnswer,
+                    explanation: question.explanation,
+                    point: question.point
+                }))
+            };
 
-        // Handle successful response
-        console.log('Quiz saved successfully:', response.data);
+            // Make a POST request to save the quiz data
+            const response = await axios.post('http://localhost:9090/api/quiz/quizzes', dataToSend);
 
-        // Close the modal
-        closeModalB();
-    } catch (error) {
-        // Handle errors
-        console.error('Error saving quiz:', error.message);
-        // You can optionally set an error state or display an error message to the user
+            // Handle successful response
+            console.log('Quiz saved successfully:', response.data);
+
+            // Close the modal
+            closeModalB();
+            window.location.reload();
+        } catch (error) {
+            // Handle errors
+            console.error('Error saving quiz:', error.message);
+            // You can optionally set an error state or display an error message to the user
+        }
+    } else {
+        // Handle validation errors
+        console.log('Form validation errors:', errors);
+        // You can optionally set an error state or display error messages to the user
     }
 };
 
@@ -318,7 +330,7 @@ const handleSubmitB = async (e) => {
     const closeModalViewA = () => {
         setIsModalViewOpen(false);
     };
-
+    const [errors2, setErrors2] = useState({});
 
     const [formData, setFormData] = useState({
         title: "",
@@ -356,6 +368,61 @@ const handleSubmitB = async (e) => {
             setFormData({ ...formData, [e.target.name]: e.target.value });
         }
     };
+
+// Validation function for the form
+const validateFormQ = () => {
+    let errors2 = {};
+
+    if (step === 1) {
+        if (!quizData.quizTitle.trim()) {
+            errors2.quizTitle = 'Quiz Title is required';
+        }
+        // Add other validation rules for step 1 fields if needed
+    } else if (step === 2) {
+        questions.forEach((question, index) => {
+            if (!question.question.trim()) {
+                errors2[`question_${index}`] = `Question ${index + 1} is required`;
+            }
+
+            // Validate answers
+            question.answers.forEach((answer, answerIndex) => {
+                if (!answer.trim()) {
+                    errors2[`answer_${index}_${answerIndex}`] = `Answer ${answerIndex + 1} for question ${index + 1} is required`;
+                }
+            });
+
+            // Validate correct answer
+            if (question.correctAnswer === '') {
+                errors2[`correctAnswer_${index}`] = `Correct answer for question ${index + 1} is required`;
+            }
+
+            // Validate other fields in each question if needed
+            if (!question.messageForCorrectAnswer.trim()) {
+                errors2[`messageForCorrectAnswer_${index}`] = `Message for Correct Answer for question ${index + 1} is required`;
+            }
+
+            if (!question.messageForIncorrectAnswer.trim()) {
+                errors2[`messageForIncorrectAnswer_${index}`] = `Message for Incorrect Answer for question ${index + 1} is required`;
+            }
+
+            if (!question.explanation.trim()) {
+                errors2[`explanation_${index}`] = `Explanation for question ${index + 1} is required`;
+            }
+
+            const numberRegex = /^\d+$/;
+
+// Validate point field
+if (!question.point.trim()) {
+    errors2[`point_${index}`] = `Point for question ${index + 1} is required`;
+} else if (!numberRegex.test(question.point.trim())) {
+    errors2[`point_${index}`] = `Point for question ${index + 1} must be a number`;
+}
+        });
+    }
+    setErrors2(errors2);
+    return Object.keys(errors2).length === 0;
+};
+
     const validateForm = async () => {
         let errors = {};
 
@@ -684,7 +751,7 @@ const handleSubmitB = async (e) => {
                 <Modal isOpen={isModalOpenB} onClose={closeModalB}>
                 <ModalOverlay />
                 <ModalContent>
-                    <form onSubmit={handleSubmitB}>
+                    <form onSubmit={handleSubmitB} noValidate>
                         <ModalHeader>{step === 1 ? 'Add Quiz Details' : 'Add Question Details'}</ModalHeader>
                         <ModalCloseButton />
                         <ModalBody>
@@ -693,6 +760,7 @@ const handleSubmitB = async (e) => {
                                     <FormControl>
                                         <FormLabel>Quiz Title</FormLabel>
                                         <Input type="text" name="quizTitle" value={quizData.quizTitle} onChange={handleChangeB} />
+                                        {errors2.quizTitle && <Text color="red">{errors2.quizTitle}</Text>}
                                     </FormControl>
                                     {/* Add other quiz details inputs */}
                                 </>
@@ -705,11 +773,13 @@ const handleSubmitB = async (e) => {
         <FormControl>
             <FormLabel>Question</FormLabel>
             <Input type="text" name="question" value={question.question} onChange={(e) => handleChangeQuestion(index, e)} />
+            {errors2[`question_${index}`] && <Text color="red">{errors2[`question_${index}`]}</Text>}
         </FormControl>
         {question.answers.map((answer, answerIndex) => (
             <FormControl key={answerIndex}>
                 <FormLabel>Answer {answerIndex + 1}</FormLabel>
                 <Input type="text" value={answer} onChange={(e) => handleChangeAnswer(index, answerIndex, e)} />
+                {errors2[`answer_${index}_${answerIndex}`] && <Text color="red">{errors2[`answer_${index}_${answerIndex}`]}</Text>}
             </FormControl>
         ))}
         {question.answers.length < 4 && (
@@ -729,28 +799,33 @@ const handleSubmitB = async (e) => {
         </option>
     ))}
 </Select>
-
+{errors2[`correctAnswer_${index}`] && <Text color="red">{errors2[`correctAnswer_${index}`]}</Text>}
             </FormControl>
         )}
 
         <FormControl>
             <FormLabel>Message for Correct Answer</FormLabel>
             <Textarea name="messageForCorrectAnswer" value={question.messageForCorrectAnswer} onChange={(e) => handleChangeQuestion(index, e)} />
+            {errors2[`messageForCorrectAnswer_${index}`] && <Text color="red">{errors2[`messageForCorrectAnswer_${index}`]}</Text>}
+
         </FormControl>
 
         <FormControl>
             <FormLabel>Message for Incorrect Answer</FormLabel>
             <Textarea name="messageForIncorrectAnswer" value={question.messageForIncorrectAnswer} onChange={(e) => handleChangeQuestion(index, e)} />
+            {errors2[`messageForIncorrectAnswer_${index}`] && <Text color="red">{errors2[`messageForIncorrectAnswer_${index}`]}</Text>}
         </FormControl>
 
         <FormControl>
             <FormLabel>Explanation</FormLabel>
             <Textarea name="explanation" value={question.explanation} onChange={(e) => handleChangeQuestion(index, e)} />
+            {errors2[`explanation_${index}`] && <Text color="red">{errors2[`explanation_${index}`]}</Text>}
         </FormControl>
 
         <FormControl>
             <FormLabel>Point</FormLabel>
             <Input type="text" name="point" value={question.point} onChange={(e) => handleChangeQuestion(index, e)} />
+            {errors2[`point_${index}`] && <Text color="red">{errors2[`point_${index}`]}</Text>}
         </FormControl>
 
         {/* Add other question details inputs as needed */}
@@ -973,7 +1048,10 @@ const handleSubmitB = async (e) => {
                                                                     <object data={examInfo.pdfFile} type="application/pdf" width="100%" height="500px">
                                                                 <p>PDF cannot be displayed. <a href={examInfo.pdfFile}>Download PDF</a> instead.</p>
                                                             </object>
-                                                            <Answers columnsData={AnswersData} tableData={answersData} />
+                                                            {examInfo.format === 'pdf' && (
+  <Answers columnsData={AnswersData} tableData={answersData} />
+)}
+
                                                                 </>
                                                             )}
                                                         </ModalBody>

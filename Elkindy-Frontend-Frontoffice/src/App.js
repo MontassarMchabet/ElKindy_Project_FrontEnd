@@ -25,6 +25,7 @@ import PassQuiz from "./pages/Exams/passquiz.jsx";
 import AccountComponent from "./pages/Account";
 import ExamsComponent from "./pages/Exams";
 import AddExamsComponent from "./pages/Exams/addexam";
+import AddQuizsComponent from "./pages/Exams/addquizpage.jsx";
 import NotesPage from "./pages/Exams/notespage.jsx";
 
 function App() {
@@ -74,6 +75,7 @@ function App() {
         <Route path="/account" element={<AccountComponent />} />
         <Route path="/exams" element={<ExamsComponent />} />
         <Route path="/addexams" element={<AddExamsComponent />} />
+        <Route path="/addquiz" element={<AddQuizsComponent />} />
         {/* <Route path="/home-two" element={<PersonalPortfolio />} />
         <Route path="/home-three" element={<DigitalAgency />} /> */}
         <Route path="/about-us" element={<AboutUs />} />

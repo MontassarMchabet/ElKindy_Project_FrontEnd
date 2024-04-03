@@ -86,7 +86,7 @@ function Answers(props) {
                                     const studentName = cell.value && cell.value.name ? cell.value.name : 'undefined';
                                     data = (
                                         <Flex align='center'>
-                                           {cell.value.profilePicture && (
+                                          {cell.value && cell.value.profilePicture && (
     <Avatar
         src={cell.value.profilePicture}
         w='30px'
@@ -94,6 +94,7 @@ function Answers(props) {
         me='8px'
     />
 )}
+
 
                                             <Text color={textColor} fontSize='sm' fontWeight='600'>
                                                 {studentName}

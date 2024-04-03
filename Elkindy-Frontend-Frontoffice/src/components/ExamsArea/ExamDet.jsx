@@ -22,6 +22,7 @@ const ExamDet = () => {
     const [hasAnswered, setHasAnswered] = useState(false);
     const [quizDetailsOrId, setQuizDetailsOrId] = useState(null);
   const [showSpaceTwo, setShowSpaceTwo] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -67,6 +68,24 @@ const ExamDet = () => {
             setHasAnswered(true);
         }
     }, [id]);
+
+    useEffect(() => {
+      const checkNoteExists = async () => {
+        try {
+          // Define clientId and quizzId directly within the useEffect hook
+          const clientId = user._id;
+          const quizzId = examDetails.quiz._id;
+  
+          const response = await axios.post('http://localhost:9090/api/note/check', { clientId, quizzId });
+          setIsButtonDisabled(response.data.isButtonDisabled);
+        } catch (error) {
+          console.error('Error checking Note document:', error);
+        }
+      };
+  
+      checkNoteExists();
+    }, [user, examDetails]);
+
     const handleFileChange = (e) => {
         setAnswerFile(e.target.files[0]);
     };
@@ -127,6 +146,7 @@ const ExamDet = () => {
         } else {
           console.error('Quiz details or ID not found.');
         }
+        
       };
       
     
@@ -197,8 +217,9 @@ const ExamDet = () => {
   className="btn"
   style={{ fontSize: '18px', padding: '10px 20px' }}
   onClick={passQuizFunction}
+  disabled={isButtonDisabled}
 >
-  Pass Quiz
+  {isButtonDisabled ? 'Quiz Answered' : 'Pass Quiz'}
 </Button>
 
                                 )}

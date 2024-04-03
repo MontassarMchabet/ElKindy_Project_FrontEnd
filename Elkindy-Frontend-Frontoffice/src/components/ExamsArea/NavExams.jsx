@@ -119,13 +119,27 @@ const NavExams = () => {
                                         <div className="header-action">
                                             <ul className="list-wrap">
 
-                                            {user && user.role === 'prof' &&<Link
-  to="/addexams"
-  className="btn"
-  style={{ fontSize: '18px', padding: '10px 20px' }} // Adjust the font size and padding as needed
->
-  Add Exam <span></span>
-</Link>}
+                                            <div style={{ display: 'flex' }}>
+  {user && user.role === 'prof' && (
+    <Link
+      to="/addexams"
+      className="btn"
+      style={{ fontSize: '18px', padding: '10px 20px', marginRight: '10px' }}
+    >
+      Add Exam <span></span>
+    </Link>
+  )}
+
+  {user && user.role === 'prof' && (
+    <Link
+      to="/addquiz"
+      className="btn"
+      style={{ fontSize: '18px', padding: '10px 20px' }}
+    >
+      Add Quiz <span></span>
+    </Link>
+  )}
+</div>
 
                                             </ul>
                                         </div>
@@ -133,9 +147,9 @@ const NavExams = () => {
                                         <div className="navbar-wrap main-menu d-none d-lg-flex">
                                             <ul className="navigation">
 
-                                                <li className={cn(isActiveClassName("/"))}>
-                                                    <Link to="/">Planning</Link>
-                                                </li>
+                                            {user && user.role === 'prof' &&<li className={cn(isActiveClassName("/exams"))}>
+                                                    <Link to="/exams">My Exams</Link>
+                                                </li>}
                                                 {user && user.role === 'client' &&<li className={cn(isActiveClassName("/"))}>
                                                     <Link to="/notes">Notes</Link>
                                                 </li>}
