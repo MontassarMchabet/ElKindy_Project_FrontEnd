@@ -48,8 +48,8 @@ const DeveloperAreaTabs = () => {
   const handleSubmitClient = async (e) => {
     e.preventDefault();
     try {
-      await api.put(`http://localhost:9090/api/auth/editClient/${user.userId}`, formData);
-      const response = await api.get(`http://localhost:9090/api/auth/user/${user.userId}`);
+      await api.patch(`http://localhost:9090/api/auth/editClient/${user._id}`, formData);
+      const response = await api.get(`http://localhost:9090/api/auth/user/${user._id}`);
       setUser(response.data);
       setShowModal(false);
     } catch (error) {
@@ -60,8 +60,10 @@ const DeveloperAreaTabs = () => {
   const handleSubmitAdmin = async (e) => {
     e.preventDefault();
     try {
-      await api.put(`http://localhost:9090/api/auth/editAdminProf/${user.userId}`, formData);
-      const response = await api.get(`http://localhost:9090/api/auth/user/${user.userId}`);
+      console.log('user:', user);
+      console.log('user id:', user._id);
+      await api.patch(`http://localhost:9090/api/auth/editAdminProf/${user._id}`, formData);
+      const response = await api.get(`http://localhost:9090/api/auth/user/${user._id}`);
       setUser(response.data);
       setShowModal(false);
     } catch (error) {
@@ -84,7 +86,7 @@ const DeveloperAreaTabs = () => {
           <MdEdit
             size={30}
             style={{ margin: "auto", display: 'block' }}
-           onClick={handleEditClick}
+            onClick={handleEditClick}
           />
         </div>
       </div>
@@ -334,6 +336,7 @@ const DeveloperAreaTabs = () => {
                 {user?.role === 'client' && (
                   <form onSubmit={handleSubmitClient}>
                     {/* Client form fields */}
+                    <img src={`${user.profilePicture}`} style={{ width: "100px", height: "100px", borderRadius: "50%" }} />
                     <div className="form-group">
                       <label htmlFor="name">Name</label>
                       <input
@@ -474,6 +477,7 @@ const DeveloperAreaTabs = () => {
                 {(user?.role === 'admin' || user?.role === 'prof') && (
                   <form onSubmit={handleSubmitAdmin}>
                     {/* Admin/Prof form fields */}
+                    <img src={`${user.profilePicture}`} style={{ width: "100px", height: "100px", borderRadius: "50%" }} />
                     <div className="form-group">
                       <label htmlFor="name">Name</label>
                       <input
@@ -551,7 +555,7 @@ const DeveloperAreaTabs = () => {
                         onChange={handleInputChange}
                       />
                     </div>
-                  
+
 
                     <button type="submit" className="btn btn-primary">Save Changes</button>
                   </form>
