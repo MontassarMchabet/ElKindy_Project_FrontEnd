@@ -119,14 +119,15 @@ function Answers(props) {
                                 }
                             
                                 else if (cell.column.Header === 'Note') {
-                                    // Check if cell.value.score is undefined or null
-                                    const score = cell.value.score != null ? cell.value.score : '--';
+                                
+                                    const score = cell.value && cell.value.score != null ? cell.value.score : '--';
                                     data = (
                                         <Text color={textColorSecondary} fontSize='sm' fontWeight='500'>
                                             {score}/20
                                         </Text>
                                     );
                                 }
+                                
                                 else if (cell.column.Header === 'Rating') {
                                         data = (
                                             <Box>

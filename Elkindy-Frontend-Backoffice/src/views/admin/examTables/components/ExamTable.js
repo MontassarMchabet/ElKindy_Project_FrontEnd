@@ -529,7 +529,11 @@ if (!question.point.trim()) {
         }
     };
     
-    
+    const getFileNameFromURL = (url) => {
+        const urlObject = new URL(url);
+        return decodeURIComponent(urlObject.pathname.split('/').pop());
+    };
+
     return (
         <Card
             direction='column'
@@ -972,6 +976,20 @@ if (!question.point.trim()) {
                                                                 <FormLabel>Format</FormLabel>
                                                                 <Input type="text" value={editedExam.format} onChange={(e) => setEditedExam({ ...editedExam, format: parseInt(e.target.value) })} />
                                                             </FormControl>
+                                                            {editedExam.format === 'pdf' && (
+       <FormControl mt={4}>
+           <div>
+                {editedExam.pdfFile && (
+                    
+                    <span>Current File:   <a href={editedExam.pdfFile} target="_blank" rel="noopener noreferrer">
+                    {getFileNameFromURL(editedExam.pdfFile)}
+                </a></span>
+                )}
+            </div>
+   </FormControl>
+   
+     
+                                                            )}
                                                         </ModalBody>
                                                     )}
                                                     <ModalFooter>
