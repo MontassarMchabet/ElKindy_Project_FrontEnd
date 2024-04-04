@@ -108,23 +108,56 @@ export default function ColumnsTable(props) {
     //     return Object.keys(errorsEdit).length === 0;
     // };
 
+    // const validateEditForm = async () => {
+    //     let errorsEdit = {};
+
+    //     if (editedEvent.price < 0 || isNaN(editedEvent.price)) {
+    //         errorsEdit.price = 'Price must be greater than or equal to 0';
+    //     } else if (new Date(editedEvent.endDate) <= new Date(editedEvent.startDate)) {
+    //         errorsEdit.endDate = 'End date must be after start date';
+    //     } else if (parseInt(editedEvent.room_capacity) < 0 || isNaN(editedEvent.room_capacity)) {
+    //         errorsEdit.room_capacity = 'Room capacity must be greater than or equal to 0';
+    //     }
+    //     else if (parseInt(editedEvent.seat) < 0) {
+    //         errorsEdit.seat = 'Seats distribution must be greater than 0';
+    //     }else {
+    //         const seriesString = editedEvent.series.toString();
+    //         const seriesArray = seriesString.split('-').map(item => item.trim());
+    //         if (seriesArray.some(item => !isNaN(item) || item === '')) {
+    //             errorsEdit.series = 'Series must be alphanumeric and separated by "-"';
+    //         }
+    //     }
+
+    //     setErrorsEdit(errorsEdit);
+    //     return Object.keys(errorsEdit).length === 0;
+    // };
     const validateEditForm = async () => {
         let errorsEdit = {};
 
         if (editedEvent.price < 0 || isNaN(editedEvent.price)) {
             errorsEdit.price = 'Price must be greater than or equal to 0';
+        }
+        else if (editedEvent.price.toString().length > 3) {
+            errorsEdit.price = 'Price must contain maximum 3 digits';
         } else if (new Date(editedEvent.endDate) <= new Date(editedEvent.startDate)) {
             errorsEdit.endDate = 'End date must be after start date';
         } else if (parseInt(editedEvent.room_capacity) < 0 || isNaN(editedEvent.room_capacity)) {
             errorsEdit.room_capacity = 'Room capacity must be greater than or equal to 0';
-        }
-        else if (parseInt(editedEvent.seat) < 0) {
+        } else if (parseInt(editedEvent.seat) < 0) {
             errorsEdit.seat = 'Seats distribution must be greater than 0';
-        }else {
+        }
+        else if (editedEvent.seat.toString().length > 3) {
+            errorsEdit.seat = 'Seats distribution must contain maximum 3 digits';
+
+            // } else if (!/^[a-zA-Z]+(-[a-zA-Z]+)*$/.test(editedEvent.series.trim())) {
+            //     errorsEdit.series = 'Series must be like "a-b-c" and contain only letters separated by "-"';
+        } else {
+            console.log(editedEvent.series)
             const seriesString = editedEvent.series.toString();
             const seriesArray = seriesString.split('-').map(item => item.trim());
-            if (seriesArray.some(item => !isNaN(item) || item === '')) {
-                errorsEdit.series = 'Series must be alphanumeric and separated by "-"';
+            const uniqueLetters = new Set(seriesArray.join('').split(''));
+            if (uniqueLetters.size !== seriesArray.join('').length) {
+                errorsEdit.series = 'Series must contain unique letters separated by "-", don\'t repeat letters';
             }
         }
 
@@ -203,7 +236,7 @@ export default function ColumnsTable(props) {
                 if (image) {
                     const formDataToSend = new FormData();
                     formDataToSend.append("image", image);
-    
+
                     const uploadResponse = await api.post(
                         "http://localhost:9090/api/image/uploadimage",
                         formDataToSend,
@@ -215,7 +248,7 @@ export default function ColumnsTable(props) {
                     );
                     editedEvent.imageUrl = uploadResponse.data.downloadURL[0];
                 }
-                
+
                 // Traitement spécial pour la série
                 let seriesArray = [];
                 if (editedEvent.series && typeof editedEvent.series === 'string') {
@@ -225,18 +258,18 @@ export default function ColumnsTable(props) {
                     // Si editedEvent.series est déjà un tableau, l'utiliser tel quel
                     seriesArray = editedEvent.series;
                 }
-    
+
                 // Calcul de la capacité
                 const seriesLength = seriesArray.reduce((acc, cur) => acc + cur.replace(/-/g, '').length, 0);
                 const capacity = editedEvent.seat * seriesLength;
-    
+
                 // Mettre à jour les données de l'événement édité avec la série traitée et la capacité calculée
                 const editedEventData = {
                     ...editedEvent,
                     series: seriesArray,
                     room_capacity: capacity,
                 };
-                
+
                 // Effectuer la requête API pour mettre à jour l'événement avec les nouvelles données
                 await axios.put(`http://localhost:9090/event/update/${editedEvent._id}`, editedEventData);
                 console.log("Event updated successfully");
@@ -250,7 +283,7 @@ export default function ColumnsTable(props) {
             // Gérer l'échec de la validation ici, par exemple, en mettant à jour l'état pour afficher des messages d'erreur à l'utilisateur
         }
     };
-    
+
     // const handleEdit = (event) => {
     //     setEditedEvent(event); // Charger les données du cours à éditer dans editedEvent
     //     openEditModal(); // Ouvrir le formulaire d'édition
@@ -483,6 +516,9 @@ export default function ColumnsTable(props) {
         }
         else if (!formData.price.trim()) {
             errors.price = 'Price is required';
+        }
+        else if (formData.price.toString().length > 3) {
+            errors.price = 'Price must contain maximum 3 digits';
         } else if (parseFloat(formData.price) < 0) {
             errors.price = 'Price must be greater than or equal to 0';
         }
@@ -498,32 +534,43 @@ export default function ColumnsTable(props) {
         }
         else if (!formData.room_name.trim()) {
             errors.room_name = 'Room name is required';
-        // }
-        // else if (!formData.room_capacity.trim()) {
-        //     errors.room_capacity = 'Room capacity is required';
+            // }
+            // else if (!formData.room_capacity.trim()) {
+            //     errors.room_capacity = 'Room capacity is required';
         } else if (parseInt(formData.room_capacity) < 0) {
             errors.room_capacity = 'Room capacity must be greater than or equal to 0';
         }
-        else if (!formData.room_shape.trim()) {
-            errors.room_shape = 'Room shape is required';
-        }
+        // else if (!formData.room_shape.trim()) {
+        //     errors.room_shape = 'Room shape is required';
+        // }
 
         else if (!formData.seat.trim()) {
             errors.seat = 'Seat is required';
         } else if (parseInt(formData.seat) < 0) {
             errors.seat = 'Seats distribution must be greater than 0';
-        }
-        else if (!formData.series || typeof formData.series !== 'string' || !formData.series.trim()) {
+        } else if (formData.seat.toString().length > 2) {
+            errors.seat = 'Seats distribution must contain maximum 3 digits';
+
+            // } else if (!formData.series || typeof formData.series !== 'string' || !formData.series.trim()) {
+            //     errors.series = 'Series are required';
+            // } else if (!/^[a-zA-Z]+(-[a-zA-Z]+)*$/.test(formData.series.trim())) {
+            //     errors.series = 'Series must be in the format "a-b-c" and contain only letters separated by "-"';
+            // }
+
+        } else if (!formData.series || typeof formData.series !== 'string' || !formData.series.trim()) {
             errors.series = 'Series are required';
+        } else if (!/^[a-zA-Z]+(-[a-zA-Z]+)*$/.test(formData.series.trim())) {
+            errors.series = 'Series must be like "a-b-c" and contain only letters separated by "-"';
+            // } else if (!/^(?!.*(?:([a-zA-Z])-?\1)+)[a-zA-Z]+(?:-[a-zA-Z]+)*$/.test(formData.series.trim())) {
+            //     errors.series = 'Series must contain unique letters separated by "-"';
+            // }
         } else {
-            const seriesString = formData.series.toString();
-            const seriesArray = seriesString.split('-').map(item => item.trim());
-            if (seriesArray.some(item => !isNaN(item) || item === '')) {
-                errors.series = 'Series must be alphanumeric and separated by "-"';
+            const seriesArray = formData.series.trim().split('-').map(item => item.trim());
+            const uniqueLetters = new Set(seriesArray.join('').split(''));
+            if (uniqueLetters.size !== seriesArray.join('').length) {
+                errors.series = 'Series must contain unique letters separated by "-", don\'t repeate letters';
             }
         }
-
-
 
 
 
@@ -611,7 +658,7 @@ export default function ColumnsTable(props) {
     //                 // Télécharger l'image
     //                 const formDataToSend = new FormData();
     //                 formDataToSend.append("image", image);
-    
+
     //                 const uploadResponse = await api.post(
     //                     "http://localhost:9090/api/image/uploadimage",
     //                     formDataToSend,
@@ -633,7 +680,7 @@ export default function ColumnsTable(props) {
     //                 // Si formData.series est déjà un tableau, l'utiliser tel quel
     //                 seriesArray = formData.series;
     //             }
-    
+
     //             // Mettre à jour le formData avec la série traitée
     //             setFormData({ ...formData, series: seriesArray });
     //             // Ajouter l'événement avec les données et l'URL de l'image
@@ -653,7 +700,7 @@ export default function ColumnsTable(props) {
     //         // Gérer l'échec de la validation ici, par exemple, en mettant à jour l'état pour afficher des messages d'erreur à l'utilisateur
     //     }
     // };
-    
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -665,7 +712,7 @@ export default function ColumnsTable(props) {
                     // Télécharger l'image
                     const formDataToSend = new FormData();
                     formDataToSend.append("image", image);
-    
+
                     const uploadResponse = await api.post(
                         "http://localhost:9090/api/image/uploadimage",
                         formDataToSend,
@@ -687,14 +734,14 @@ export default function ColumnsTable(props) {
                     // Si formData.series est déjà un tableau, l'utiliser tel quel
                     seriesArray = formData.series;
                 }
-    
+
                 // Calcul de la capacité
                 const seriesLength = seriesArray.reduce((acc, cur) => acc + cur.replace(/-/g, '').length, 0);
                 const capacity = formData.seat * seriesLength;
-    console.log(capacity,'heeeyCapacity')
+                console.log(capacity, 'heeeyCapacity')
                 // Mettre à jour le formData avec la série traitée et la capacité calculée
                 setFormData({ ...formData, series: seriesArray, room_capacity: capacity });
-                
+
                 // Ajouter l'événement avec les données et l'URL de l'image
                 // const response = await axios.post(
                 //     "http://localhost:9090/event/add",
@@ -717,7 +764,7 @@ export default function ColumnsTable(props) {
                     seat: formData.seat,
                     selectedSeats: formData.selectedSeats,
                 };
-                
+
                 const response = await axios.post("http://localhost:9090/event/add", dataToSend);
                 console.log("Event added successfully:", response.data);
                 fetchData();
@@ -731,7 +778,7 @@ export default function ColumnsTable(props) {
             // Gérer l'échec de la validation ici, par exemple, en mettant à jour l'état pour afficher des messages d'erreur à l'utilisateur
         }
     };
-    
+
     const handleImageChange = (e) => {
         setImage(e.target.files[0]);
     };
@@ -816,9 +863,9 @@ export default function ColumnsTable(props) {
                                         <FormLabel>Shape</FormLabel>
                                         <Select name="room_shape" value={formData.room_shape} onChange={handleChange}>
                                             <option value="Rectangular">Rectangular</option>
-                                            <option value="Triangular">Triangular</option>
+                                            {/* <option value="Triangular">Triangular</option>
                                             <option value="Circle">Circle</option>
-                                            <option value="Square">Square</option>
+                                            <option value="Square">Square</option> */}
                                         </Select>
                                     </FormControl>
                                     {/* <FormControl>
@@ -868,7 +915,7 @@ export default function ColumnsTable(props) {
                             {errors.description && <Text color="red">{errors.description}</Text>}
                             {errors.location && <Text color="red">{errors.location}</Text>}
                             {errors.room_name && <Text color="red">{errors.room_name}</Text>}
-                            {errors.room_shape && <Text color="red">{errors.room_shape}</Text>}
+                            {/* {errors.room_shape && <Text color="red">{errors.room_shape}</Text>} */}
                             {errors.price && <Text color="red">{errors.price}</Text>}
                             {errors.startDate && <Text color="red">{errors.startDate}</Text>}
                             {errors.endDate && <Text color="red">{errors.endDate}</Text>}
@@ -891,6 +938,266 @@ export default function ColumnsTable(props) {
             </Flex>
 
 
+            <Modal isOpen={isEditModalOpen} onClose={closeEditModal}>
+                <ModalOverlay />
+                <ModalContent maxW={'800px'}>
+                    <ModalHeader>Edit Event</ModalHeader>
+                    <ModalCloseButton />
+                    {editedEvent && ( // Vérifiez si editedEvent est disponible
+                        <ModalBody>
+                            {/* Formulaire pour l'édition du cours */}
+                            <FormControl id="name">
+                                <FormLabel>Name</FormLabel>
+                                <Input type="text" value={editedEvent.name} onChange={(e) => setEditedEvent({ ...editedEvent, name: e.target.value })} />
+                            </FormControl>
+                            <FormControl id="description">
+                                <FormLabel>Description</FormLabel>
+                                <Input as="textarea" value={editedEvent.description} onChange={(e) => setEditedEvent({ ...editedEvent, description: e.target.value })} />
+                            </FormControl>
+                            <FormControl id="location">
+                                <FormLabel>Location</FormLabel>
+                                <Input type="text" value={editedEvent.location} onChange={(e) => setEditedEvent({ ...editedEvent, location: e.target.value })} />
+                            </FormControl>
+                            <FormControl id="price">
+                                <FormLabel>Price</FormLabel>
+                                <Input type="number" value={editedEvent.price} onChange={(e) => setEditedEvent({ ...editedEvent, price: parseFloat(e.target.value) })} />
+                            </FormControl>
+                            <FormControl id="startDate">
+                                <FormLabel>Start Date</FormLabel>
+                                <Input type="datetime-local" value={editedEvent.startDate || ''} onChange={(e) => setEditedEvent({ ...editedEvent, startDate: e.target.value })} />
+                            </FormControl>
+                            <FormControl id="endDate">
+                                <FormLabel>End Date</FormLabel>
+                                <Input type="datetime-local" value={editedEvent.endDate || ''} onChange={(e) => setEditedEvent({ ...editedEvent, endDate: e.target.value })} />
+                            </FormControl>
+                            <FormControl id="room_name">
+                                <FormLabel>Room Name</FormLabel>
+                                <Input type="text" value={editedEvent.room_name} onChange={(e) => setEditedEvent({ ...editedEvent, room_name: e.target.value })} />
+                            </FormControl>
+                            <FormControl id="lines">
+                                <FormLabel>Lines</FormLabel>
+                                <Input value={editedEvent.series} onChange={(e) => setEditedEvent({ ...editedEvent, series: e.target.value.split('\n') })} placeholder="Enter hyphen-separated series" />
+                            </FormControl>
+                            <FormControl id="seatsPerLine">
+                                <FormLabel>Seats Per Line</FormLabel>
+                                <Input type="number" value={editedEvent.seat} onChange={(e) => setEditedEvent({ ...editedEvent, seat: parseInt(e.target.value) })} />
+                            </FormControl>
+
+
+
+
+                            {/* <FormControl id="room_shape">
+                                                                <FormLabel>Shape</FormLabel>
+                                                                <Input type="text" value={editedEvent.room_shape} onChange={(e) => setEditedEvent({ ...editedEvent, room_shape: parseInt(e.target.value) })} />
+                                                            
+                                                            </FormControl> */}
+                            {/* <FormControl id="room_shape">
+                                                                    <FormLabel>Shape</FormLabel>
+                                                                    <Select value={editedEvent.room_shape} onChange={(e) => setEditedEvent({ ...editedEvent, room_shape: e.target.value })}>
+                                                                        <option value="Rectangular">Rectangular</option>
+                                                                        <option value="Triangular">Triangular</option>
+                                                                        <option value="Circle">Circle</option>
+                                                                        <option value="Square">Square</option>
+                                                                    </Select>
+                                                                </FormControl> */}
+
+                            {/* Select name="room_shape" value={formData.room_shape} onChange={handleChange}>
+                                                                    <option value="Rectangular">Rectangular</option>
+                                                                    <option value="Triangular">Triangular</option>
+                                                                    <option value="Circle">Circle</option>
+                                                                    <option value="Square">Square</option>
+                                                                </Select> */}
+                            {/* <FormControl id="room_capacity">
+                                                                    <FormLabel>Capacity</FormLabel>
+                                                                    <Input type="number" value={editedEvent.room_capacity} onChange={(e) => setEditedEvent({ ...editedEvent, room_capacity: parseInt(e.target.value) })} />
+                                                                </FormControl> */}
+                            {/* <FormControl id="room_distributionSeats">
+                                                                    <FormLabel>Seats</FormLabel>
+                                                                    <Input type="text" value={editedEvent.room_distributionSeats} onChange={(e) => setEditedEvent({ ...editedEvent, room_distributionSeats: e.target.value })} />
+                                                                </FormControl> */}
+                            <FormControl id="imageUrl" mt={4}>
+                                {/* <img src={editedEvent.imageUrl} alt="imageUrl" style={{ maxWidth: "250px", maxHeight: "250px", borderRadius: "50%", margin: "auto" }} /> */}
+
+                                <FormLabel>Image</FormLabel>
+
+                                <Input type="file" name="imageUrl" onChange={handleImageChange} />
+
+                                {/* <FormLabel>Image</FormLabel>
+                                                                            {image && (
+                                                                                <img src={URL.createObjectURL(image)} alt="Preview" style={{ maxWidth: "250px", maxHeight: "250px", margin: "auto" }} />
+                                                                            )}
+                                                                            <Input type="file" name="imageUrl" onChange={handleImageChange} />
+                                                                            */}
+
+                            </FormControl>
+
+                        </ModalBody>
+
+                    )}
+
+
+
+                    {errorsEdit.price && <Text color="red">{errorsEdit.price}</Text>}
+                    {errorsEdit.startDate && <Text color="red">{errorsEdit.startDate}</Text>}
+                    {errorsEdit.endDate && <Text color="red">{errorsEdit.endDate}</Text>}
+                    {errorsEdit.seat && <Text color="red">{errorsEdit.seat}</Text>}
+                    {errorsEdit.series && <Text color="red">{errorsEdit.series}</Text>}
+                    {/* {errorsEdit.room_capacity && <Text color="red">{errorsEdit.room_capacity}</Text>} */}
+
+
+
+                    <ModalFooter>
+
+                        <Button colorScheme="blue" mr={3} onClick={handleSaveEdit}>Save</Button>
+                        <Button onClick={closeEditModal}>Cancel</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+
+            {/* Delete icon */}
+            <AlertDialog
+                isOpen={isDeleteDialogOpen}
+                leastDestructiveRef={cancelRef}
+                onClose={cancelDelete}
+            >
+                <AlertDialogOverlay>
+                    <AlertDialogContent>
+                        <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                            Delete Event
+                        </AlertDialogHeader>
+
+                        <AlertDialogBody>
+                            Are you sure you want to delete this event?
+                        </AlertDialogBody>
+
+                        <AlertDialogFooter>
+                            <Button ref={cancelRef} onClick={cancelDelete}>
+                                Cancel
+                            </Button>
+                            <Button colorScheme="red" onClick={handleDelete} ml={3}>
+                                Delete
+                            </Button>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialogOverlay>
+            </AlertDialog>
+            <Modal isOpen={isModalViewOpen} onClose={closeModalViewA}>
+                <ModalOverlay />
+                <ModalContent maxW={'800px'}>
+                    {/* <ModalHeader>Event Information</ModalHeader> */}
+                    <ModalCloseButton />
+                    <ModalBody>
+                        {eventInfo && (
+                            <>
+                                {/* <img src={eventInfo.imageUrl} alt="Event Image" /> */}
+                                {/* <img src={eventInfo.imageUrl} alt="imageUrl" style={{ maxWidth: "250px", maxHeight: "250px", borderRadius: "50%", margin: "auto" }} /> */}
+                                <img src={eventInfo.imageUrl} alt="imageUrl" style={{ Width: "10S50px", maxHeight: "250px", margin: "auto" }} />
+
+                                <Card mb={{ base: "0px", "2xl": "20px" }} {...rest}>
+                                    <Text
+                                        color={textColorPrimary}
+                                        fontWeight='bold'
+                                        fontSize='2xl'
+                                        mt='10px'
+                                        mb='4px'>
+                                        {eventInfo.name}
+                                    </Text>
+                                    <Text color={textColorSecondary} fontSize='md' me='26px' mb='40px'>
+                                        {eventInfo.description}
+                                    </Text>
+                                    <SimpleGrid columns='2' gap='20px'>
+                                        <Information
+                                            // boxShadow={cardShadow}
+                                            // title='Date'
+                                            // value={eventInfo.date}
+                                            boxShadow={cardShadow}
+                                            title=' Start Date'
+                                            value={new Date(eventInfo.startDate).toLocaleString('fr-FR', {
+                                                weekday: 'long',
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric',
+                                                hour: 'numeric',
+                                                minute: 'numeric',
+                                                second: 'numeric',
+                                            })}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title=' End Date'
+                                            value={new Date(eventInfo.endDate).toLocaleString('fr-FR', {
+                                                weekday: 'long',
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric',
+                                                hour: 'numeric',
+                                                minute: 'numeric',
+                                                second: 'numeric',
+                                            })}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Location'
+                                            value={eventInfo.location}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Price'
+                                            value={eventInfo.price}
+                                        />
+
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Room Name'
+                                            value={eventInfo.room_name}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Available Seats'
+                                            value={eventInfo.room_capacity}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Lines'
+                                            value={eventInfo.series}
+                                        />
+                                        <Information
+                                            boxShadow={cardShadow}
+                                            title='Seats per Line'
+                                            value={eventInfo.seat}
+                                        />
+                                        <NavLink to={`/event/${eventInfo._id}/tickets`}>
+                                            <Button colorScheme="blue" >Tickets</Button>
+                                        </NavLink>
+                                        <NavLink to={`/event/${eventInfo._id}/comments`}>
+                                            <Button colorScheme="orange" >Comments</Button>
+                                        </NavLink>
+
+                                        {/* <ModalFooter>
+                                                                                <NavLink to={`/admin/events/${eventInfo.id}/tickets`}>Tickets</NavLink>
+                                                                                
+                                                                                <Button  colorScheme="orange">
+                                                                                comments
+                                                                                </Button>
+                                                                            </ModalFooter> */}
+                                        {/* <ModalFooter>
+                                                                                <NavLink to={`/admin/events/${eventInfo.id}/tickets`}>Tickets</NavLink>
+                                                                                <Button colorScheme="blue" onClick={() => setShowTickets(true)}>
+                                                                                tickets
+                                                                                </Button>
+                                                                                <Button colorScheme="orange" onClick={() => setShowComments(true)}>
+                                                                                comments
+                                                                                </Button>
+                                                                            </ModalFooter> */}
+
+                                    </SimpleGrid>
+
+                                </Card>
+                            </>
+                        )}
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
             <Table {...getTableProps()} variant='simple' color='gray.500' mb='24px'>
                 <Thead>
                     {headerGroups.map((headerGroup, index) => (
@@ -998,150 +1305,6 @@ export default function ColumnsTable(props) {
 
 
 
-                                                <Modal isOpen={isEditModalOpen} onClose={closeEditModal}>
-                                                    <ModalOverlay />
-                                                    <ModalContent maxW={'800px'}>
-                                                        <ModalHeader>Edit Event</ModalHeader>
-                                                        <ModalCloseButton />
-                                                        {editedEvent && ( // Vérifiez si editedEvent est disponible
-                                                            <ModalBody>
-                                                                {/* Formulaire pour l'édition du cours */}
-                                                                <FormControl id="name">
-                                                                    <FormLabel>Name</FormLabel>
-                                                                    <Input type="text" value={editedEvent.name} onChange={(e) => setEditedEvent({ ...editedEvent, name: e.target.value })} />
-                                                                </FormControl>
-                                                                <FormControl id="description">
-                                                                    <FormLabel>Description</FormLabel>
-                                                                    <Input as="textarea" value={editedEvent.description} onChange={(e) => setEditedEvent({ ...editedEvent, description: e.target.value })} />
-                                                                </FormControl>
-                                                                <FormControl id="location">
-                                                                    <FormLabel>Location</FormLabel>
-                                                                    <Input type="text" value={editedEvent.location} onChange={(e) => setEditedEvent({ ...editedEvent, location: e.target.value })} />
-                                                                </FormControl>
-                                                                <FormControl id="price">
-                                                                    <FormLabel>Price</FormLabel>
-                                                                    <Input type="number" value={editedEvent.price} onChange={(e) => setEditedEvent({ ...editedEvent, price: parseFloat(e.target.value) })} />
-                                                                </FormControl>
-                                                                <FormControl id="startDate">
-                                                                    <FormLabel>Start Date</FormLabel>
-                                                                    <Input type="datetime-local" value={editedEvent.startDate || ''} onChange={(e) => setEditedEvent({ ...editedEvent, startDate: e.target.value })} />
-                                                                </FormControl>
-                                                                <FormControl id="endDate">
-                                                                    <FormLabel>End Date</FormLabel>
-                                                                    <Input type="datetime-local" value={editedEvent.endDate || ''} onChange={(e) => setEditedEvent({ ...editedEvent, endDate: e.target.value })} />
-                                                                </FormControl>
-                                                                <FormControl id="room_name">
-                                                                    <FormLabel>Room Name</FormLabel>
-                                                                    <Input type="text" value={editedEvent.room_name} onChange={(e) => setEditedEvent({ ...editedEvent, room_name: e.target.value })} />
-                                                                </FormControl>
-                                                                <FormControl id="lines">
-                                                                    <FormLabel>Lines</FormLabel>
-                                                                    <Input value={editedEvent.series} onChange={(e) => setEditedEvent({ ...editedEvent, series: e.target.value.split('\n') })} placeholder="Enter hyphen-separated series" />
-                                                                </FormControl>
-                                                                <FormControl id="seatsPerLine">
-                                                                    <FormLabel>Seats Per Line</FormLabel>
-                                                                    <Input type="number" value={editedEvent.seat} onChange={(e) => setEditedEvent({ ...editedEvent, seat: parseInt(e.target.value) })}  />
-                                                                </FormControl>
-
-                                                                
-
-                                                                
-                                                                {/* <FormControl id="room_shape">
-                                                                <FormLabel>Shape</FormLabel>
-                                                                <Input type="text" value={editedEvent.room_shape} onChange={(e) => setEditedEvent({ ...editedEvent, room_shape: parseInt(e.target.value) })} />
-                                                            
-                                                            </FormControl> */}
-                                                                {/* <FormControl id="room_shape">
-                                                                    <FormLabel>Shape</FormLabel>
-                                                                    <Select value={editedEvent.room_shape} onChange={(e) => setEditedEvent({ ...editedEvent, room_shape: e.target.value })}>
-                                                                        <option value="Rectangular">Rectangular</option>
-                                                                        <option value="Triangular">Triangular</option>
-                                                                        <option value="Circle">Circle</option>
-                                                                        <option value="Square">Square</option>
-                                                                    </Select>
-                                                                </FormControl> */}
-
-                                                                {/* Select name="room_shape" value={formData.room_shape} onChange={handleChange}>
-                                                                    <option value="Rectangular">Rectangular</option>
-                                                                    <option value="Triangular">Triangular</option>
-                                                                    <option value="Circle">Circle</option>
-                                                                    <option value="Square">Square</option>
-                                                                </Select> */}
-                                                                {/* <FormControl id="room_capacity">
-                                                                    <FormLabel>Capacity</FormLabel>
-                                                                    <Input type="number" value={editedEvent.room_capacity} onChange={(e) => setEditedEvent({ ...editedEvent, room_capacity: parseInt(e.target.value) })} />
-                                                                </FormControl> */}
-                                                                {/* <FormControl id="room_distributionSeats">
-                                                                    <FormLabel>Seats</FormLabel>
-                                                                    <Input type="text" value={editedEvent.room_distributionSeats} onChange={(e) => setEditedEvent({ ...editedEvent, room_distributionSeats: e.target.value })} />
-                                                                </FormControl> */}
-                                                                <FormControl id="imageUrl" mt={4}>
-                                                                    {/* <img src={editedEvent.imageUrl} alt="imageUrl" style={{ maxWidth: "250px", maxHeight: "250px", borderRadius: "50%", margin: "auto" }} /> */}
-
-                                                                    <FormLabel>Image</FormLabel>
-
-                                                                    <Input type="file" name="imageUrl" onChange={handleImageChange} />
-
-                                                                    {/* <FormLabel>Image</FormLabel>
-                                                                            {image && (
-                                                                                <img src={URL.createObjectURL(image)} alt="Preview" style={{ maxWidth: "250px", maxHeight: "250px", margin: "auto" }} />
-                                                                            )}
-                                                                            <Input type="file" name="imageUrl" onChange={handleImageChange} />
-                                                                            */}
-
-                                                                </FormControl>
-
-                                                            </ModalBody>
-
-                                                        )}
-
-
-
-                                                        {errorsEdit.price && <Text color="red">{errorsEdit.price}</Text>}
-                                                        {errorsEdit.startDate && <Text color="red">{errorsEdit.startDate}</Text>}
-                                                        {errorsEdit.endDate && <Text color="red">{errorsEdit.endDate}</Text>}
-                                                        {errorsEdit.seat && <Text color="red">{errorsEdit.seat}</Text>}
-                                                        {errorsEdit.series && <Text color="red">{errorsEdit.series}</Text>}
-                                                        {/* {errorsEdit.room_capacity && <Text color="red">{errorsEdit.room_capacity}</Text>} */}
-
-
-
-                                                        <ModalFooter>
-
-                                                            <Button colorScheme="blue" mr={3} onClick={handleSaveEdit}>Save</Button>
-                                                            <Button onClick={closeEditModal}>Cancel</Button>
-                                                        </ModalFooter>
-                                                    </ModalContent>
-                                                </Modal>
-
-                                                {/* Delete icon */}
-                                                <AlertDialog
-                                                    isOpen={isDeleteDialogOpen}
-                                                    leastDestructiveRef={cancelRef}
-                                                    onClose={cancelDelete}
-                                                >
-                                                    <AlertDialogOverlay>
-                                                        <AlertDialogContent>
-                                                            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                                                                Delete Event
-                                                            </AlertDialogHeader>
-
-                                                            <AlertDialogBody>
-                                                                Are you sure you want to delete this event?
-                                                            </AlertDialogBody>
-
-                                                            <AlertDialogFooter>
-                                                                <Button ref={cancelRef} onClick={cancelDelete}>
-                                                                    Cancel
-                                                                </Button>
-                                                                <Button colorScheme="red" onClick={handleDelete} ml={3}>
-                                                                    Delete
-                                                                </Button>
-                                                            </AlertDialogFooter>
-                                                        </AlertDialogContent>
-                                                    </AlertDialogOverlay>
-                                                </AlertDialog>
-
                                                 <DeleteIcon
                                                     w='20px'
                                                     h='20px'
@@ -1159,123 +1322,7 @@ export default function ColumnsTable(props) {
                                                     cursor="pointer"
                                                     onClick={() => handleView(row.original)}
                                                 />
-                                                <Modal isOpen={isModalViewOpen} onClose={closeModalViewA}>
-                                                    <ModalOverlay />
-                                                    <ModalContent maxW={'800px'}>
-                                                        {/* <ModalHeader>Event Information</ModalHeader> */}
-                                                        <ModalCloseButton />
-                                                        <ModalBody>
-                                                            {eventInfo && (
-                                                                <>
-                                                                    {/* <img src={eventInfo.imageUrl} alt="Event Image" /> */}
-                                                                    {/* <img src={eventInfo.imageUrl} alt="imageUrl" style={{ maxWidth: "250px", maxHeight: "250px", borderRadius: "50%", margin: "auto" }} /> */}
-                                                                    <img src={eventInfo.imageUrl} alt="imageUrl" style={{ Width: "10S50px", maxHeight: "250px", margin: "auto" }} />
 
-                                                                    <Card mb={{ base: "0px", "2xl": "20px" }} {...rest}>
-                                                                        <Text
-                                                                            color={textColorPrimary}
-                                                                            fontWeight='bold'
-                                                                            fontSize='2xl'
-                                                                            mt='10px'
-                                                                            mb='4px'>
-                                                                            {eventInfo.name}
-                                                                        </Text>
-                                                                        <Text color={textColorSecondary} fontSize='md' me='26px' mb='40px'>
-                                                                            {eventInfo.description}
-                                                                        </Text>
-                                                                        <SimpleGrid columns='2' gap='20px'>
-                                                                            <Information
-                                                                                // boxShadow={cardShadow}
-                                                                                // title='Date'
-                                                                                // value={eventInfo.date}
-                                                                                boxShadow={cardShadow}
-                                                                                title=' Start Date'
-                                                                                value={new Date(eventInfo.startDate).toLocaleString('fr-FR', {
-                                                                                    weekday: 'long',
-                                                                                    year: 'numeric',
-                                                                                    month: 'long',
-                                                                                    day: 'numeric',
-                                                                                    hour: 'numeric',
-                                                                                    minute: 'numeric',
-                                                                                    second: 'numeric',
-                                                                                })}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title=' End Date'
-                                                                                value={new Date(eventInfo.endDate).toLocaleString('fr-FR', {
-                                                                                    weekday: 'long',
-                                                                                    year: 'numeric',
-                                                                                    month: 'long',
-                                                                                    day: 'numeric',
-                                                                                    hour: 'numeric',
-                                                                                    minute: 'numeric',
-                                                                                    second: 'numeric',
-                                                                                })}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Location'
-                                                                                value={eventInfo.location}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Price'
-                                                                                value={eventInfo.price}
-                                                                            />
-
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Room Name'
-                                                                                value={eventInfo.room_name}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Available Seats'
-                                                                                value={eventInfo.room_capacity}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Lines'
-                                                                                value={eventInfo.series}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Seats per Line'
-                                                                                value={eventInfo.seat}
-                                                                            />
-                                                                            <NavLink to={`/event/${eventInfo._id}/tickets`}>
-                                                                                <Button colorScheme="blue" >Tickets</Button>
-                                                                            </NavLink>
-                                                                            <NavLink to={`/event/${eventInfo._id}/comments`}>
-                                                                                <Button colorScheme="orange" >Comments</Button>
-                                                                            </NavLink>
-
-                                                                            {/* <ModalFooter>
-                                                                                <NavLink to={`/admin/events/${eventInfo.id}/tickets`}>Tickets</NavLink>
-                                                                                
-                                                                                <Button  colorScheme="orange">
-                                                                                comments
-                                                                                </Button>
-                                                                            </ModalFooter> */}
-                                                                            {/* <ModalFooter>
-                                                                                <NavLink to={`/admin/events/${eventInfo.id}/tickets`}>Tickets</NavLink>
-                                                                                <Button colorScheme="blue" onClick={() => setShowTickets(true)}>
-                                                                                tickets
-                                                                                </Button>
-                                                                                <Button colorScheme="orange" onClick={() => setShowComments(true)}>
-                                                                                comments
-                                                                                </Button>
-                                                                            </ModalFooter> */}
-
-                                                                        </SimpleGrid>
-
-                                                                    </Card>
-                                                                </>
-                                                            )}
-                                                        </ModalBody>
-                                                    </ModalContent>
-                                                </Modal>
                                             </Flex>
                                         );
                                     }

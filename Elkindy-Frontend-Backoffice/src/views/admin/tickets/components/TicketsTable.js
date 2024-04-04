@@ -330,11 +330,11 @@ export default function ColumnsTable(props) {
                     Reservation Table
                 </Text>
 
-                <Menu isOpen={isOpen1} onClose={onClose1}>
+                {/* <Menu isOpen={isOpen1} onClose={onClose1}>
                     <MenuButton align='center' justifyContent='center' bg={bgButton} _hover={bgHover} _focus={bgFocus} _active={bgFocus} w='37px' h='37px' lineHeight='100%' onClick={openModalA} borderRadius='10px'>
                         <AddIcon color={iconColor} w='20px' h='20px' />
                     </MenuButton>
-                </Menu>
+                </Menu> */}
 
             </Flex>
 

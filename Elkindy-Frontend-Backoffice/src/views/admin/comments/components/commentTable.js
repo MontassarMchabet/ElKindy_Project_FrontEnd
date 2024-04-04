@@ -497,6 +497,8 @@ import { MdCheckCircle, MdCancel, MdOutlineError } from "react-icons/md";
 import Information from "views/admin/comments/components/Information";
 
 import { useHistory } from 'react-router-dom'; 
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 
 
 export default function ColumnsTable(props) {
@@ -527,7 +529,20 @@ export default function ColumnsTable(props) {
     const { eventId } = useParams(); // Utilisation du hook useParams pour obtenir l'ID de l'événement depuis l'URL
     
     const [comments, setComments] = useState([]); // Déclaration de l'état pour stocker les tickets
+    const [userId, setUserId] = useState(null);
 
+    useEffect(() => {
+        const getUserIdFromToken = () => {
+            const storedToken = Cookies.get('token');
+            if (storedToken) {
+                const decodedToken = jwtDecode(storedToken);
+                const userId = decodedToken.userId;
+                setUserId(userId);
+            }
+        };
+  
+        getUserIdFromToken();
+    }, []);
 
     console.log("heeeeeeeey", eventId);
 
@@ -604,10 +619,10 @@ export default function ColumnsTable(props) {
     const closeModalViewA = () => {
         setIsModalViewOpen(false);
     };
-
+console.log('user',userId)
 
     const [formData, setFormData] = useState({
-        user:'65e25825b58277cff4cc33ae',
+        user: userId,
         comment: "",  
         date: "",
         
@@ -629,25 +644,51 @@ export default function ColumnsTable(props) {
         return Object.keys(errors).length === 0;
       };
 
-      const handleSubmit = async (e) => {
+    //   const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     const isValid = await validateForm();
+    //     console.log("Submitting form");
+    //     if (isValid) {
+    //       try {
+    //         const response = await axios.post(
+    //           `http://localhost:9090/comment/add/event/${eventId}`,
+    //           formData
+    //         );
+    //         fetchComments()
+    //         closeModalA()
+    //         console.log(response.data);
+    //       } catch (error) {
+    //         console.error("Error adding comment:", error);
+    //       }
+    //     }
+    //   };
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const isValid = await validateForm();
         console.log("Submitting form");
         if (isValid) {
           try {
+            // Données du commentaire à envoyer
+            const commentData = {
+              eventId: eventId, // Incluez l'ID de l'événement dans les données du commentaire
+              userId: userId, // Incluez l'ID de l'utilisateur connecté dans les données du commentaire
+              comment: formData.comment, // Assurez-vous de remplacer formData.comment par le nom de votre champ de commentaire
+              // Ajoutez d'autres données de commentaire si nécessaire
+            };
+      
             const response = await axios.post(
               `http://localhost:9090/comment/add/event/${eventId}`,
-              formData
+              commentData
             );
-            fetchComments()
-            closeModalA()
+            fetchComments();
+            closeModalA();
             console.log(response.data);
           } catch (error) {
             console.error("Error adding comment:", error);
           }
         }
       };
-
+      
     return (
         
         <Card direction='column' w='100%' px='0px' overflowX={{ sm: "scroll", lg: "hidden" }}>
@@ -657,14 +698,14 @@ export default function ColumnsTable(props) {
             </Text>
             
       
-            <Menu isOpen={isOpen1} onClose={onClose1}>
+            {/* <Menu isOpen={isOpen1} onClose={onClose1}>
               <MenuButton align='center' justifyContent='center' bg={bgButton} _hover={bgHover} _focus={bgFocus} _active={bgFocus} w='37px' h='37px' lineHeight='100%' onClick={openModalA} borderRadius='10px'>
-                <AddIcon color={iconColor} w='20px' h='20px' />
+                 <AddIcon color={iconColor} w='20px' h='20px' /> 
               </MenuButton>
-            </Menu>
+            </Menu> */}
       
             {/* Modal for adding comment */}
-            <Modal isOpen={isModalOpenA} onClose={closeModalA}>
+            {/* <Modal isOpen={isModalOpenA} onClose={closeModalA}>
               <ModalOverlay />
               <ModalContent>
                 <form onSubmit={handleSubmit} noValidate>
@@ -693,7 +734,7 @@ export default function ColumnsTable(props) {
                   </ModalFooter>
                 </form>
               </ModalContent>
-            </Modal>
+            </Modal> */}
           </Flex>
             
           
