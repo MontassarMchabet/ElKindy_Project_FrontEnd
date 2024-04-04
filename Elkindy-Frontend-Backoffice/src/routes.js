@@ -22,19 +22,12 @@ import Profile from "views/admin/profile";
 import DataTables from "views/admin/dataTables";
 import RTL from "views/admin/rtl";
 import UserTables from "views/admin/userTables";
-
 import Courses from "views/admin/courses";
 import Scheduling from "views/admin/Scheduling";
-
 import ExamTables from "views/admin/examTables";
-
 import Tickets from "views/admin/tickets";
-
 import productTable from "views/admin/productTable";
 
-// Auth Imports
-import SignInCentered from "views/auth/signIn";
-import SignUpCentered from "views/auth/signUp";
 
 const routes = [
   {
@@ -92,7 +85,7 @@ const routes = [
       />
     ),
     component: Events,
-    secondary: true,HEAD
+    // secondary: true,HEAD
   },{
 
   }, {

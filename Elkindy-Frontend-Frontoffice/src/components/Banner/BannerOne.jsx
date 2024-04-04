@@ -1,7 +1,41 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { jwtDecode } from 'jwt-decode';
+import api from '../../services/api';
+import Cookies from 'js-cookie';
+
 
 const BannerOne = () => {
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    const token = Cookies.get('token');
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      const { userId } = decodedToken;
+
+      api.get(`http://localhost:9090/api/auth/user/${userId}`)
+        .then(response => {
+          setUser(response.data);
+        })
+        .catch(error => {
+          console.error('Error fetching user data:', error);
+        });
+    }
+  }, []);
+
+  let destinationUrl = 'http://localhost:3000/elkindy#/signin';
+  let buttonText = 'Subscribe now';
+
+  if (user) {
+    if (user.isSubscribed) {
+      destinationUrl = '/contactus';
+      buttonText = 'Contact us';
+    } else {
+      destinationUrl = '/subscribe';
+      buttonText = 'Subscribe now';
+    }
+  }
+
   return (
     <section className="banner-area banner-bg">
       <div className="container">
@@ -20,11 +54,12 @@ const BannerOne = () => {
                 Explore the World of Music and Arts
               </h2>
               <Link
-                to="/contact"
+                to={destinationUrl}
                 className="btn wow fadeInUp"
                 data-wow-delay=".6s"
               >
-                Contact Us <span></span>
+                {buttonText}
+                <span></span>
               </Link>
             </div>
           </div>
