@@ -1,0 +1,49 @@
+
+.containeronslol{
+    display: flex;
+    justify-content: center;
+}
+.boxsonslol{
+    position: relative;
+    margin: 10px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.lettersonslol{
+    background-color: #998675;
+    width: 100px;
+    height: 100px;
+    font-size: 30px;
+    font-weight: 600;
+    margin: 1%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    
+}
+
+.inneronslol{
+    background-color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.lettersonslol::before{
+    position: absolute;
+    top: -20px;
+}
+
+@media only screen and (max-width: 600px) {
+   .container img{
+    width: 450px;
+    height: 450px;
+   }
+  }

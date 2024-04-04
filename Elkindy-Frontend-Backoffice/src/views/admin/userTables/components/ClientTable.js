@@ -502,7 +502,7 @@ export default function ColumnsTable(props) {
                                         <Information
                                             boxShadow={cardShadow}
                                             title='School grade'
-                                            value={clientInfo.schoolGrade ? clientInfo.schoolGrade : "_"}
+                                            value={clientInfo.level ? clientInfo.level : "_"}
                                         />
                                         <Information
                                             boxShadow={cardShadow}
@@ -594,9 +594,9 @@ export default function ColumnsTable(props) {
                                 </FormControl>
                             </Grid>
 
-                            <FormControl id="schoolGrade" mt={4}>
+                            <FormControl id="level" mt={4}>
                                 <FormLabel>School Grade</FormLabel>
-                                <Input type="text" value={editedUser.schoolGrade} onChange={(e) => setEditedUser({ ...editedUser, schoolGrade: e.target.value })} />
+                                <Input type="text" value={editedUser.level} onChange={(e) => setEditedUser({ ...editedUser, level: e.target.value })} />
                             </FormControl>
 
                             
