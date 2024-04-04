@@ -1,6 +1,7 @@
 import { Box, SimpleGrid } from "@chakra-ui/react";
 
-import EventCalendar from "views/admin/events/components/EventCalendar";
+import EventCalendar from "views/admin/eventsCalendar/components/EventCalendar";
+
 
 
 import React, { useState, useEffect, useRef } from "react";

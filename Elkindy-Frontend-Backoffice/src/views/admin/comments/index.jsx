@@ -6,6 +6,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import commentsData from "./variables/columnsData";
 import { useParams } from "react-router-dom";
+import Sidebar from "../sideBarEvents/sideBar";
 
 
 
@@ -73,34 +74,38 @@ export default function Settings() {
     };
 
     return (
-        <Box width="2180px" pt={{ base: "130px", md: "80px", xl: "80px" }}>
 
-            <SimpleGrid
-                mb='20px'
-                columns={{ sm: 1, md: 2 }}
-                spacing={{ base: "20px", xl: "20px" }}>
+        <>
+            <Sidebar />
+            <Box marginLeft={'325px'} width="1900px" pt={{ base: "130px", md: "80px", xl: "80px" }}>
+         {/* <Box width="2180px" pt={{ base: "130px", md: "80px", xl: "80px" }}> */}
 
-                <CommentTable
+                <SimpleGrid
+                    mb='20px'
+                    columns={{ sm: 1, md: 2 }}
+                    spacing={{ base: "20px", xl: "20px" }}>
 
-                    columnsData={commentsData}
-                    tableData={commentssData}
-                    handleDelete={handleDelete}
+                    <CommentTable
 
-                    cancelDelete={cancelDelete}
-                    cancelRef={cancelRef}
-                    confirmDelete={confirmDelete}
-                    isDeleteDialogOpen={isDeleteDialogOpen}
-                    openModalA={openModalA}
-                    closeModalA={closeModalA}
-                    isModalOpenA={isModalOpenA}
-                    fetchData={fetchData}
+                        columnsData={commentsData}
+                        tableData={commentssData}
+                        handleDelete={handleDelete}
 
-                />
+                        cancelDelete={cancelDelete}
+                        cancelRef={cancelRef}
+                        confirmDelete={confirmDelete}
+                        isDeleteDialogOpen={isDeleteDialogOpen}
+                        openModalA={openModalA}
+                        closeModalA={closeModalA}
+                        isModalOpenA={isModalOpenA}
+                        fetchData={fetchData}
+
+                    />
 
 
-            </SimpleGrid>
-        </Box>
-
+                </SimpleGrid>
+            </Box>
+        </>
     );
 }
 

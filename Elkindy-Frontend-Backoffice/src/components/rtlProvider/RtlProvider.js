@@ -1,5 +1,6 @@
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
+import React from "react";
 import rtl from "stylis-plugin-rtl";
 // NB: A unique `key` is important for it to work!
 const options = {

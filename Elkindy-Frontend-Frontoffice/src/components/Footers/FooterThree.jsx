@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const FooterThree = () => {
   return (
-    <footer>
+    <footer style={{ backgroundColor: "white" }}>
       <div className="footer-area-two footer-area-three">
         <div className="container">
           <div className="footer-top-two">

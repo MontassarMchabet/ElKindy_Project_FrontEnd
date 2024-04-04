@@ -28,12 +28,12 @@ instance.interceptors.response.use(
     async (err) => {
         const originalConfig = err.config;
 
-        if (originalConfig.url !== "/auth/signin" && err.response) {
+        /*if (originalConfig.url !== "/auth/loginEmail" && err.response) {
             if (err.response.status === 401 && !originalConfig._retry) {
                 originalConfig._retry = true;
 
                 try {
-                    const rs = await instance.post("/api/auth/refreshtoken", {
+                    const rs = await instance.post("/auth/refreshtoken", {
                         refreshToken: Cookies.get('refreshToken'),
                     });
 
@@ -45,7 +45,7 @@ instance.interceptors.response.use(
                     return Promise.reject(_error);
                 }
             }
-        }
+        }*/
 
         return Promise.reject(err);
     }

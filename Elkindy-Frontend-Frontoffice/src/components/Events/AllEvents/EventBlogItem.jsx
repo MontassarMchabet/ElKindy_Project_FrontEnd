@@ -1,52 +1,65 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
 
-const BlogItem = ({ item }) => {
+const EventItem = ({ item }) => {
   return (
     <div className="inner-blog-item-1">
-      <div className="inner-blog-thumb">
-        <Link to={item.url}>
-          <img src={item.src} alt="" />
-        </Link>
-      </div>
+      <Link to={item.url} className="inner-blog-thumb">
+        <img src={item.imageUrl} alt="" style={{ width: "450px", height: "225px" }} />
+      </Link>
 
       <div className="inner-blog-content">
         <div className="blog-meta-two">
           <ul className="list-wrap">
             <li className="tag">
-              <Link to="/blog">{item.tag}</Link>
+              <Link to="/events">Event</Link>
             </li>
-
             <li>
-              <i className="fal fa-clock"/>{item.reading_time}
+              <i className="fal fa-clock"></i> {new Date(item.startDate).toLocaleString('tn-TN', {
+
+                hour: 'numeric',
+                minute: 'numeric'
+
+              })}
             </li>
-
             <li>
-              <i className="fal fa-calendar"></i>{item.created_at}
+              <i className="fal fa-calendar" color="bleu"></i> {new Date(item.startDate).toLocaleString('tn-TN', {
+
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+
+
+              })}
             </li>
-
             <li>
-              By <Link to="/blog">{item.author}</Link>
+              By <Link to="/events">ELKINDY</Link>
             </li>
           </ul>
         </div>
 
         <h2 className="title">
-          <Link to={item.url}>
-            {item.title}
-          </Link>
+          <Link to={item.url}>{item.name}</Link>
         </h2>
 
-        <p>
-          {item.desc}
-        </p>
+        <p>{item.description}</p>
+        <ul>
 
-        <Link to={item.url} className="rade-more-btn">
-          Read More
-        </Link>
+          <Link to={`/events/${item._id}`} className="rade-more-btn">
+            Read More
+          </Link>
+
+          <button className="button-book-ticket" ><Link to={`/events/${item._id}/${item.name}/bookTickets`}>
+          Book Ticket
+          </Link></button>{' '}
+
+        </ul>
+
+
       </div>
     </div>
   );
 };
 
-export default BlogItem;
+export default EventItem;

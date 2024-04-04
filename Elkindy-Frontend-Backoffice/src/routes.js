@@ -12,30 +12,36 @@ import {
   MdOutlinePages,
   MdEditCalendar ,
   MdAddTask,
-  MdMapsHomeWork 
+
+  MdMapsHomeWork ,
+
+  MdOutlineMusicNote,
+  MdOutlineMusicVideo,
+  MdOutlineEvent,
+
 } from "react-icons/md";
 
 // Admin Imports
 import MainDashboard from "views/admin/default";
 import NFTMarketplace from "views/admin/marketplace";
 import Events from "views/admin/events";
+import EventsCalendar from "views/admin/eventsCalendar";
 import Profile from "views/admin/profile";
 import DataTables from "views/admin/dataTables";
 import RTL from "views/admin/rtl";
 import UserTables from "views/admin/userTables";
-
 import Courses from "views/admin/courses";
 import Scheduling from "views/admin/Scheduling";
+
 import Planning from "views/admin/planning";
 import ExamTables from "views/admin/examTables";
 import TeacherScheduling from "views/admin/Scheduling/teacherScheduling";
+
+
 import Tickets from "views/admin/tickets";
-
 import productTable from "views/admin/productTable";
+import ordersTable from "views/admin/ordersTable";
 
-// Auth Imports
-import SignInCentered from "views/auth/signIn";
-import SignUpCentered from "views/auth/signUp";
 
 const routes = [
   {
@@ -77,14 +83,32 @@ const routes = [
     ),
     component: ExamTables,
 
-    }, {
 
-    name: "Evenements ElKindy",
+    }, 
+  {
+
+    name: " Events Calendar",
+    layout: "/admin",
+    path: "/calendarevent",
+    icon: (
+      <Icon
+        as={MdOutlineEvent}
+        width='20px'
+        height='20px'
+        color='inherit'
+      />
+    ),
+    component: EventsCalendar,
+    secondary: true,
+  },
+  {
+
+    name: " ElKindy Events",
     layout: "/admin",
     path: "/event",
     icon: (
       <Icon
-        as={MdOutlineShoppingCart}
+        as={MdOutlineMusicVideo}
         width='20px'
         height='20px'
         color='inherit'
@@ -92,13 +116,23 @@ const routes = [
     ),
     component: Events,
     secondary: true,
-  }, {
 
-    name: "Products",
+  },
+
+  {
+    name: "Products Table",
     layout: "/admin",
     icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
     path: "/products",
     component: productTable,
+
+  },
+  {
+    name: "Orders Table",
+    layout: "/admin",
+    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+    path: "/orders",
+    component: ordersTable,
 
   },
   {

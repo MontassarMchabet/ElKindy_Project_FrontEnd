@@ -131,7 +131,7 @@ export default function Settings() {
     };
 
     return (
-        <div style={{ overflowX: 'hidden' }}>
+        
             <Box width="3150px" pt={{ base: "130px", md: "80px", xl: "80px" }}>
                 <SimpleGrid
                     mb='20px'
@@ -199,6 +199,6 @@ export default function Settings() {
                     />
                 </SimpleGrid>
             </Box>
-        </div>
+        
     );
 }

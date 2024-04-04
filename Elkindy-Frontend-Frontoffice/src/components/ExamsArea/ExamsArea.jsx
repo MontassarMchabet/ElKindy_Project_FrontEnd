@@ -1,92 +1,66 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect,useMemo  } from "react";
+import { Link, useParams} from "react-router-dom";
 import InnerServicesAreaItem from "./InnerServicesAreaItem";
 import NavExams from "./NavExams";
+import { jwtDecode } from 'jwt-decode';
+import api from '../../services/api';
+import Cookies from 'js-cookie';
+const AboutArea = ({ setExamInfo }) => {
+    const {id} = useParams();
+    const [exams, setExams] = useState([]);
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const handleItemClick = (examData) => {
+        setExamInfo(examData);
+    };
 
-const AboutArea = () => {
-    const inner_services = [
-        {
-            tag: "Our Team",
-            reading_time: "5 Min",
-            // src: "/img/icon/inner_services_icon01.png",
-            url: "/services-details",
-            title: "Advertising",
-            desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-        },
-        {
-            // src: "/img/icon/inner_services_icon02.png",
-            url: "/services-details",
-            title: "Development",
-            desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-        },
-        {
-            // src: "/img/icon/inner_services_icon03.png",
-            url: "/services-details",
-            title: "Branding",
-            desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-        },
-        {
-            tag: "Solution",
-            reading_time: "5 Min",
-            // src: "/img/icon/inner_services_icon04.png",
-            url: "/services-details",
-            title: "Product Design",
-            desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-        },
-        {
-            // src: "/img/icon/inner_services_icon05.png",
-            url: "/services-details",
-            title: "Software",
-            desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-        },
-        {
-            tag: "Solution",
-            reading_time: "5 Min",
-            // src: "/img/icon/inner_services_icon06.png",
-            url: "/services-details",
-            title: "Marketing",
-            desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-        },
-        {
-            // src: "/img/icon/inner_services_icon07.png",
-            url: "/services-details",
-            title: "Cinematography",
-            desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-        },
-        {
-            // src: "/img/icon/inner_services_icon08.png",
-            tag: "Our Team",
-            reading_time: "5 Min",
-            url: "/services-details",
-            title: "Strategy Services",
-            desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-        },
-    ];
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const storedToken = Cookies.get('token');
+                const decodedToken = jwtDecode(storedToken);
+                const { userId } = decodedToken;
+                const response = await api.get(`http://localhost:9090/api/auth/user/${userId}`);
+                
+                setUser(response.data);
+                if (response.data.role === 'client') {
+                    const examsResponse = await api.get(`http://localhost:9090/api/exam/byclass/${response.data.level}`);
+                    setExams(examsResponse.data);
+                } else {
+                    const response = await api.get('http://localhost:9090/api/exam/');
+                    setExams(response.data);
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            } finally {
+                setLoading(false); // Set loading to false after data fetching is complete
+            }
+        };
+        
+        fetchUserData();
+        
+    }, [id]); 
 
-    const sectors = [
-        {
-            // url: "/blog-dtails",
-            // src: "/img/blog/rc_post_img01.jpg",
-            tag: "Sector",
-            reading_time: "5 Min",
-            title: "Skello launches electronic signature",
-        },
-        {
-            // url: "/blog-dtails",
-            // src: "/img/blog/rc_post_img02.jpg",
-            tag: "Our Team",
-            reading_time: "5 Min",
-            title: "Skello launches electronic signature",
-        },
-        {
-            // url: "/blog-dtails",
-            // src: "/img/blog/rc_post_img03.jpg",
-            tag: "Solution",
-            reading_time: "5 Min",
-            title: "Skello launches electronic signature",
-        },
-    ];
 
+    const sortedExams = useMemo(() => {
+        const currentDate = new Date();
+        return exams.sort((a, b) => {
+            // Sort by endAt date (ascending)
+            if (a.endAt && b.endAt) {
+                const endAtA = new Date(a.endAt);
+                const endAtB = new Date(b.endAt);
+                if (endAtA < endAtB) return -1;
+                if (endAtA > endAtB) return 1;
+            } else if (!a.endAt && b.endAt) {
+                return 1; // Exams without endAt date go after exams with endAt date
+            } else if (a.endAt && !b.endAt) {
+                return -1; // Exams without endAt date go after exams with endAt date
+            }
+            // If endAt dates are equal or both exams have no endAt date,
+            // sort by createdAt date (newest first)
+            return new Date(b.createdAt) - new Date(a.createdAt);
+        });
+    }, [exams]);
 
     return (
         <section className="about-area">
@@ -96,18 +70,23 @@ const AboutArea = () => {
 
                         <NavExams />
 
-                        
-
-                        <div className="inner-services-item-wrap" >
+                        <div className="inner-services-item-wrap">
                             <div className="row justify-content-center">
-                                {inner_services.map((x, index) => (
-                                    <div key={index} className="col-xl-3 col-lg-4 col-md-6 col-sm-8" >
-                                        <InnerServicesAreaItem item={x} />
-                                    </div>
-                                ))}
+                                {loading ? ( // Conditionally render loading message while data is being fetched
+                                    <div className="col-12 text-center">Loading...</div>
+                                ) : (
+                                    sortedExams.length === 0 ? (
+                                        <div className="col-12 text-center">No exams yet.</div>
+                                    ) : (
+                                        sortedExams.map((exam, index) => (
+                                            <div key={index} className="col-xl-3 col-lg-4 col-md-6 col-sm-8">
+                                                <InnerServicesAreaItem item={exam} onItemClick={handleItemClick} />
+                                            </div>
+                                        ))
+                                    )
+                                )}
                             </div>
                         </div>
-
 
                     </div>
                 </div>
@@ -115,5 +94,4 @@ const AboutArea = () => {
         </section>
     );
 };
-
 export default AboutArea;
