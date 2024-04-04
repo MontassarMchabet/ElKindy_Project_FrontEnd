@@ -11,8 +11,9 @@ import { data } from "jquery";
 import AnswersPage from "./answers";
 import { Popup } from 'reactjs-popup';
 import SpaceTwo from "../SpaceTwo/SpaceTwo";
-
+import { useNavigate } from 'react-router-dom';
 const ExamDet = () => {
+ 
     const {id} = useParams(); 
     const [examDetails, setExamDetails] = useState(null);
     const [user, setUser] = useState(null);
@@ -23,7 +24,7 @@ const ExamDet = () => {
     const [quizDetailsOrId, setQuizDetailsOrId] = useState(null);
   const [showSpaceTwo, setShowSpaceTwo] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-
+  const navigate = useNavigate();
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -72,7 +73,7 @@ const ExamDet = () => {
     useEffect(() => {
       const checkNoteExists = async () => {
         try {
-          // Define clientId and quizzId directly within the useEffect hook
+          
           const clientId = user._id;
           const quizzId = examDetails.quiz._id;
   
@@ -124,7 +125,7 @@ const ExamDet = () => {
                     { examId, answerPdf, clientId }
                 );
             
-                // Handle success
+                
                 console.log("Answer created:", response.data);
             
                 setShowModal(false);
@@ -133,6 +134,35 @@ const ExamDet = () => {
             }
         } catch (error) {
             console.error("Error creating answer:", error);
+        }
+    };
+  
+
+    const handleDeleteExam = async (examId) => {
+        // Display a confirmation dialog
+        const confirmDelete = window.confirm('Are you sure you want to delete this exam?');
+        
+        if (confirmDelete) {
+            try {
+               
+                const response = await axios.delete(`http://localhost:9090/api/exam/${examId}`);
+        
+               
+                if (response.status === 200) {
+                   
+                    console.log('Exam deleted successfully.');
+                    navigate(-1);
+                } else {
+                 
+                    console.error('Failed to delete exam.');
+                }
+            } catch (error) {
+               
+                console.error('Error deleting exam:', error);
+            }
+        } else {
+            
+            console.log('Deletion canceled by user.');
         }
     };
     
@@ -172,7 +202,21 @@ const ExamDet = () => {
                           </ul>
                         </div>
                         <h2 className="title">
-                          {examDetails.title}
+                          {examDetails.title} {user && user.role === 'prof' && user._id === examDetails.prof && (
+                                            <Button 
+                                            onClick={() => handleDeleteExam(examDetails._id)} 
+                                            style={{ 
+                                                fontSize: '14px', 
+                                                padding: '5px 10px', 
+                                                backgroundColor: '#FFCC80', // Light orange color
+                                                color: 'white', 
+                                                border: 'none', 
+                                                borderRadius: '4px' // Optional: adds a slight border radius for rounded corners
+                                            }}
+                                        >
+                                            Delete Exam
+                                        </Button>
+                                        )}
                         </h2>
                         <p>
                           {examDetails.description}

@@ -147,9 +147,7 @@ const NavExams = () => {
                                         <div className="navbar-wrap main-menu d-none d-lg-flex">
                                             <ul className="navigation">
 
-                                            {user && user.role === 'prof' &&<li className={cn(isActiveClassName("/exams"))}>
-                                                    <Link to="/exams">My Exams</Link>
-                                                </li>}
+                                           
                                                 {user && user.role === 'client' &&<li className={cn(isActiveClassName("/"))}>
                                                     <Link to="/notes">Notes</Link>
                                                 </li>}
