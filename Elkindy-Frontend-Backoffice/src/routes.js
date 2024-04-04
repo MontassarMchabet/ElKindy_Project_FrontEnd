@@ -68,7 +68,11 @@ const routes = [
       <Icon as={MdAddTask} width='20px' height='20px' color='inherit' />
     ),
     component: ExamTables,
+
+    },{
+
   }, {
+
     name: "Evenements ElKindy",
     layout: "/admin",
     path: "/event",
@@ -81,8 +85,11 @@ const routes = [
       />
     ),
     component: Events,
-    secondary: true,
+    secondary: true,HEAD
+  },{
+
   }, {
+
     name: "Products",
     layout: "/admin",
     icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
