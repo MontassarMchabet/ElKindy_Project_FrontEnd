@@ -6,7 +6,7 @@ import AuthLayout from 'layouts/auth';
 import AdminLayout from 'layouts/admin';
 import TicketComponent from './views/admin/tickets/index'
 import CommentComponent from './views/admin/comments/index'
-import EventComponent from './views/admin/events/index'
+// import EventComponent from './views/admin/events/index'
 import RtlLayout from 'layouts/rtl';
 
 import HomeLayout from './FrontOffice/layouts/home';
@@ -41,6 +41,7 @@ const App = () => {
 							<Route path="/forgot-password" component={ForgotpasswordLayout} />
 							<Route path="/passwordReset/:token" component={ResetPassword} />
 							<Route path="/home" render={redirectToSecondProjectHome} />
+							{/* <Route path="/home" render={HomeLayout} /> */}
 							{/* Routes accessible only to authenticated users with specific roles */}
 							<PrivateRoute path="/admin" component={AdminLayout} allowedRoles={['admin']} isLoggedIn={isLoggedIn} />
 							{/* Redirect any other path to home */}

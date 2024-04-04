@@ -12,6 +12,7 @@ import EventsAreaThree from "../../components/Events/AllEvents/InnerEventArea";
 import InnerServicesArea from "../../components/ServicesArea/InnerServicesArea";
 import HistoryArea from "../../components/HistoryArea/HistoryArea";
 import ProjectDetailsArea from "../../components/Project/ProjectDetailsArea";
+import { Link } from "react-router-dom";
 
 const CreativeAgency = () => {
   return (
@@ -28,8 +29,7 @@ const CreativeAgency = () => {
       <br /><br /><br /><br />
       <ProjectAreaThree />
       
-      <EventsAreaThree />
-
+      <EventsAreaThree /> 
       <TestimonialArea />
       <BlogAreaThree />
       <ConsultationArea />

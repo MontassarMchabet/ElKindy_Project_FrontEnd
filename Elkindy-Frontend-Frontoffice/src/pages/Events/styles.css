@@ -1,0 +1,61 @@
+
+
+.container {
+  width: 2600px;
+  margin: auto;
+}
+
+.grid td {
+  width: 180px;
+  height: 50px;
+  padding: 50px 30px;
+  border: 2px solid orange;
+  text-align: center;
+  float: left;
+  margin: 5px;
+}
+
+.grid td:hover {
+  opacity: .7;
+  cursor: pointer;
+}
+
+.reserved {
+  background: orange;
+  color: #fff;
+  display: inline-block;
+}
+
+.reserved::after {
+  content: 'RESERVED'
+}
+
+.available::after {
+  content: 'AVAILABLE'
+}
+
+.available {
+  color: #333;
+}
+
+li {
+  list-style: none;
+}
+
+/* CSS pour le bouton "Pay Your tickets" */
+.button-container {
+    text-align: center; /* Centrer horizontalement le contenu */
+  }
+.custom-button {
+    background-color: #007aff; /* Couleur bleue */
+    color: white; /* Texte en blanc */
+    border: none; /* Pas de bordure */
+    border-radius: 8px; /* Coins arrondis de 8px */
+    padding: 10px 20px; /* Espacement du texte à l'intérieur du bouton */
+    cursor: pointer; /* Curseur de type pointeur au survol */
+    transition: background-color 0.3s; /* Animation de transition pour la couleur de fond */
+  }
+  
+  .custom-button:hover {
+    background-color: #f89e52; /* Couleur orange au survol */
+  }

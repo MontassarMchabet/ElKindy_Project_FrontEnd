@@ -14,6 +14,8 @@ import ContactPage from "./pages/ContactPage";
 import BlogPage from "./pages/Blog/BlogPage";
 import BlogDetailsPage from "./pages/Blog/BlogDetailsPage";
 import EventsPage from "./pages/Events/EventsPage.jsx";
+import EventDetailPage from "./pages/Events/EventDetailsPage.jsx";
+import ReservationPage from "./components/BookEvent/BookEventApp.jsx";
 import AnimatedCursor from "react-animated-cursor";
 
 import ExamDetailsPage from "./pages/Exams/examdetails.jsx";
@@ -101,8 +103,11 @@ function App() {
         <Route path="/exam-details/:id" element={<ExamDetailsPage />} />
         <Route path="/notes" element={<NotesPage />} />
         <Route path="/events" element={<EventsPage />} />
-        <Route path="/passquiz" element={<PassQuiz />} />
 
+        <Route path="/events/:eventId" element={<EventDetailPage />} />
+        <Route path="/events/:eventId/:movieParam/bookTickets" element={<ReservationPage />} />
+
+        <Route path="/passquiz" element={<PassQuiz />} />
 
         <Route path="/shop" element={<Home />} />
         <Route path="/shop/products" element={<OurStore />} />

@@ -1,6 +1,8 @@
 import React from "react";
 import * as ReactDOM from 'react-dom';
+
 import '../../../../node_modules/@syncfusion/ej2-base/styles/material.css';
+
 import { ScheduleComponent, Day, Week, WorkWeek, Month, Agenda, Inject } from '@syncfusion/ej2-react-schedule';
 const App = () => {
     const data = [

@@ -12,12 +12,16 @@ import {
   MdOutlinePages,
   MdAddAlarm,
   MdAddTask,
+  MdOutlineMusicNote,
+  MdOutlineMusicVideo,
+  MdOutlineEvent,
 } from "react-icons/md";
 
 // Admin Imports
 import MainDashboard from "views/admin/default";
 import NFTMarketplace from "views/admin/marketplace";
 import Events from "views/admin/events";
+import EventsCalendar from "views/admin/eventsCalendar";
 import Profile from "views/admin/profile";
 import DataTables from "views/admin/dataTables";
 import RTL from "views/admin/rtl";
@@ -72,14 +76,31 @@ const routes = [
 
     },{
 
-  }, {
+  }, 
+  {
 
-    name: "Evenements ElKindy",
+    name: " Events Calendar",
+    layout: "/admin",
+    path: "/calendarevent",
+    icon: (
+      <Icon
+        as={MdOutlineEvent}
+        width='20px'
+        height='20px'
+        color='inherit'
+      />
+    ),
+    component: EventsCalendar,
+    secondary: true,
+  },
+  {
+
+    name: " ElKindy Events",
     layout: "/admin",
     path: "/event",
     icon: (
       <Icon
-        as={MdOutlineShoppingCart}
+        as={MdOutlineMusicVideo}
         width='20px'
         height='20px'
         color='inherit'
@@ -88,8 +109,10 @@ const routes = [
     component: Events,
     secondary: true,
   },
+
   {
     name: "Products Table",
+
     layout: "/admin",
     icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
     path: "/products",

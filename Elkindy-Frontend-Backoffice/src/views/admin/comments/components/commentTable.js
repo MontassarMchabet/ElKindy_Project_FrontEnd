@@ -439,6 +439,20 @@
 // }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import axios from "axios";
 import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button, Select, Box } from "@chakra-ui/react";
 import { ViewIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
@@ -476,16 +490,15 @@ import {
    useSortBy,
     useTable,
 } from "react-table";
-// import {
 
-//     useTable
-// } from "react-table";
 import Card from "components/card/Card";
 //import Menu from "components/menu/MainMenu";
 import { MdCheckCircle, MdCancel, MdOutlineError } from "react-icons/md";
-import Information from "views/admin/events/components/Information";
+import Information from "views/admin/comments/components/Information";
 
 import { useHistory } from 'react-router-dom'; 
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 
 
 export default function ColumnsTable(props) {
@@ -516,7 +529,20 @@ export default function ColumnsTable(props) {
     const { eventId } = useParams(); // Utilisation du hook useParams pour obtenir l'ID de l'événement depuis l'URL
     
     const [comments, setComments] = useState([]); // Déclaration de l'état pour stocker les tickets
+    const [userId, setUserId] = useState(null);
 
+    useEffect(() => {
+        const getUserIdFromToken = () => {
+            const storedToken = Cookies.get('token');
+            if (storedToken) {
+                const decodedToken = jwtDecode(storedToken);
+                const userId = decodedToken.userId;
+                setUserId(userId);
+            }
+        };
+  
+        getUserIdFromToken();
+    }, []);
 
     console.log("heeeeeeeey", eventId);
 
@@ -593,10 +619,10 @@ export default function ColumnsTable(props) {
     const closeModalViewA = () => {
         setIsModalViewOpen(false);
     };
-
+console.log('user',userId)
 
     const [formData, setFormData] = useState({
-        user:'65e25825b58277cff4cc33ae',
+        user: userId,
         comment: "",  
         date: "",
         
@@ -612,31 +638,57 @@ export default function ColumnsTable(props) {
         if (!formData.comment.trim()) {
           errors.comment = 'Comment is required'
         } else if (formData.comment.length < 5) {
-            errors.comment = 'Le commentaire doit contenir au moins 5 caractères';
+            errors.comment = 'comment doit contenir au moins 5 caractères';
         }
         setErrors(errors);
         return Object.keys(errors).length === 0;
       };
 
-      const handleSubmit = async (e) => {
+    //   const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     const isValid = await validateForm();
+    //     console.log("Submitting form");
+    //     if (isValid) {
+    //       try {
+    //         const response = await axios.post(
+    //           `http://localhost:9090/comment/add/event/${eventId}`,
+    //           formData
+    //         );
+    //         fetchComments()
+    //         closeModalA()
+    //         console.log(response.data);
+    //       } catch (error) {
+    //         console.error("Error adding comment:", error);
+    //       }
+    //     }
+    //   };
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const isValid = await validateForm();
         console.log("Submitting form");
         if (isValid) {
           try {
+            // Données du commentaire à envoyer
+            const commentData = {
+              eventId: eventId, // Incluez l'ID de l'événement dans les données du commentaire
+              userId: userId, // Incluez l'ID de l'utilisateur connecté dans les données du commentaire
+              comment: formData.comment, // Assurez-vous de remplacer formData.comment par le nom de votre champ de commentaire
+              // Ajoutez d'autres données de commentaire si nécessaire
+            };
+      
             const response = await axios.post(
               `http://localhost:9090/comment/add/event/${eventId}`,
-              formData
+              commentData
             );
-            fetchComments()
-            closeModalA()
+            fetchComments();
+            closeModalA();
             console.log(response.data);
           } catch (error) {
             console.error("Error adding comment:", error);
           }
         }
       };
-
+      
     return (
         
         <Card direction='column' w='100%' px='0px' overflowX={{ sm: "scroll", lg: "hidden" }}>
@@ -646,14 +698,14 @@ export default function ColumnsTable(props) {
             </Text>
             
       
-            <Menu isOpen={isOpen1} onClose={onClose1}>
+            {/* <Menu isOpen={isOpen1} onClose={onClose1}>
               <MenuButton align='center' justifyContent='center' bg={bgButton} _hover={bgHover} _focus={bgFocus} _active={bgFocus} w='37px' h='37px' lineHeight='100%' onClick={openModalA} borderRadius='10px'>
-                <AddIcon color={iconColor} w='20px' h='20px' />
+                 <AddIcon color={iconColor} w='20px' h='20px' /> 
               </MenuButton>
-            </Menu>
+            </Menu> */}
       
             {/* Modal for adding comment */}
-            <Modal isOpen={isModalOpenA} onClose={closeModalA}>
+            {/* <Modal isOpen={isModalOpenA} onClose={closeModalA}>
               <ModalOverlay />
               <ModalContent>
                 <form onSubmit={handleSubmit} noValidate>
@@ -682,7 +734,7 @@ export default function ColumnsTable(props) {
                   </ModalFooter>
                 </form>
               </ModalContent>
-            </Modal>
+            </Modal> */}
           </Flex>
             
           
@@ -716,7 +768,16 @@ export default function ColumnsTable(props) {
                             <Tr {...row.getRowProps()} key={index}>
                                 {row.cells.map((cell, index) => {
                                     let data = "";
-                                    if  (cell.column.Header === "USERNAME") {
+                                    if  (cell.column.Header === "PICTURE") {
+                                        data = (
+                                            <Text color={textColor} fontSize='sm' fontWeight='700'>
+
+                                                {/* <img src={cell.value} alt="User Image" style={{ width: "70px", height: "60px", margin: "auto" }} /> */}
+                                                <img src={cell.value} alt="User Picture" style={{ maxWidth: "50px", maxHeight: "50px", borderRadius: "50%" }} />
+
+                                            </Text>
+                                        );
+                                        } else if  (cell.column.Header === "USERNAME") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
                                                 {cell.value}
@@ -804,19 +865,16 @@ export default function ColumnsTable(props) {
                                                                 <>
                                                                     
                                                                     <Card mb={{ base: "0px", "2xl": "20px" }} {...rest}>
-                                                                        <Text
+                                                                        {/* <Text
                                                                             color={textColorPrimary}
                                                                             fontWeight='bold'
                                                                             fontSize='2xl'
                                                                             mt='10px'
                                                                             mb='4px'>
                                                                             {commentInfo.user}
-                                                                        </Text>
+                                                                        </Text> */}
                                                                         <Text color={textColorSecondary} fontSize='md' me='26px' mb='40px'>
-                                                                            {commentInfo.comment}
-                                                                        </Text>
-                                                                        <SimpleGrid columns='2' gap='20px'>
-                                                                            <Information
+                                                                        <Information
                                                                                 boxShadow={cardShadow}
                                                                                 title='Date'
                                                                                     value={new Date(commentInfo.date).toLocaleString('fr-FR', {
@@ -830,6 +888,13 @@ export default function ColumnsTable(props) {
                                                                                 })}
                                                                             />
                                                                             
+                                                                        </Text>
+                                                                        <SimpleGrid columns='2' gap='20px'>
+                                                                        <Information
+                                                                            boxShadow={cardShadow}
+                                                                            title='Comment'
+                                                                                value={commentInfo.comment}
+                                                                        />
                                                                         </SimpleGrid>
                                                                        
                                                                        
@@ -894,3 +959,318 @@ export default function ColumnsTable(props) {
         // </Box>
     );
 }
+
+
+
+
+// import React, { useState, useMemo, useEffect } from "react";
+// import axios from "axios";
+// import { useTable, useSortBy, usePagination, useGlobalFilter } from "react-table";
+// import { useParams } from 'react-router-dom';
+// import { useDisclosure } from "@chakra-ui/react";
+// import { AddIcon, DeleteIcon, ViewIcon } from "@chakra-ui/icons";
+// import { 
+//     Flex, 
+//     Table, 
+//     Tbody, 
+//     Td, 
+//     Text, 
+//     Th, 
+//     Thead, 
+//     Tr, 
+//     Box,
+//     FormControl,
+//     FormLabel,
+//     Input,
+//     Grid,
+//     SimpleGrid,
+//     AlertDialog,
+//     AlertDialogBody,
+//     AlertDialogFooter,
+//     AlertDialogHeader,
+//     AlertDialogContent,
+//     AlertDialogOverlay,
+//     Button,
+//     Menu,
+//     MenuButton,
+//     Modal,
+//     ModalOverlay,
+//     ModalContent,
+//     ModalHeader,
+//     ModalBody,
+//     ModalCloseButton,
+//     ModalFooter,
+//     useColorModeValue,
+// } from "@chakra-ui/react";
+
+// import Card from "components/card/Card";
+// import Information from "views/admin/comments/components/Information";
+
+// export default function ColumnsTable(props) {
+//     const { columnsData, tableData, handleDelete, cancelDelete, cancelRef, confirmDelete, isDeleteDialogOpen,
+//         isModalOpenA, openModalA, closeModalA } = props;
+
+//     const { eventId } = useParams();
+
+//     const [comments, setComments] = useState([]);
+//     const [commentInfo, setCommentInfo] = useState(null);
+//     const [formData, setFormData] = useState({ user: '65e25825b58277cff4cc33ae', comment: "", date: "" });
+//     const [errors, setErrors] = useState({});
+
+//     const textColor = useColorModeValue("secondaryGray.900", "white");
+//     const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
+//     const iconColor = useColorModeValue("brand.500", "white");
+//     const bgList = useColorModeValue("white", "whiteAlpha.100");
+//         const bgShadow = useColorModeValue(
+//             "14px 17px 40px 4px rgba(112, 144, 176, 0.08)",
+//             "unset"
+//         );
+//         const bgButton = useColorModeValue("secondaryGray.300", "whiteAlpha.100");
+//         const bgHover = useColorModeValue(
+//             { bg: "secondaryGray.400" },
+//             { bg: "whiteAlpha.50" }
+//         );
+//         const bgFocus = useColorModeValue(
+//             { bg: "secondaryGray.300" },
+//             { bg: "whiteAlpha.100" }
+//         );
+//         const { ...rest } = props;
+//         const textColorPrimary = useColorModeValue("secondaryGray.900", "white");
+//             const cardShadow = useColorModeValue(
+//                 "0px 18px 40px rgba(112, 144, 176, 0.12)",
+//                 "unset"
+//             );
+//         const { isOpen: isOpen1, onClose: onClose1 } = useDisclosure();
+//     const { isOpen: isModalViewOpen, onOpen: onModalViewOpen, onClose: onModalViewClose } = useDisclosure();
+
+//     const fetchComments = async () => {
+//         try {
+//             const response = await axios.get(`http://localhost:9090/event/${eventId}/comments`);
+//             setComments(response.data);
+//         } catch (error) {
+//             console.error('Erreur lors de la récupération des commentaires :', error);
+//         }
+//     };
+
+//     useEffect(() => {
+//         fetchComments();
+//     }, [eventId]);
+
+//     const handleChange = (e) => {
+//         setFormData({ ...formData, [e.target.name]: e.target.value });
+//     };
+
+//     const validateForm = async () => {
+//         let errors = {};
+      
+//         if (!formData.comment.trim()) {
+//             errors.comment = 'Comment is required'
+//         } else if (formData.comment.length < 5) {
+//             errors.comment = 'Le commentaire doit contenir au moins 5 caractères';
+//         }
+//         setErrors(errors);
+//         return Object.keys(errors).length === 0;
+//     };
+
+//     const handleSubmit = async (e) => {
+//         e.preventDefault();
+//         const isValid = await validateForm();
+//         console.log("Submitting form");
+//         if (isValid) {
+//             try {
+//                 const response = await axios.post(
+//                     `http://localhost:9090/comment/add/event/${eventId}`,
+//                     formData
+//                 );
+//                 fetchComments();
+//                 closeModalA();
+//                 console.log(response.data);
+//             } catch (error) {
+//                 console.error("Error adding comment:", error);
+//             }
+//         }
+//     };
+
+//     const columns = useMemo(() => columnsData, [columnsData]);
+//     const data = useMemo(() => tableData, [tableData]);
+
+//     const tableInstance = useTable(
+//         {
+//             columns,
+//             data,
+//         },
+//         useGlobalFilter,
+//         useSortBy,
+//         usePagination
+//     );
+
+//     const {
+//         getTableProps,
+//         getTableBodyProps,
+//         headerGroups,
+//         page,
+//         prepareRow,
+//         initialState,
+//     } = tableInstance;
+
+//     initialState.pageSize = 99999999999999999;
+
+//     return (
+//         <Card direction='column' w='100%' px='0px' overflowX={{ sm: "scroll", lg: "hidden" }}>
+//             <Flex px='25px' justify='space-between' mb='20px' align='center'>
+//                 <Text color={textColor} fontSize='22px' fontWeight='700' lineHeight='100%'>
+//                     Comments Table
+//                 </Text>
+//                 <Menu isOpen={isOpen1} onClose={onClose1}>
+//                     <MenuButton align='center' justifyContent='center' bg={bgButton} _hover={bgHover} _focus={bgFocus} _active={bgFocus} w='37px' h='37px' lineHeight='100%' onClick={openModalA} borderRadius='10px'>
+//                         <AddIcon color={iconColor} w='20px' h='20px' />
+//                     </MenuButton>
+//                 </Menu>
+//                 <Modal isOpen={isModalOpenA} onClose={closeModalA}>
+//                     <ModalOverlay />
+//                     <ModalContent>
+//                         <form onSubmit={handleSubmit} noValidate>
+//                             <ModalHeader>Add comment</ModalHeader>
+//                             <ModalCloseButton />
+//                             <ModalBody>
+//                                 <Grid templateColumns="1fr 1fr" gap={4}>
+//                                     <FormControl>
+//                                         <FormLabel>Comments</FormLabel>
+//                                         <Input type="text" name="comment" value={formData.comment} onChange={handleChange} />
+//                                     </FormControl>
+//                                 </Grid>
+//                             </ModalBody>
+//                             {errors.comment && <Text color="red">{errors.comment}</Text>}
+//                             <ModalFooter>
+//                                 <Button colorScheme="blue" mr={3} onClick={closeModalA}>
+//                                     Close
+//                                 </Button>
+//                                 <Button type="submit" colorScheme="green">
+//                                     Save
+//                                 </Button>
+//                             </ModalFooter>
+//                         </form>
+//                     </ModalContent>
+//                 </Modal>
+//             </Flex>
+//             <Table {...getTableProps()} variant='simple' color='gray.500' mb='24px'>
+//                 <Thead>
+//                     {headerGroups.map((headerGroup, index) => (
+//                         <Tr {...headerGroup.getHeaderGroupProps()} key={index}>
+//                             {headerGroup.headers.map((column, index) => (
+//                                 <Th {...column.getHeaderProps(column.getSortByToggleProps())} pe='10px' key={column.id || column.Header} borderColor={borderColor}>
+//                                     <Flex justify='space-between' align='center' fontSize={{ sm: "10px", lg: "12px" }} color='gray.400'>
+//                                         {column.render("Header")}
+//                                     </Flex>
+//                                 </Th>
+//                             ))}
+//                         </Tr>
+//                     ))}
+//                 </Thead>
+//                 <Tbody {...getTableBodyProps()}>
+//                     {page.map((row, index) => {
+//                         prepareRow(row);
+//                         return (
+//                             <Tr {...row.getRowProps()} key={index}>
+//                                 {row.cells.map((cell, index) => {
+//                                     let data = "";
+//                                     if  (cell.column.Header === "PICTURE") {
+//                                         data = (
+//                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
+//                                                 <img src={cell.value} alt="User Picture" style={{ maxWidth: "50px", maxHeight: "50px", borderRadius: "50%" }} />
+//                                             </Text>
+//                                         );
+//                                     } else if  (cell.column.Header === "USERNAME") {
+//                                         data = (
+//                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
+//                                                 {cell.value}
+//                                             </Text>
+//                                         );
+//                                     } else if(cell.column.Header === "COMMENT") {
+//                                         data = (
+//                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
+//                                                 {cell.value}
+//                                             </Text>
+//                                         );
+//                                     } else if (cell.column.Header === "DATE") {
+//                                         data = (
+//                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
+//                                                 {new Date(cell.value).toLocaleString('tn-TN', {
+//                                                     weekday: 'long',
+//                                                     year: 'numeric',
+//                                                     month: 'long',
+//                                                     day: 'numeric',
+//                                                     hour: 'numeric',
+//                                                     minute: 'numeric'
+//                                                 })}
+//                                             </Text>
+//                                         );
+//                                     } else if (cell.column.Header === "ACTIONS") {
+//                                         data = (
+//                                             <Flex align="center">
+//                                                 <DeleteIcon
+//                                                     w='20px'
+//                                                     h='20px'
+//                                                     me='5px'
+//                                                     color={"red.500"}
+//                                                     cursor="pointer"
+//                                                     onClick={() => confirmDelete(row.original._id)}
+//                                                 />
+//                                                 <ViewIcon
+//                                                     w='20px'
+//                                                     h='20px'
+//                                                     me='5px'
+//                                                     color={"orange.500"}
+//                                                     cursor="pointer"
+//                                                     onClick={() => onModalViewOpen(row.original)}
+//                                                 />
+//                                                 <Modal isOpen={isModalViewOpen} onClose={onModalViewClose}>
+//                                                     <ModalOverlay />
+//                                                     <ModalContent maxW={'800px'}>
+//                                                         <ModalCloseButton />
+//                                                         <ModalBody>
+//                                                             {commentInfo && (
+//                                                                 <Card mb={{ base: "0px", "2xl": "20px" }} {...rest}>
+//                                                                     {/* <Text color={textColor} fontWeight='bold' fontSize='2xl' mt='10px' mb='4px'>
+//                                                                         {commentInfo.user}
+//                                                                     </Text> */}
+//                                                                     <Text color={textColor} fontSize='md' me='26px' mb='40px'>
+//                                                                         {commentInfo.comment}
+//                                                                     </Text>
+//                                                                     <SimpleGrid columns='2' gap='20px'>
+//                                                                         <Information
+//                                                                             boxShadow={cardShadow}
+//                                                                             title='Date'
+//                                                                             value={new Date(commentInfo.date).toLocaleString('fr-FR', {
+//                                                                                 weekday: 'long',
+//                                                                                 year: 'numeric',
+//                                                                                 month: 'long',
+//                                                                                 day: 'numeric',
+//                                                                                 hour: 'numeric',
+//                                                                                 minute: 'numeric',
+//                                                                                 second: 'numeric',
+//                                                                             })}
+//                                                                         />
+//                                                                     </SimpleGrid>
+//                                                                 </Card>
+//                                                             )}
+//                                                         </ModalBody>
+//                                                     </ModalContent>
+//                                                 </Modal>
+//                                             </Flex>
+//                                         );
+//                                     }
+//                                     return (
+//                                         <Td {...cell.getCellProps()} key={index} fontSize={{ sm: "14px" }} minW={{ sm: "150px", md: "200px", lg: "auto" }} borderColor='transparent'>
+//                                             {data}
+//                                         </Td>
+//                                     );
+//                                 })}
+//                             </Tr>
+//                         );
+//                     })}
+//                 </Tbody>
+//             </Table>
+//         </Card>
+//     );
+// }

@@ -330,11 +330,11 @@ export default function ColumnsTable(props) {
                     Reservation Table
                 </Text>
 
-                <Menu isOpen={isOpen1} onClose={onClose1}>
+                {/* <Menu isOpen={isOpen1} onClose={onClose1}>
                     <MenuButton align='center' justifyContent='center' bg={bgButton} _hover={bgHover} _focus={bgFocus} _active={bgFocus} w='37px' h='37px' lineHeight='100%' onClick={openModalA} borderRadius='10px'>
                         <AddIcon color={iconColor} w='20px' h='20px' />
                     </MenuButton>
-                </Menu>
+                </Menu> */}
 
             </Flex>
 
@@ -382,12 +382,18 @@ export default function ColumnsTable(props) {
                                         );
 
 
-                                    } else if (cell.column.Header === "TICKETTYPE") {
-                                        data = (
-                                            <Text color={textColor} fontSize='sm' fontWeight='700'>
-                                                {cell.value}
+                                    } else if (cell.column.Header === "BOOKINGDATE") {
+                                        <Text color={textColor} fontSize='sm' fontWeight='700'>
+                                                {new Date(cell.value).toLocaleString('fr-FR', {
+                                                    weekday: 'long',
+                                                    year: 'numeric',
+                                                    month: 'long',
+                                                    day: 'numeric',
+                                                    hour: 'numeric',
+                                                    minute: 'numeric'
+
+                                                })}
                                             </Text>
-                                        );
                                     } else if (cell.column.Header === "PRICE") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
