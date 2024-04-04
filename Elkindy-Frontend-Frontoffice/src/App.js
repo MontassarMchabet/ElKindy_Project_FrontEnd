@@ -15,6 +15,7 @@ import BlogPage from "./pages/Blog/BlogPage";
 import BlogDetailsPage from "./pages/Blog/BlogDetailsPage";
 import EventsPage from "./pages/Events/EventsPage.jsx";
 import AnimatedCursor from "react-animated-cursor";
+
 import ExamDetailsPage from "./pages/Exams/examdetails.jsx";
 import Home from "./pages/shop/pages/Home";
 import OurStore from "./pages/shop/pages/OurStore";
@@ -22,11 +23,23 @@ import SingleProduct from "./pages/shop/pages/SingleProduct";
 import Wishlist from "./pages/shop/pages/Wishlist";
 import CompareProduct from "./pages/shop/pages/CompareProduct";
 import PassQuiz from "./pages/Exams/passquiz.jsx";
-import AccountComponent from "./pages/Account";
-import ExamsComponent from "./pages/Exams";
 import AddExamsComponent from "./pages/Exams/addexam";
 import AddQuizsComponent from "./pages/Exams/addquizpage.jsx";
 import NotesPage from "./pages/Exams/notespage.jsx";
+
+import AccountComponent from "./pages/Account";
+import ExamsComponent from "./pages/Exams";
+
+import Cart from "./pages/shop/pages/Cart.jsx";
+import Checkout from "./pages/shop/pages/Checkout.jsx";
+import Success from "./pages/shop/pages/Success.jsx";
+import Fail from "./pages/shop/pages/Fail.jsx";
+import Orders from "./pages/shop/pages/Orders.jsx";
+
+
+import Piano from "./pages/Virtualinstrument/Piano";
+import Drums from "./pages/Virtualinstrument/Drums";
+import SubscribePage from "./pages/Subscribe";
 
 function App() {
   useEffect(() => {
@@ -74,31 +87,41 @@ function App() {
         <Route path="/" element={<CreativeAgency />} />
         <Route path="/account" element={<AccountComponent />} />
         <Route path="/exams" element={<ExamsComponent />} />
+
         <Route path="/addexams" element={<AddExamsComponent />} />
         <Route path="/addquiz" element={<AddQuizsComponent />} />
         {/* <Route path="/home-two" element={<PersonalPortfolio />} />
         <Route path="/home-three" element={<DigitalAgency />} /> */}
+
         <Route path="/about-us" element={<AboutUs />} />
-        {/* <Route path="/about-me" element={<AboutMe />} />
-        <Route path="/team" element={<TeamPage />} />
-        <Route path="/team-details" element={<TeamPageDetails />} />
-        <Route path="/project-details" element={<PortfolioDetailsPage />} />
-        <Route path="/services-details" element={<ServicesDetailsPage />} /> */}
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog-details" element={<BlogDetailsPage />} />
+
         <Route path="/exam-details/:id" element={<ExamDetailsPage />} />
         <Route path="/notes" element={<NotesPage />} />
         <Route path="/events" element={<EventsPage />} />
         <Route path="/passquiz" element={<PassQuiz />} />
+
+
         <Route path="/shop" element={<Home />} />
         <Route path="/shop/products" element={<OurStore />} />
-        <Route path="/shop/products/id" element={<SingleProduct />} />
+        <Route path="/shop/products/:id" element={<SingleProduct />} />
         <Route path="/shop/wishlist" element={<Wishlist />} />
         <Route path="/shop/compare-product" element={<CompareProduct />} />
+        <Route path="/shop/cart" element={<Cart />} />
+        <Route path="/shop/my-orders" element={<Orders />} />
+        <Route path="/shop/checkout" element={<Checkout />} />
+        <Route path="/success" element={<Success />} />
+        <Route path="/fail" element={<Fail />} />
 
         {/* <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog-details" element={<BlogDetailsPage />} /> */}
+
+        <Route path="/subscribe" element={<SubscribePage />} />
+        <Route path="/piano" element={<Piano />} />
+        <Route path="/drums" element={<Drums />} />
+
 
       </Routes>
     </>

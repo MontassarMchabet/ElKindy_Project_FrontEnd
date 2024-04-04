@@ -22,19 +22,13 @@ import Profile from "views/admin/profile";
 import DataTables from "views/admin/dataTables";
 import RTL from "views/admin/rtl";
 import UserTables from "views/admin/userTables";
-
 import Courses from "views/admin/courses";
 import Scheduling from "views/admin/Scheduling";
-
 import ExamTables from "views/admin/examTables";
-
 import Tickets from "views/admin/tickets";
-
 import productTable from "views/admin/productTable";
+import ordersTable from "views/admin/ordersTable";
 
-// Auth Imports
-import SignInCentered from "views/auth/signIn";
-import SignUpCentered from "views/auth/signUp";
 
 const routes = [
   {
@@ -75,7 +69,11 @@ const routes = [
       <Icon as={MdAddTask} width='20px' height='20px' color='inherit' />
     ),
     component: ExamTables,
+
+    },{
+
   }, {
+
     name: "Evenements ElKindy",
     layout: "/admin",
     path: "/event",
@@ -89,12 +87,21 @@ const routes = [
     ),
     component: Events,
     secondary: true,
-  }, {
-    name: "Products",
+  },
+  {
+    name: "Products Table",
     layout: "/admin",
     icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
     path: "/products",
     component: productTable,
+
+  },
+  {
+    name: "Orders Table",
+    layout: "/admin",
+    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+    path: "/orders",
+    component: ordersTable,
 
   },
   {

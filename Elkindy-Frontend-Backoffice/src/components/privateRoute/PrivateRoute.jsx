@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import Cookies from 'js-cookie';
+import React from "react";
 
 const PrivateRoute = ({ component: Component, allowedRoles, ...rest }) => {
     const [userRole, setUserRole] = useState(null);

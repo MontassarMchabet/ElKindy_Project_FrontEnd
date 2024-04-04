@@ -27,6 +27,7 @@ instance.interceptors.response.use(
     },
     async (err) => {
         const originalConfig = err.config;
+        console.log('originalConfig', originalConfig.url);
 
         if (originalConfig.url !== "http://localhost:9090/api/auth/loginEmail" && err.response) {
             if (err.response.status === 401 && !originalConfig._retry) {
@@ -38,7 +39,8 @@ instance.interceptors.response.use(
                     });
 
                     const { newToken } = rs.data;
-                    Cookies.set(newToken);
+                    Cookies.set("token", newToken);
+                    originalConfig.headers["x-access-token"] = newToken;
 
                     return instance(originalConfig);
                 } catch (_error) {
