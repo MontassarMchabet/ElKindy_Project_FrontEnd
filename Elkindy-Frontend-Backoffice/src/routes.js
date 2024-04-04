@@ -85,7 +85,7 @@ const routes = [
       />
     ),
     component: Events,
-    secondary: true,HEAD
+    // secondary: true,HEAD
   },{
 
   }, {
