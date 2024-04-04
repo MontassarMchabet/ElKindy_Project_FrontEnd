@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const apiURL = "http://localhost:9090/event";
+const apiTicketURL = "http://localhost:9090/tickets";
 
 export async function getAllEvents(config) {
   return await axios.get(`${apiURL}/all`,config);
@@ -79,3 +80,5 @@ export async function getEventById(id, config) {
       throw error;
     }
   }
+
+  

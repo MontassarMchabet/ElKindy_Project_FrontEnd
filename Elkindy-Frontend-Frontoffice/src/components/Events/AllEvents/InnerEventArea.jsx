@@ -13,9 +13,9 @@ const InnerEventArea = () => {
       <div >
         <div className="row align-items-center">
           <div className="col-md-12">
-            <div className="section-title title-style-two ">
-              <span className="sub-title">Our Events</span>
-              <h4 className="title">
+            <div className="section-title title-style-two " >
+              <span className="sub-title" style={{ display: 'flex', justifyContent: 'center' }}>Our Events</span>
+              <h4 className="title" style={{ display: 'flex', justifyContent: 'center' ,marginBottom:'-60px'}}>
                 Latest Events
               </h4>
             </div>

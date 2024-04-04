@@ -382,12 +382,18 @@ export default function ColumnsTable(props) {
                                         );
 
 
-                                    } else if (cell.column.Header === "TICKETTYPE") {
-                                        data = (
-                                            <Text color={textColor} fontSize='sm' fontWeight='700'>
-                                                {cell.value}
+                                    } else if (cell.column.Header === "BOOKINGDATE") {
+                                        <Text color={textColor} fontSize='sm' fontWeight='700'>
+                                                {new Date(cell.value).toLocaleString('fr-FR', {
+                                                    weekday: 'long',
+                                                    year: 'numeric',
+                                                    month: 'long',
+                                                    day: 'numeric',
+                                                    hour: 'numeric',
+                                                    minute: 'numeric'
+
+                                                })}
                                             </Text>
-                                        );
                                     } else if (cell.column.Header === "PRICE") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>

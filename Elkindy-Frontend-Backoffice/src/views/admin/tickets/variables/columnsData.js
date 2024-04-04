@@ -1,15 +1,15 @@
 export const ticketsData = [
   {
     Header: "EVENT",
-    accessor: "event",
+    accessor: "event.name",
   },
   {
     Header: "USER",
-    accessor: "user",
+    accessor: "user.username",
   },
   {
-    Header: "TICKETTYPE",
-    accessor: "ticketType",
+    Header: "BOOKINGDATE",
+    accessor: "date",
   },
   {
     Header: "PRICE",

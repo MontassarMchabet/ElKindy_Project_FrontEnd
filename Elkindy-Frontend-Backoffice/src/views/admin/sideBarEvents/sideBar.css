@@ -1,0 +1,41 @@
+#sidebar {
+    background-color: #ffffff;
+    
+    width: 300px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+  #sidebar img {
+  width: 200px;
+    height: auto;}
+  #sidebar ul {
+    list-style-type: none;
+    padding: 20px 0;
+  }
+/*   
+  #sidebar ul li {
+    padding: 10px 0;
+  } */
+  
+  #sidebar ul li a {
+    display: block;
+    padding: 10px 60px;
+    color: #95989b;
+    
+    font-family: "DM Sans", sans-serif;
+    line-height: var(--chakra-lineHeights-base);
+    text-decoration: none;
+  }
+  
+  #sidebar ul li a:hover {
+    color: #1a202c;
+    font-weight: bold;
+  }
+  #sidebar ul li a:hover .chakra-icon {
+    color: #422afb;
+    font-weight: bold;
+  }
+
+  

@@ -50,8 +50,8 @@ const EventItem = ({ item }) => {
             Read More
           </Link>
 
-          <button variant="primary" ><Link to={`/events/${item._id}/reserveTickets`}>
-          Reserve Ticket
+          <button className="button-book-ticket" ><Link to={`/events/${item._id}/${item.name}/bookTickets`}>
+          Book Ticket
           </Link></button>{' '}
 
         </ul>

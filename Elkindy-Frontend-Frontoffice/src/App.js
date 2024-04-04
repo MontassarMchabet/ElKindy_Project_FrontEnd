@@ -15,7 +15,7 @@ import BlogPage from "./pages/Blog/BlogPage";
 import BlogDetailsPage from "./pages/Blog/BlogDetailsPage";
 import EventsPage from "./pages/Events/EventsPage.jsx";
 import EventDetailPage from "./pages/Events/EventDetailsPage.jsx";
-import ReservationPage from "./pages/Events/ReservationPage.jsx";
+import ReservationPage from "./components/BookEvent/BookEventApp.jsx";
 import AnimatedCursor from "react-animated-cursor";
 
 import Home from "./pages/shop/pages/Home";
@@ -89,7 +89,7 @@ function App() {
 
         <Route path="/events" element={<EventsPage />} />
         <Route path="/events/:eventId" element={<EventDetailPage />} />
-        <Route path="/events/:eventId/reserveTickets" element={<ReservationPage />} />
+        <Route path="/events/:eventId/:movieParam/bookTickets" element={<ReservationPage />} />
 
         <Route path="/shop" element={<Home />} />
         <Route path="/shop/products" element={<OurStore />} />
