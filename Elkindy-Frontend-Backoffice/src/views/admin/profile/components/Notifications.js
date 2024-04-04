@@ -4,6 +4,7 @@ import Card from "components/card/Card.js";
 // Custom components
 import SwitchField from "components/fields/SwitchField";
 import Menu from "components/menu/MainMenu";
+import React from "react";
 
 export default function Notifications(props) {
   const { ...rest } = props;
