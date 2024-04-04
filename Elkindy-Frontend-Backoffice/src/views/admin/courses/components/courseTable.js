@@ -15,6 +15,13 @@ import {
     useColorModeValue,
    
 } from "@chakra-ui/react";
+import {
+    Paginator,
+    Previous,
+    Next,
+    PageGroup,
+    Container as PageContainer
+  } from 'chakra-paginator';
 import React, { useMemo, useState } from "react";
 import {
     useGlobalFilter,
@@ -32,7 +39,8 @@ import Information from "views/admin/profile/components/Information";
 
 export default function ColumnsTable(props) {
     const { columnsData, tableData, handleDelete, cancelDelete, cancelRef, confirmDelete, isDeleteDialogOpen,
-        isModalOpenP, openModalP, closeModalP, fetchData, isEditModalOpen, closeEditModal,setIsEditModalOpen} = props;
+        isModalOpenP, openModalP, closeModalP, fetchData, isEditModalOpen, closeEditModal,setIsEditModalOpen,pageCount,
+        handlePageClick,currentPage} = props;
     const textColorPrimary = useColorModeValue("secondaryGray.900", "white");
     const [editedCourse, setEditedCourse] = useState({}); // Déclaration et initialisation de la variable editedCourse
     ////////////////////////
@@ -83,7 +91,26 @@ export default function ColumnsTable(props) {
         initialState,
     } = tableInstance;
     initialState.pageSize = 99999999999999999;
-
+    const baseStyles= {
+        w: 7,
+        fontSize: 'sm'
+      };
+    
+      const normalStyles = {
+        ...baseStyles,
+        _hover: {
+          bg: 'green.300'
+        },
+        bg: 'red.300'
+      };
+    
+      const activeStyles= {
+        ...baseStyles,
+        _hover: {
+          bg: 'blue.300'
+        },
+        bg: 'green.300'
+      };
     const textColor = useColorModeValue("secondaryGray.900", "white");
     const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
     const {
@@ -253,6 +280,108 @@ export default function ColumnsTable(props) {
                         </form>
                     </ModalContent>
                 </Modal>
+                 {/* Delete modal */}
+                 <AlertDialog isOpen={isDeleteDialogOpen} leastDestructiveRef={cancelRef} onClose={cancelDelete}>
+                                                    <AlertDialogOverlay>
+                                                        <AlertDialogContent>
+                                                            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                                                                Delete Classroom
+                                                            </AlertDialogHeader>
+
+                                                            <AlertDialogBody>
+                                                                Are you sure you want to delete this classroom?
+                                                            </AlertDialogBody>
+
+                                                            <AlertDialogFooter>
+                                                                <Button ref={cancelRef} onClick={cancelDelete}>
+                                                                    Cancel
+                                                                </Button>
+                                                                <Button colorScheme="red" onClick={handleDelete} ml={3}>
+                                                                    Delete
+                                                                </Button>
+                                                            </AlertDialogFooter>
+                                                        </AlertDialogContent>
+                                                    </AlertDialogOverlay>
+                </AlertDialog>
+                {/* Information modal */}
+                <Modal isOpen={isModalViewOpen} onClose={closeModalViewA}>
+                                                    <ModalOverlay />
+                                                    <ModalContent maxW={'800px'}>
+                                                        <ModalHeader>Classroom Information</ModalHeader>
+                                                        <ModalCloseButton />
+                                                        <ModalBody>
+                                                            {profInfo && (
+                                                                <>
+                                                                    {profInfo.profilePicture}
+                                                                    <Card mb={{ base: "0px", "2xl": "20px" }} {...rest}>
+                                                                        <Text
+                                                                            color={textColorPrimary}
+                                                                            fontWeight='bold'
+                                                                            fontSize='2xl'
+                                                                            mt='10px'
+                                                                            mb='4px'>
+                                                                            {profInfo.name} 
+                                                                        </Text>
+                                                                        
+                                                                        <SimpleGrid columns='2' gap='20px'>
+                                                                            <Information
+                                                                                boxShadow={cardShadow}
+                                                                                title='level'
+                                                                                value={profInfo.level}
+                                                                            />
+                                                                            
+                                                                            
+                                                                            <Information
+                                                                                boxShadow={cardShadow}
+                                                                                title='Capaciity'
+                                                                                value={profInfo.capacity }
+                                                                            />
+                                                                        </SimpleGrid>
+                                                                    </Card>
+                                                                </>
+                                                            )}
+                                                        </ModalBody>
+                                                    </ModalContent>
+                </Modal>
+                <Modal isOpen={isEditModalOpen} onClose={closeEditModal}>
+                                            <ModalOverlay />
+                                                <ModalContent maxW={'800px'}>
+                                                    <ModalHeader>Edit Classroom</ModalHeader>
+                                                    <ModalCloseButton />
+                                                    {editedCourse && ( // Vérifiez si editedCourse est disponible
+                                                        <ModalBody>
+                                                            {/* Formulaire pour l'édition du cours */}
+                                                            <FormControl id="name">
+                                                                <FormLabel>Name</FormLabel>
+                                                                <Input type="text" value={editedCourse.name} onChange={(e) => setEditedCourse({ ...editedCourse, name: e.target.value })} />
+                                                            </FormControl>
+                                                            <FormControl>
+                                                            <FormLabel>Level</FormLabel>
+                                                                <Select name="level" value={editedCourse.level} onChange={(e) => setEditedCourse({ ...editedCourse, level: e.target.value })}>
+                                                                <option value="">Select level</option>
+                                                                    <option value="Initiation">Initiation</option>
+                                                                    <option value="Préparatoire">Préparatoire</option>
+                                                                    <option value="1ère année">1ère année</option>
+                                                                    <option value="2ème année">2ème année</option>
+                                                                    <option value="3ème année">3ème année</option>
+                                                                    <option value="4ème année">4ème année</option>
+                                                                    <option value="5ème année">5ème année</option>
+                                                                    <option value="6ème année">6ème année</option>
+                                                                    <option value="7ème année">7ème année</option>
+                                                                </Select>
+                                                            </FormControl>
+                                                            <FormControl id="capacity">
+                                                                <FormLabel>Capacity</FormLabel>
+                                                                <Input type="number" value={editedCourse.capacity} onChange={(e) => setEditedCourse({ ...editedCourse, capacity: parseInt(e.target.value) })} />
+                                                            </FormControl>
+                                                        </ModalBody>
+                                                    )}
+                                                    <ModalFooter>
+                                                        <Button colorScheme="blue" mr={3} onClick={handleSaveEdit}>Save</Button>
+                                                        <Button onClick={closeEditModal}>Cancel</Button>
+                                                    </ModalFooter>
+                                                </ModalContent>
+                </Modal>
             </Flex>
             <Table {...getTableProps()} variant='simple' color='gray.500' mb='24px'>
             <Thead>
@@ -325,72 +454,8 @@ export default function ColumnsTable(props) {
                                                    cursor="pointer"
                                                    onClick={() => handleEdit(row.original)}
                                                    />
-                                           <Modal isOpen={isEditModalOpen} onClose={closeEditModal}>
-                                            <ModalOverlay />
-                                                <ModalContent maxW={'800px'}>
-                                                    <ModalHeader>Edit Classroom</ModalHeader>
-                                                    <ModalCloseButton />
-                                                    {editedCourse && ( // Vérifiez si editedCourse est disponible
-                                                        <ModalBody>
-                                                            {/* Formulaire pour l'édition du cours */}
-                                                            <FormControl id="name">
-                                                                <FormLabel>Name</FormLabel>
-                                                                <Input type="text" value={editedCourse.name} onChange={(e) => setEditedCourse({ ...editedCourse, name: e.target.value })} />
-                                                            </FormControl>
-                                                            <FormControl>
-                                                            <FormLabel>Level</FormLabel>
-                                                                <Select name="level" value={editedCourse.level} onChange={(e) => setEditedCourse({ ...editedCourse, level: e.target.value })}>
-                                                                <option value="">Select level</option>
-                                                                    <option value="Initiation">Initiation</option>
-                                                                    <option value="Préparatoire">Préparatoire</option>
-                                                                    <option value="1ère année">1ère année</option>
-                                                                    <option value="2ème année">2ème année</option>
-                                                                    <option value="3ème année">3ème année</option>
-                                                                    <option value="4ème année">4ème année</option>
-                                                                    <option value="5ème année">5ème année</option>
-                                                                    <option value="6ème année">6ème année</option>
-                                                                    <option value="7ème année">7ème année</option>
-                                                                </Select>
-                                                            </FormControl>
-                                                            <FormControl id="capacity">
-                                                                <FormLabel>Capacity</FormLabel>
-                                                                <Input type="number" value={editedCourse.capacity} onChange={(e) => setEditedCourse({ ...editedCourse, capacity: parseInt(e.target.value) })} />
-                                                            </FormControl>
-                                                        </ModalBody>
-                                                    )}
-                                                    <ModalFooter>
-                                                        <Button colorScheme="blue" mr={3} onClick={handleSaveEdit}>Save</Button>
-                                                        <Button onClick={closeEditModal}>Cancel</Button>
-                                                    </ModalFooter>
-                                                </ModalContent>
-                                            </Modal>
-                                              {/* Delete icon */}
-                                                <AlertDialog
-                                                    isOpen={isDeleteDialogOpen}
-                                                    leastDestructiveRef={cancelRef}
-                                                    onClose={cancelDelete}
-                                                >
-                                                    <AlertDialogOverlay>
-                                                        <AlertDialogContent>
-                                                            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                                                                Delete Classroom
-                                                            </AlertDialogHeader>
-
-                                                            <AlertDialogBody>
-                                                                Are you sure you want to delete this classroom?
-                                                            </AlertDialogBody>
-
-                                                            <AlertDialogFooter>
-                                                                <Button ref={cancelRef} onClick={cancelDelete}>
-                                                                    Cancel
-                                                                </Button>
-                                                                <Button colorScheme="red" onClick={handleDelete} ml={3}>
-                                                                    Delete
-                                                                </Button>
-                                                            </AlertDialogFooter>
-                                                        </AlertDialogContent>
-                                                    </AlertDialogOverlay>
-                                                </AlertDialog>
+                                           
+                                             
 
                                                 <DeleteIcon
                                                     w='20px'
@@ -409,45 +474,7 @@ export default function ColumnsTable(props) {
                                                     cursor="pointer"
                                                     onClick={() => handleView(row.original)}
                                                 />
-                                                <Modal isOpen={isModalViewOpen} onClose={closeModalViewA}>
-                                                    <ModalOverlay />
-                                                    <ModalContent maxW={'800px'}>
-                                                        <ModalHeader>Classroom Information</ModalHeader>
-                                                        <ModalCloseButton />
-                                                        <ModalBody>
-                                                            {profInfo && (
-                                                                <>
-                                                                    {profInfo.profilePicture}
-                                                                    <Card mb={{ base: "0px", "2xl": "20px" }} {...rest}>
-                                                                        <Text
-                                                                            color={textColorPrimary}
-                                                                            fontWeight='bold'
-                                                                            fontSize='2xl'
-                                                                            mt='10px'
-                                                                            mb='4px'>
-                                                                            {profInfo.name} 
-                                                                        </Text>
-                                                                        
-                                                                        <SimpleGrid columns='2' gap='20px'>
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='level'
-                                                                                value={profInfo.level}
-                                                                            />
-                                                                            
-                                                                            
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Capaciity'
-                                                                                value={profInfo.capacity }
-                                                                            />
-                                                                        </SimpleGrid>
-                                                                    </Card>
-                                                                </>
-                                                            )}
-                                                        </ModalBody>
-                                                    </ModalContent>
-                                                </Modal>
+                                               
                                             </Flex>
                                         );
                                     }
@@ -467,6 +494,18 @@ export default function ColumnsTable(props) {
                     })}
                 </Tbody>
             </Table>
+            <Paginator
+                normalStyles={normalStyles}
+                activeStyles={activeStyles}
+                currentPage={currentPage}
+                pagesQuantity={pageCount}
+                onPageChange={handlePageClick}>
+                <PageContainer align="center" justify="space-between" w="full" p={4}>
+                <Previous bg="gray.300">Prev</Previous>
+                <PageGroup isInline align="center" />
+                <Next bg="gray.300">Next</Next>
+                </PageContainer>
+            </Paginator>
         </Card>
     );
 }

@@ -3,6 +3,7 @@ import axios from "axios";
 import PlanningTable from "./components/planningTable"; // Assurez-vous d'avoir un composant PlanningTable correspondant
 import PlanningData from "./variables/planningData";
 import { Box, SimpleGrid } from "@chakra-ui/react";
+import ReactPaginate from 'react-paginate';
 export default function Planning() {
     const [plannings, setPlannings] = useState([]);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -14,8 +15,10 @@ export default function Planning() {
     const [teacherOptions, setTeacherOptions] = useState([]);
     const [studentOptions, setStudentOptions] = useState([]);
     const [classroomOptions, setclassroomOptions] = useState([]);
+    const [currentPage, setCurrentPage] = useState(0); // Ajoutez un état pour la page courante
+    const [pageCount, setPageCount] = useState(0); // Ajoutez un état pour le nombre total de pages
     const cancelRef = useRef();
-
+    const itemsPerPage = 4
     useEffect(() => {
         fetchPlannings();
         //fetchCourseOptions();
@@ -23,13 +26,14 @@ export default function Planning() {
         fetchTeacherOptions();
         fetchStudentOptions();
         fetchClassroomOptions();
-    }, []);
+    }, [currentPage]);
 
     const fetchPlannings = async () => {
         try {
-            const response = await axios.get('http://localhost:9090/api/plannings/getall');
+            const response = await axios.get(`http://localhost:9090/api/plannings/getall?page=${currentPage}&_limit=${itemsPerPage}`);
+            console.log(response.data.plannings)
             // Pour chaque planning, récupérez le nom du cours
-            const updatedPlannings = await Promise.all(response.data.map(async (planning) => {
+            const updatedPlannings = await Promise.all(response.data.plannings.map(async (planning) => {
                 // Récupérez le nom du cours pour ce planning
                 //const courseResponse = await axios.get(`http://localhost:9090/api/classroom/getById/${planning.classroomId}`);
                 let ClassroomName = "";
@@ -58,23 +62,24 @@ export default function Planning() {
                 };
             }));
             setPlannings(updatedPlannings);
+            setPageCount(Math.ceil(response.data.totalDocuments / itemsPerPage));
+            //console.log(response.data.totalPages);
         } catch (error) {
             console.error('Error fetching plannings:', error);
         }
     };
     
-  /*   const fetchCourseOptions = async () => {
-        try {
-            const response = await axios.get('http://localhost:9090/api/classroom/getall');
-            setCourseOptions(response.data);
-        } catch (error) {
-            console.error('Error fetching courses:', error);
-        }
+   /*  const handlePageClick = (selectedPage) => {
+        setCurrentPage(selectedPage.selected+1); // Mettez à jour la page courante lors du clic sur une nouvelle page
+        //console.log(selectedPage.selected);
     }; */
+    const handlePageClick = (nextPage) => {
+        setCurrentPage(nextPage);
+      };
     const fetchClassroomOptions = async () => {
         try {
             const response = await axios.get('http://localhost:9090/api/classroom/getall');
-            setclassroomOptions(response.data);
+            setclassroomOptions(response.data.classroom);
         } catch (error) {
             console.error('Error fetching classroom:', error);
         }
@@ -169,6 +174,9 @@ export default function Planning() {
                 teacherOptions={teacherOptions}
                 studentOptions={studentOptions}
                 classroomoptions={classroomOptions}
+                pageCount={pageCount}
+                handlePageClick={handlePageClick}
+                currentPage={currentPage}
             />
          </SimpleGrid>
      

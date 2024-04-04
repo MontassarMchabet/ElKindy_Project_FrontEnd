@@ -17,6 +17,7 @@ import { tz } from 'moment-timezone';
 import moment from 'moment';
 import axios from 'axios';
 
+
 if (Browser.isIE) {
     Timezone.prototype.offset = (date, timezone) => {
         return tz.zone(timezone).utcOffset(date.getTime());

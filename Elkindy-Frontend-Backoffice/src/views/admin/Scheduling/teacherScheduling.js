@@ -24,7 +24,7 @@ const GroupCustomWorkDays = () => {
         try {
           const response = await axios.get('http://localhost:9090/api/plannings/getall');
     
-          const formattedData = await Promise.all(response.data.map(async planning => {
+          const formattedData = await Promise.all(response.data.plannings.map(async planning => {
             if (planning.type === "instrument") {
               const studentResponse = await axios.get(`http://localhost:9090/api/auth/user/${planning.studentIds}`);
               const RoomResponse = await axios.get(`http://localhost:9090/api/Room/getById/${planning.roomId}`);

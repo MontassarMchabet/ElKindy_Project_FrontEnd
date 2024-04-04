@@ -1,8 +1,9 @@
 import axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
-import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button } from "@chakra-ui/react";
+import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button,  } from "@chakra-ui/react";
 import { ViewIcon, DeleteIcon, EditIcon,Icon } from "@chakra-ui/icons";
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, ModalFooter, FormControl, FormLabel, Input, Grid, SimpleGrid } from "@chakra-ui/react";
+
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, ModalFooter, FormControl, FormLabel, Input, Grid, SimpleGrid,ButtonProps } from "@chakra-ui/react";
 import { AddIcon } from '@chakra-ui/icons'
 import {
     Flex,
@@ -15,6 +16,13 @@ import {
     Tr,
     useColorModeValue,Select ,Checkbox
 } from "@chakra-ui/react";
+import {
+    Paginator,
+    Previous,
+    Next,
+    PageGroup,
+    Container as PageContainer
+  } from 'chakra-paginator';
 import React, { useEffect,useMemo, useState } from "react";
 import {
     useGlobalFilter,
@@ -31,7 +39,9 @@ import Card from "components/card/Card";
 import Information from "views/admin/profile/components/Information";
 export default function ColumnsTable(props) {
     const { columnsData, tableData, handleDelete, cancelDelete, cancelRef, confirmDelete, isDeleteDialogOpen,
-        isModalOpenR, openModalR, closeModalR, fetchData, isEditModalOpen, closeEditModal,setIsEditModalOpen,roomOptions,teacherOptions,studentOptions,classroomoptions} = props;
+        isModalOpenR, openModalR, closeModalR, fetchData, isEditModalOpen, closeEditModal,setIsEditModalOpen,
+        roomOptions,teacherOptions,studentOptions,classroomoptions,pageCount,
+        handlePageClick,currentPage} = props;
     const textColorPrimary = useColorModeValue("secondaryGray.900", "white");
     const [editedRoom, seteditedRoom] = useState({}); 
  
@@ -210,7 +220,7 @@ const calculateTotalStudyHours  = async (classroomId,date,startTime, endTime) =>
         prepareRow,
         initialState,
     } = tableInstance;
-    initialState.pageSize = 99999999999999999;
+    initialState.pageSize = 99;
 
     const textColor = useColorModeValue("secondaryGray.900", "white");
     const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
@@ -224,6 +234,26 @@ const calculateTotalStudyHours  = async (classroomId,date,startTime, endTime) =>
         "14px 17px 40px 4px rgba(112, 144, 176, 0.08)",
         "unset"
     );
+    const baseStyles= {
+        w: 7,
+        fontSize: 'sm'
+      };
+    
+      const normalStyles = {
+        ...baseStyles,
+        _hover: {
+          bg: 'green.300'
+        },
+        bg: 'red.300'
+      };
+    
+      const activeStyles= {
+        ...baseStyles,
+        _hover: {
+          bg: 'blue.300'
+        },
+        bg: 'green.300'
+      };
     const bgButton = useColorModeValue("secondaryGray.300", "whiteAlpha.100");
     const bgHover = useColorModeValue(
         { bg: "secondaryGray.400" },
@@ -233,7 +263,7 @@ const calculateTotalStudyHours  = async (classroomId,date,startTime, endTime) =>
         { bg: "secondaryGray.300" },
         { bg: "whiteAlpha.100" }
     );
-    const [show, setShow] = React.useState(false);
+   
     const [isModalViewOpen, setIsModalViewOpen] = useState(false);
     const [profInfo, setProfInfo] = useState(null);
     const handleView = (userData) => {
@@ -312,6 +342,11 @@ const calculateTotalStudyHours  = async (classroomId,date,startTime, endTime) =>
         if (!validationResult) {
             return; // Arrêtez le traitement si le formulaire n'est pas valide
         }
+        const isCorrectDuration = await checkDurationOfCourse(formData.startDate, formData.endDate,formData.type);
+        if (!isCorrectDuration) {
+           openDurationPopup();
+           return;
+        }
         const isRoomAvailable = await checkRoomAvailability(formData.roomId, formData.date, formData.startDate, formData.endDate);
         if (!isRoomAvailable) {
             openRoomAvailablePopup();
@@ -335,13 +370,7 @@ const calculateTotalStudyHours  = async (classroomId,date,startTime, endTime) =>
                     return; // Arrêtez le traitement si la salle n'est pas disponible
                 }
          }
-        const isCorrectDuration = await checkDurationOfCourse(formData.startDate, formData.endDate,formData.type);
-    
-    // Afficher une alerte en fonction du résultat
-        if (!isCorrectDuration) {
-           openDurationPopup();
-           return;
-        }
+        
         if(formData.type==="solfège"){
                 const TotalStudyHours = await calculateTotalStudyHours(formData.classroomId, formData.date, formData.startDate, formData.endDate);
                 if (!TotalStudyHours) {
@@ -364,7 +393,7 @@ const calculateTotalStudyHours  = async (classroomId,date,startTime, endTime) =>
     return (
         <Card
             direction='column'
-            w='150%'
+            w='70%'
             px='0px'
             overflowX={{ sm: "scroll", lg: "hidden" }}>
             <Flex px='25px' justify='space-between' mb='20px' align='center'>
@@ -392,9 +421,11 @@ const calculateTotalStudyHours  = async (classroomId,date,startTime, endTime) =>
                         <AddIcon color={iconColor} w='20px' h='20px' />
                     </MenuButton>
                 </Menu>
-                <Modal isOpen={isModalOpenR} onClose={closeModalR}>
+ {/* add modal */}                
+<Modal isOpen={isModalOpenR} onClose={closeModalR}>
     <ModalOverlay />
-    <ModalContent>
+    
+  <ModalContent>
         <form onSubmit={handleSubmit} noValidate>
             <ModalHeader>Add Planning</ModalHeader>
             <ModalCloseButton />
@@ -522,8 +553,249 @@ const calculateTotalStudyHours  = async (classroomId,date,startTime, endTime) =>
                 </Button>
             </ModalFooter>
         </form>
-    </ModalContent>
+ </ModalContent>
 </Modal>
+ {/* edit modal */}
+<Modal isOpen={isEditModalOpen} onClose={closeEditModal}>
+                                            <ModalOverlay />
+                                                <ModalContent maxW={'800px'}>
+                                                    <ModalHeader>Edit Planning</ModalHeader>
+                                                    <ModalCloseButton />
+                                                    {editedRoom && ( // Vérifiez si editedRoom est disponible
+                                                         
+                                                        <ModalBody>
+                                                            <FormControl>
+                                                                <FormLabel>Type </FormLabel>
+                                                                <Checkbox
+                                                                    name="type"
+                                                                    isChecked={editedRoom.type === 'solfège'}
+                                                                    onChange={(e) => seteditedRoom({ ...editedRoom, type: e.target.checked ? 'solfège' : 'instrument' })}
+                                                                    value="solfège"
+                                                                >
+                                                                    Solfège
+                                                                </Checkbox>
+                                                                <Checkbox
+                                                                    name="type"
+                                                                    isChecked={editedRoom.type === 'instrument'}
+                                                                    onChange={(e) => seteditedRoom({ ...editedRoom, type: e.target.checked ? 'instrument' : 'solfège' })}
+                                                                    value="instrument"
+                                                                >
+                                                                    Instrument
+                                                                </Checkbox>
+                                                            </FormControl>
+                                                            <FormControl>
+                                                            
+                
+                                                                <FormLabel>Date</FormLabel>
+                                                                
+                                                                <Input
+                                                                   
+                                                                    type="date"
+                                                                    name="date"
+                                                                    value={editedRoom?.date?.slice(0, 10)}
+                                                                    onChange={(e) => seteditedRoom({ ...editedRoom, date: e.target.value })}
+                                                                />
+                                                                {/* {editErrors.date && <Text color="red">{editErrors.date}</Text>} */}
+                                                            </FormControl>
+                                                            <Grid templateColumns="1fr 1fr" gap={4}>
+                                                                <FormControl>
+                                                                    <FormLabel>StartTime</FormLabel>
+                                                                    <Input
+                                                                        type="time"
+                                                                        name="startTime"
+                                                                        value={editedRoom.startDate}
+                                                                        onChange={(e) => seteditedRoom({ ...editedRoom, startDate: e.target.value })}
+                                                                    />
+                                                                   {/*  {editErrors.startTime && <Text color="red">{editErrors.startTime}</Text>} */}
+                                                                </FormControl>
+                                                                <FormControl>
+                                                                    <FormLabel>EndTime</FormLabel>
+                                                                    <Input
+                                                                        type="time"
+                                                                        name="endTime"
+                                                                        value={editedRoom.endDate}
+                                                                        onChange={(e) => seteditedRoom({ ...editedRoom, endDate: e.target.value })}
+                                                                    />
+                                                                    {/* {editErrors.endTime && <Text color="red">{editErrors.endTime}</Text>} */}
+                                                                </FormControl>
+                                                            </Grid>
+                                                            <FormControl>
+                                                                <FormLabel>Room Name</FormLabel>
+                                                                <Select
+                                                                    name="roomId"
+                                                                    value={editedRoom.roomId}
+                                                                    onChange={(e) => seteditedRoom({ ...editedRoom, roomId: e.target.value })}
+                                                                >
+                                                                    <option value="">Select Room</option>
+                                                                    {roomOptions.map(room => (
+                                                                        <option key={room.id} value={room._id}>{room.room_number}</option>
+                                                                    ))}
+                                                                </Select>
+                                                                {/* {editErrors.roomId && <Text color="red">{editErrors.roomId}</Text>} */}
+                                                            </FormControl>
+                                                            <FormControl>
+                                                                <FormLabel>Teacher Name</FormLabel>
+                                                                <Select
+                                                                    name="teacherId"
+                                                                    value={editedRoom.teacherId}
+                                                                    onChange={(e) => seteditedRoom({ ...editedRoom, teacherId: e.target.value })}
+                                                                >
+                                                                    <option value="">Select Teacher</option>
+                                                                    {teacherOptions.map(teacher => (
+                                                                        <option key={teacher.id} value={teacher._id}>{teacher.name}</option>
+                                                                    ))}
+                                                                </Select>
+                                                                {/* {editErrors.teacherId && <Text color="red">{editErrors.teacherId}</Text>} */}
+                                                            </FormControl>
+                                                            {editedRoom.type === 'instrument' ? (
+                                                                    <FormControl>
+                                                                        <FormLabel>Student Name</FormLabel>
+                                                                        <Select
+                                                                            name="studentIds"
+                                                                            value={editedRoom.studentIds}
+                                                                            onChange={(e) => seteditedRoom({ ...editedRoom, studentIds: e.target.value })}
+                                                                        >
+                                                                            <option value="">Select Student</option>
+                                                                            {studentOptions.map(student => (
+                                                                                <option key={student.id} value={student._id}>{student.name}</option>
+                                                                            ))}
+                                                                        </Select>
+                                                                       {/*  {editErrors.studentIds && <Text color="red">{editErrors.studentIds}</Text>} */}
+                                                                    </FormControl>
+                                                                ) : (
+                                                                    <FormControl>
+                                                                        <FormLabel>Classroom</FormLabel>
+                                                                        <Select
+                                                                            name="classroomId"
+                                                                            value={editedRoom.classroomId}
+                                                                            onChange={(e) => seteditedRoom({ ...editedRoom, classroomId: e.target.value })}
+                                                                        >
+                                                                            <option value="">Select Classroom</option>
+                                                                            {classroomoptions.map(classroom => (
+                                                                                <option key={classroom.id} value={classroom._id}>{classroom.name}</option>
+                                                                            ))}
+                                                                        </Select>
+                                                                        {/* {editErrors.classroomId && <Text color="red">{editErrors.classroomId}</Text>} */}
+                                                                    </FormControl>
+                                                                )}
+                                                           
+                                                        </ModalBody>
+                                                    )}
+                                                    <ModalFooter>
+                                                        <Button colorScheme="blue" mr={3} onClick={handleSaveEdit}>Save</Button>
+                                                        <Button onClick={closeEditModal}>Cancel</Button>
+                                                    </ModalFooter>
+                                                </ModalContent>
+</Modal>
+ {/* view modal */}
+<Modal isOpen={isModalViewOpen} onClose={closeModalViewA}>
+                                                    <ModalOverlay />
+                                                    <ModalContent maxW={'800px'}>
+                                                        <ModalHeader>Planning Information</ModalHeader>
+                                                        <ModalCloseButton />
+                                                        <ModalBody>
+                                                            {profInfo && (
+                                                                
+                                                                <>
+                                                                
+                                                                    <Card mb={{ base: "0px", "2xl": "20px" }} {...rest}>
+                                                                        
+                                                                          {profInfo.type === 'instrument' && (
+                                                                              <Text
+                                                                              color={textColorPrimary}
+                                                                              fontWeight='bold'
+                                                                              fontSize='2xl'
+                                                                              mt='10px'
+                                                                              mb='4px'>
+                                                                               Student Name : {profInfo.studentName} 
+                                                                          </Text>
+                                                                        )}
+                                                                         {profInfo.type === 'solfège' && (
+                                                                              <Text
+                                                                              color={textColorPrimary}
+                                                                              fontWeight='bold'
+                                                                              fontSize='2xl'
+                                                                              mt='10px'
+                                                                              mb='4px'>
+                                                                             Classroom  : {profInfo.courseName} 
+                                                                          </Text>
+                                                                        )}
+                                                                        <SimpleGrid columns='2' gap='20px'>
+                                                                            
+                                                                            <Information
+                                                                                boxShadow={cardShadow}
+                                                                                title='Date'
+                                                                                value={profInfo.date}
+                                                                            />
+                                                                            <Information
+                                                                                boxShadow={cardShadow}
+                                                                                title='Type'
+                                                                                value={profInfo.type}
+                                                                            />
+                                                                           
+                                                                            
+                                                                        </SimpleGrid>
+                                                                        <SimpleGrid columns='2' gap='20px'>
+                                                                            <Information
+                                                                                boxShadow={cardShadow}
+                                                                                title='StartTime'
+                                                                                value={profInfo.startDate}
+                                                                            />
+                                                                            <Information
+                                                                                boxShadow={cardShadow}
+                                                                                title='EndTime'
+                                                                                value={profInfo.endDate}
+                                                                            />
+                                                                           
+                                                                            
+                                                                        </SimpleGrid>
+                                                                        <SimpleGrid columns='2' gap='20px'>
+                                                                            <Information
+                                                                                boxShadow={cardShadow}
+                                                                                title='Room Name'
+                                                                                value={profInfo.RoomName}
+                                                                            />
+                                                                            <Information
+                                                                                boxShadow={cardShadow}
+                                                                                title='Teacher Name'
+                                                                                value={profInfo.TeacherName}
+                                                                            />
+                                                                           
+                                                                            
+                                                                        </SimpleGrid>
+                                                                    </Card>
+                                                                </>
+                                                            )}
+                                                        </ModalBody>
+                                                    </ModalContent>
+</Modal> 
+  {/* Delete modal */}
+  <AlertDialog
+                                                    isOpen={isDeleteDialogOpen}
+                                                    leastDestructiveRef={cancelRef}
+                                                    onClose={cancelDelete}
+                                                >
+                                                    <AlertDialogOverlay>
+                                                        <AlertDialogContent>
+                                                            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                                                                Delete Planning
+                                                            </AlertDialogHeader>
+
+                                                            <AlertDialogBody>
+                                                                Are you sure you want to delete this planning?
+                                                            </AlertDialogBody>
+
+                                                            <AlertDialogFooter>
+                                                                <Button ref={cancelRef} onClick={cancelDelete}>
+                                                                    Cancel
+                                                                </Button>
+                                                                <Button colorScheme="red" onClick={handleDelete} ml={3}>
+                                                                    Delete
+                                                                </Button>
+                                                            </AlertDialogFooter>
+                                                        </AlertDialogContent>
+                                                    </AlertDialogOverlay>
+ </AlertDialog>
 
 <AlertDialog  isOpen={isRoomAvailablePopupOpen} leastDestructiveRef={cancelRef} onClose={() => setIsRoomAvailablePopupOpen(false)}>
       <AlertDialogOverlay>
@@ -752,166 +1024,7 @@ const calculateTotalStudyHours  = async (classroomId,date,startTime, endTime) =>
                                                    color={"green.500"}
                                                    cursor="pointer"
                                                    onClick={() => handleEdit(row.original)}
-                                                   />
-                                           <Modal isOpen={isEditModalOpen} onClose={closeEditModal}>
-                                            <ModalOverlay />
-                                                <ModalContent maxW={'800px'}>
-                                                    <ModalHeader>Edit Planning</ModalHeader>
-                                                    <ModalCloseButton />
-                                                    {editedRoom && ( // Vérifiez si editedRoom est disponible
-                                                         
-                                                        <ModalBody>
-                                                            <FormControl>
-                                                                <FormLabel>Type </FormLabel>
-                                                                <Checkbox
-                                                                    name="type"
-                                                                    isChecked={editedRoom.type === 'solfège'}
-                                                                    onChange={(e) => seteditedRoom({ ...editedRoom, type: e.target.checked ? 'solfège' : 'instrument' })}
-                                                                    value="solfège"
-                                                                >
-                                                                    Solfège
-                                                                </Checkbox>
-                                                                <Checkbox
-                                                                    name="type"
-                                                                    isChecked={editedRoom.type === 'instrument'}
-                                                                    onChange={(e) => seteditedRoom({ ...editedRoom, type: e.target.checked ? 'instrument' : 'solfège' })}
-                                                                    value="instrument"
-                                                                >
-                                                                    Instrument
-                                                                </Checkbox>
-                                                            </FormControl>
-                                                            <FormControl>
-                                                            
-                
-                                                                <FormLabel>Date</FormLabel>
-                                                                
-                                                                <Input
-                                                                   
-                                                                    type="date"
-                                                                    name="date"
-                                                                    value={editedRoom?.date?.slice(0, 10)}
-                                                                    onChange={(e) => seteditedRoom({ ...editedRoom, date: e.target.value })}
-                                                                />
-                                                                {/* {editErrors.date && <Text color="red">{editErrors.date}</Text>} */}
-                                                            </FormControl>
-                                                            <Grid templateColumns="1fr 1fr" gap={4}>
-                                                                <FormControl>
-                                                                    <FormLabel>StartTime</FormLabel>
-                                                                    <Input
-                                                                        type="time"
-                                                                        name="startTime"
-                                                                        value={editedRoom.startDate}
-                                                                        onChange={(e) => seteditedRoom({ ...editedRoom, startDate: e.target.value })}
-                                                                    />
-                                                                   {/*  {editErrors.startTime && <Text color="red">{editErrors.startTime}</Text>} */}
-                                                                </FormControl>
-                                                                <FormControl>
-                                                                    <FormLabel>EndTime</FormLabel>
-                                                                    <Input
-                                                                        type="time"
-                                                                        name="endTime"
-                                                                        value={editedRoom.endDate}
-                                                                        onChange={(e) => seteditedRoom({ ...editedRoom, endDate: e.target.value })}
-                                                                    />
-                                                                    {/* {editErrors.endTime && <Text color="red">{editErrors.endTime}</Text>} */}
-                                                                </FormControl>
-                                                            </Grid>
-                                                            <FormControl>
-                                                                <FormLabel>Room Name</FormLabel>
-                                                                <Select
-                                                                    name="roomId"
-                                                                    value={editedRoom.roomId}
-                                                                    onChange={(e) => seteditedRoom({ ...editedRoom, roomId: e.target.value })}
-                                                                >
-                                                                    <option value="">Select Room</option>
-                                                                    {roomOptions.map(room => (
-                                                                        <option key={room.id} value={room._id}>{room.room_number}</option>
-                                                                    ))}
-                                                                </Select>
-                                                                {/* {editErrors.roomId && <Text color="red">{editErrors.roomId}</Text>} */}
-                                                            </FormControl>
-                                                            <FormControl>
-                                                                <FormLabel>Teacher Name</FormLabel>
-                                                                <Select
-                                                                    name="teacherId"
-                                                                    value={editedRoom.teacherId}
-                                                                    onChange={(e) => seteditedRoom({ ...editedRoom, teacherId: e.target.value })}
-                                                                >
-                                                                    <option value="">Select Teacher</option>
-                                                                    {teacherOptions.map(teacher => (
-                                                                        <option key={teacher.id} value={teacher._id}>{teacher.name}</option>
-                                                                    ))}
-                                                                </Select>
-                                                                {/* {editErrors.teacherId && <Text color="red">{editErrors.teacherId}</Text>} */}
-                                                            </FormControl>
-                                                            {editedRoom.type === 'instrument' ? (
-                                                                    <FormControl>
-                                                                        <FormLabel>Student Name</FormLabel>
-                                                                        <Select
-                                                                            name="studentIds"
-                                                                            value={editedRoom.studentIds}
-                                                                            onChange={(e) => seteditedRoom({ ...editedRoom, studentIds: e.target.value })}
-                                                                        >
-                                                                            <option value="">Select Student</option>
-                                                                            {studentOptions.map(student => (
-                                                                                <option key={student.id} value={student._id}>{student.name}</option>
-                                                                            ))}
-                                                                        </Select>
-                                                                       {/*  {editErrors.studentIds && <Text color="red">{editErrors.studentIds}</Text>} */}
-                                                                    </FormControl>
-                                                                ) : (
-                                                                    <FormControl>
-                                                                        <FormLabel>Classroom</FormLabel>
-                                                                        <Select
-                                                                            name="classroomId"
-                                                                            value={editedRoom.classroomId}
-                                                                            onChange={(e) => seteditedRoom({ ...editedRoom, classroomId: e.target.value })}
-                                                                        >
-                                                                            <option value="">Select Classroom</option>
-                                                                            {classroomoptions.map(classroom => (
-                                                                                <option key={classroom.id} value={classroom._id}>{classroom.name}</option>
-                                                                            ))}
-                                                                        </Select>
-                                                                        {/* {editErrors.classroomId && <Text color="red">{editErrors.classroomId}</Text>} */}
-                                                                    </FormControl>
-                                                                )}
-                                                           
-                                                        </ModalBody>
-                                                    )}
-                                                    <ModalFooter>
-                                                        <Button colorScheme="blue" mr={3} onClick={handleSaveEdit}>Save</Button>
-                                                        <Button onClick={closeEditModal}>Cancel</Button>
-                                                    </ModalFooter>
-                                                </ModalContent>
-                                            </Modal>
-                                              {/* Delete icon */}
-                                                <AlertDialog
-                                                    isOpen={isDeleteDialogOpen}
-                                                    leastDestructiveRef={cancelRef}
-                                                    onClose={cancelDelete}
-                                                >
-                                                    <AlertDialogOverlay>
-                                                        <AlertDialogContent>
-                                                            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                                                                Delete Planning
-                                                            </AlertDialogHeader>
-
-                                                            <AlertDialogBody>
-                                                                Are you sure you want to delete this planning?
-                                                            </AlertDialogBody>
-
-                                                            <AlertDialogFooter>
-                                                                <Button ref={cancelRef} onClick={cancelDelete}>
-                                                                    Cancel
-                                                                </Button>
-                                                                <Button colorScheme="red" onClick={handleDelete} ml={3}>
-                                                                    Delete
-                                                                </Button>
-                                                            </AlertDialogFooter>
-                                                        </AlertDialogContent>
-                                                    </AlertDialogOverlay>
-                                                </AlertDialog>
-
+                                                   />    
                                                 <DeleteIcon
                                                     w='20px'
                                                     h='20px'
@@ -929,87 +1042,7 @@ const calculateTotalStudyHours  = async (classroomId,date,startTime, endTime) =>
                                                     cursor="pointer"
                                                     onClick={() => handleView(row.original)}
                                                 />
-                                                 <Modal isOpen={isModalViewOpen} onClose={closeModalViewA}>
-                                                    <ModalOverlay />
-                                                    <ModalContent maxW={'800px'}>
-                                                        <ModalHeader>Planning Information</ModalHeader>
-                                                        <ModalCloseButton />
-                                                        <ModalBody>
-                                                            {profInfo && (
-                                                                
-                                                                <>
-                                                                
-                                                                    <Card mb={{ base: "0px", "2xl": "20px" }} {...rest}>
-                                                                        
-                                                                          {profInfo.type === 'instrument' && (
-                                                                              <Text
-                                                                              color={textColorPrimary}
-                                                                              fontWeight='bold'
-                                                                              fontSize='2xl'
-                                                                              mt='10px'
-                                                                              mb='4px'>
-                                                                               Student Name : {profInfo.studentName} 
-                                                                          </Text>
-                                                                        )}
-                                                                         {profInfo.type === 'solfège' && (
-                                                                              <Text
-                                                                              color={textColorPrimary}
-                                                                              fontWeight='bold'
-                                                                              fontSize='2xl'
-                                                                              mt='10px'
-                                                                              mb='4px'>
-                                                                             Classroom  : {profInfo.courseName} 
-                                                                          </Text>
-                                                                        )}
-                                                                        <SimpleGrid columns='2' gap='20px'>
-                                                                            
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Date'
-                                                                                value={profInfo.date}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Type'
-                                                                                value={profInfo.type}
-                                                                            />
-                                                                           
-                                                                            
-                                                                        </SimpleGrid>
-                                                                        <SimpleGrid columns='2' gap='20px'>
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='StartTime'
-                                                                                value={profInfo.startDate}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='EndTime'
-                                                                                value={profInfo.endDate}
-                                                                            />
-                                                                           
-                                                                            
-                                                                        </SimpleGrid>
-                                                                        <SimpleGrid columns='2' gap='20px'>
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Room Name'
-                                                                                value={profInfo.RoomName}
-                                                                            />
-                                                                            <Information
-                                                                                boxShadow={cardShadow}
-                                                                                title='Teacher Name'
-                                                                                value={profInfo.TeacherName}
-                                                                            />
-                                                                           
-                                                                            
-                                                                        </SimpleGrid>
-                                                                    </Card>
-                                                                </>
-                                                            )}
-                                                        </ModalBody>
-                                                    </ModalContent>
-                                                </Modal> 
+                                              
                                             </Flex>
                                         );
                                     }
@@ -1029,6 +1062,20 @@ const calculateTotalStudyHours  = async (classroomId,date,startTime, endTime) =>
                     })}
                 </Tbody>
             </Table>
-        </Card>
+    
+      <Paginator
+        normalStyles={normalStyles}
+        activeStyles={activeStyles}
+        currentPage={1}
+        pagesQuantity={pageCount}
+        onPageChange={handlePageClick}>
+        <PageContainer align="center" justify="space-between" w="full" p={4}>
+          <Previous bg="gray.300">Prev</Previous>
+          <PageGroup isInline align="center" />
+          <Next bg="gray.300">Next</Next>
+        </PageContainer>
+      </Paginator>
+    
+    </Card>
     );
 }
