@@ -1,0 +1,44 @@
+/* quiz-custom.css */
+
+/* Custom styles for quiz container */
+.quiz-container {
+    margin: auto;
+    width: 800px; /* Adjust the width */
+    height: 400px; /* Adjust the height */
+    border: 2px solid #ccc; /* Add border */
+    padding: 20px; /* Add padding */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add shadow */
+    border-radius: 10px; /* Add border radius */
+  }
+  
+  /* Custom styles for quiz questions */
+  .quiz-question {
+    font-size: 18px; /* Adjust font size */
+    margin-bottom: 20px; /* Add spacing between questions */
+  }
+  
+  /* Custom styles for answer options */
+  .quiz-answer-option {
+    margin-bottom: 10px; /* Add spacing between answer options */
+  }
+  /* Custom styles for buttons */
+  .quiz-button {
+    background-color: #f5f5f5 !important; /* Light grey */
+    border: 1px solid #ccc !important; /* Add border */
+    color: #333 !important; /* Dark grey text */
+    padding: 10px 20px !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    font-size: 16px !important;
+    margin: 4px 2px !important;
+    cursor: pointer !important;
+    border-radius: 5px !important;
+    transition-duration: 0.4s !important;
+  }
+  
+  
+  .quiz-button:hover {
+    background-color: #45a049; /* Darker green on hover */
+  }
+  

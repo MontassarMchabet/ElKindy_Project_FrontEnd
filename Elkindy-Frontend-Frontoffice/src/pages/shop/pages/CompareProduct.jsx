@@ -11,7 +11,8 @@ import Layout from "../../../layouts/Layout";
 const CompareProduct = () => {
   return (
     <>
-      <Layout header={1} footer={3} className="" mainClassName="">
+      <Layout header={4} footer={3} className="" mainClassName="">
+        <br />
         <br />
         <br />
         <br />

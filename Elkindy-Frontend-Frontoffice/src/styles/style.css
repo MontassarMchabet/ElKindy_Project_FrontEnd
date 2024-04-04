@@ -278,7 +278,7 @@ p {
   font-size: var(--tg-body-font-size);
   font-weight: var(--tg-body-font-weight);
   line-height: var(--tg-body-line-height);
-  color: var(--tg-paragraph-color);
+  color: black;
   margin-bottom: 15px;
 }
 
@@ -1207,7 +1207,58 @@ label {
 .body-contact-overlay.black {
   background: rgb(0 0 0 / 50%);
 }
+/* Custom styles for answer buttons */
+/* Custom styles for answer buttons */
+/* Custom styles for answer buttons */
+.answerBtn {
+  background-color: white; /* White background */
+  color: black; /* Black text */
+  border: 1px solid black; /* Black border */
+  padding: 20px 50px; /* Padding (slightly increased for height) */
+  border-radius: 5px; /* Rounded corners */
+  transition: background-color 0.3s, color 0.3s;
+  width: 100%; 
+  height: 80px;/* Smooth transition */
+}
 
+/* Change styles on hover */
+.answerBtn:hover {
+  background-color: black; /* Black background on hover */
+  color: white; /* White text on hover */
+}
+.react-quiz-container .quiz-result-filter {
+  bottom: 15px;
+  position: relative;
+  width: 120px;
+}
+.react-quiz-container .result-answer-wrapper .explanation {
+  background-color: #f5f5f5; /* Light grey background */
+  border: 1px solid green; /* Green border */
+  margin: 0 20px 20px;
+  padding: 20px;
+}
+
+
+/* Prevent size change for answer buttons */
+.answerBtn:active {
+  background-color: black; /* Maintain black background */
+  color: white; /* Maintain white text */
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.5) inset; /* Add shadow to simulate click */
+}
+.react-quiz-container .questionWrapper .btn {
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  display: block;
+  font-size: 15px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  text-align: unset;
+  white-space: normal;
+}
+.react-quiz-container .number-of-selection {
+  background: #3db4b9;
+  margin-left: 5px;
+}
 /*=============================
 	04. Breadcrumb
 ===============================*/
@@ -5590,6 +5641,20 @@ label {
   position: relative;
   z-index: 1;
 }
+
+/* Example CSS */
+.revision-color {
+  color: red; /* Change color based on your preference */
+}
+
+.end-of-year-exam-color {
+  color: blue; /* Change color based on your preference */
+}
+
+.midterm-exam-color {
+  color: green; /* Change color based on your preference */
+}
+
 
 .blog-post-content .tag {
   font-size: 15px;

@@ -1,34 +1,42 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const InnerServicesAreaItem = ({ item }) => {
+const InnerServicesAreaItem = ({ item, onItemClick }) => {
+  const handleItemClick = () => {
+      onItemClick(item);
+  };
   return (
-    <div className="services-item-four" style={{ backgroundColor: "white", boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)" }}>
-      {/* <div className="services-icon-four">
-        <img src={item.src} alt="" />
-      </div> */}
-      <div className="services-content-four">
-        <h2 className="title">
-          <Link to={item.url}>{item.title}</Link>
-        </h2>
-        <p>{item.desc}</p>
-      </div>
+      <div className="services-item-four" style={{ backgroundColor: "white", boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)", height: "300px", overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+          <div className="services-content-four">
+              <h2 className="title">
+                  <Link to={`/exam-details/${item._id}`}>
+                      {item.title}
+                  </Link>
+              </h2>
+              <p>{item.description}</p>
+          </div>
 
-      <div className="content" style={{ marginTop: "30px" }}>
-        <div className="blog-meta-two">
-          <ul className="list-wrap">
-            <li className="tag">
-              <Link to="/blog">{item.tag}</Link>
-            </li>
-            <li>
-              <i className="fal fa-clock" />
-              {item.reading_time}
-            </li>
-          </ul>
-        </div>
-      </div>
+          <div className="blog-meta-two">
+              <ul className="list-wrap">
+                  <li className="tag">
+                      <Link to="/blog">{item.type}</Link>
+                  </li>
+                  <li>
+  <i className="fal fa-calendar"></i>
+  {item.endAt ? 
+    (new Date(item.endAt) < new Date()) ?
+      `${new Date(item.endAt).toLocaleDateString()} - Exam expired` :
+      `${new Date(item.endAt).toLocaleDateString()} - ${new Date(item.endAt).getHours()}:${(new Date(item.endAt).getMinutes() < 10 ? '0' : '') + new Date(item.endAt).getMinutes()}`
+    : 'No specified end time'}
+</li>
 
-    </div>
+
+
+
+
+              </ul>
+          </div>
+      </div>
   );
 };
 

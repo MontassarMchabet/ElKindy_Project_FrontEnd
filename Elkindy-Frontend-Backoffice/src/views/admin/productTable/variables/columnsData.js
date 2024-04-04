@@ -1,5 +1,9 @@
 export const productsData = [
   {
+    Header: "Image", 
+    accessor: "images",
+  },
+  {
     Header: "title",
     accessor: "title",
   },
