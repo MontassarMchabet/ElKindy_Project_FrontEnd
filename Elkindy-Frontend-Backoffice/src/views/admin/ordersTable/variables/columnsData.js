@@ -1,6 +1,6 @@
 export const productsData = [
   {
-    Header: "user", 
+    Header: "client's username", 
     accessor: "user.username",
   },
   {
@@ -12,7 +12,7 @@ export const productsData = [
     accessor: "totalPriceAfterDiscount",
   },
   {
-    Header: "paidAt",
+    Header: "paid At",
     accessor: "paidAt",
   },
   {

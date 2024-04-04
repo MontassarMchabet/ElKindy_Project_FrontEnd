@@ -368,15 +368,6 @@ export const productSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.orderedProduct = action.payload;
-        if (state.isSuccess) {
-          Swal.fire({
-            position: "top-end",
-            icon: "success",
-            title: "order Added Succussfully!",
-            showConfirmButton: false,
-            timer: 1500
-          });
-        }
       })
       .addCase(createAnOrder.rejected, (state, action) => {
         state.isLoading = false;

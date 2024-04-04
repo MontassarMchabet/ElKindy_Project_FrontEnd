@@ -199,8 +199,7 @@ export default function ColumnsTable(props) {
 
 
     const handleSaveEdit = async () => {
-        const isValid = await validateForm();
-        if (isValid) {
+        
             try {
                 if (imagesFile) {
                     const formDataToSend = new FormData();
@@ -217,14 +216,14 @@ export default function ColumnsTable(props) {
                     );
                     editedProduct.images = uploadResponse.data.downloadURL[0];
                 }
-                await axios.patch(`http://localhost:9090/api/product/${editedProduct._id}`, editedProduct);
-
+                await axios.put(`http://localhost:9090/api/product/${editedProduct._id}`, editedProduct);
+                setErrors('');
                 setIsEditModalOpen(false);
                 fetchData();
             } catch (error) {
                 console.error("Error updating user:", error);
             }
-        }
+        
     };
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [imagesFile, setImagesFile] = useState("");
