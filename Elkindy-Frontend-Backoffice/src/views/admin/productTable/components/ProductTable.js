@@ -1,5 +1,6 @@
 import axios from "axios";
-import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button, Select } from "@chakra-ui/react";
+import api from "services/api";
+import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button, Select, Textarea } from "@chakra-ui/react";
 import { ViewIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { AddIcon } from '@chakra-ui/icons'
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, ModalFooter, FormControl, FormLabel, Input, Grid, SimpleGrid } from "@chakra-ui/react";
@@ -104,6 +105,7 @@ export default function ColumnsTable(props) {
 
     const [isModalViewOpen, setIsModalViewOpen] = useState(false);
     const [productInfo, setProductInfo] = useState(null);
+    const [price, setPrice] = useState(0);
 
     const handleView = (productData) => {
         setProductInfo(productData);
@@ -124,24 +126,34 @@ export default function ColumnsTable(props) {
         price: "",
         quantity: "",
         category: "",
+        images: "",
     });
+    const [editedProduct, setEditedProduct] = useState({});
     const [errors, setErrors] = useState({});
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        if (e.target.type === "file") {
+            setFormData({ ...formData, [e.target.name]: e.target.files[0] });
+        } else {
+            setFormData({ ...formData, [e.target.name]: e.target.value });
+        }
     };
     const validateForm = async () => {
         let errors = {};
 
         if (!formData.title.trim()) {
-            errors.title = 'All fields are required'
+            errors.title = 'title is required'
         } else if (!formData.description.trim()) {
-            errors.description = 'All fields are required'
+            errors.description = 'description is required'
         } else if (!formData.price.trim()) {
-            errors.price = 'All fields are required'
+            errors.price = 'price is required'
+        } else if (!formData.price || formData.price <= 0) {
+            errors.price = 'Price should be greater than 0';
         } else if (!formData.quantity.trim()) {
-            errors.quantity = 'All fields are required'
+            errors.quantity = 'quantity is required'
+        } else if (!formData.quantity || formData.quantity <= 0) {
+            errors.quantity = 'Quantity should be greater than 0';
         } else if (!formData.category.trim()) {
-            errors.category = 'All fields are required'
+            errors.category = 'category is required'
         }
 
         setErrors(errors);
@@ -150,22 +162,88 @@ export default function ColumnsTable(props) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const isValid = await validateForm();
+        if (isValid) {
+            try {
 
-        console.log("Submitting form");
+                const formDataToSend = new FormData();
+                formDataToSend.append("image", formData.images); // Use "image" as the key
 
-        try {
-            const response = await axios.post(
-                "http://localhost:9090/api/product",
-                formData
-            );
-            fetchData()
-            closeModalPro()
-            console.log(response.data);
-        } catch (error) {
-            console.error("Error registering product:", error);
+                const uploadResponse = await axios.post(
+                    "http://localhost:9090/api/image/uploadimage",
+                    formDataToSend,
+                    {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                    }
+                );
+
+                const imagesUrl = uploadResponse.data.downloadURL[0];
+                const formDataWithImages = { ...formData, images: imagesUrl };
+
+                const response = await axios.post(
+                    "http://localhost:9090/api/product",
+                    formDataWithImages
+
+                );
+                fetchData()
+                closeModalPro()
+                console.log(response.data);
+            } catch (error) {
+                console.error("Error registering product:", error);
+            }
         }
-
     };
+
+
+
+    const handleSaveEdit = async () => {
+        
+            try {
+                if (imagesFile) {
+                    const formDataToSend = new FormData();
+                    formDataToSend.append("image", imagesFile);
+
+                    const uploadResponse = await axios.post(
+                        "http://localhost:9090/api/image/uploadimage",
+                        formDataToSend,
+                        {
+                            headers: {
+                                "Content-Type": "multipart/form-data",
+                            },
+                        }
+                    );
+                    editedProduct.images = uploadResponse.data.downloadURL[0];
+                }
+                await axios.put(`http://localhost:9090/api/product/${editedProduct._id}`, editedProduct);
+                setErrors('');
+                setIsEditModalOpen(false);
+                fetchData();
+            } catch (error) {
+                console.error("Error updating user:", error);
+            }
+        
+    };
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [imagesFile, setImagesFile] = useState("");
+    const handleEdit = (product) => {
+        setEditedProduct(product); // Charger les données du cours à éditer dans editedEvent
+        openEditModal(); // Ouvrir le formulaire d'édition
+    };
+
+    const openEditModal = () => {
+        setIsEditModalOpen(true);
+    };
+    const closeEditModal = () => {
+        setIsEditModalOpen(false);
+    };
+
+    const handleImagesChange = (e) => {
+        setImagesFile(e.target.files[0]);
+    };
+
+
 
     return (
         <Card
@@ -181,10 +259,6 @@ export default function ColumnsTable(props) {
                     lineHeight='100%'>
                     Products Table
                 </Text>
-
-
-
-
 
 
                 <Menu isOpen={isOpen1} onClose={onClose1}>
@@ -205,7 +279,7 @@ export default function ColumnsTable(props) {
                     </MenuButton>
                 </Menu>
 
-                {/* Modal for adding user */}
+                {/*////////////////////////////////// Modal for adding product ///////////////////////////////////////*/}
                 <Modal isOpen={isModalOpenPro} onClose={closeModalPro}>
                     <ModalOverlay />
                     <ModalContent>
@@ -234,7 +308,7 @@ export default function ColumnsTable(props) {
                                 </Grid>
                                 <FormControl mt={4}>
                                     <FormLabel>Description</FormLabel>
-                                    <Input type="text"
+                                    <Textarea type="text"
                                         name="description"
                                         value={formData.description}
                                         onChange={handleChange}
@@ -257,19 +331,21 @@ export default function ColumnsTable(props) {
                                     </Select>
                                 </FormControl>
                                 <FormControl mt={4}>
-                                    <FormLabel>Product picture</FormLabel>
+                                    <FormLabel>Product Images</FormLabel>
                                     <Input type="file"
-                                        name="profilePicture"
-                                        value={formData.profilePicture}
+                                        name="images"
                                         onChange={handleChange}
                                     />
+                                    {formData.images && (
+                                        <p>Selected file: {formData.images.name}</p>
+                                    )}
                                 </FormControl>
                             </ModalBody>
-                            {errors.name && <Text color="red">{errors.title}</Text>}
-                            {errors.lastname && <Text color="red">{errors.description}</Text>}
-                            {errors.email && <Text color="red">{errors.price}</Text>}
-                            {errors.username && <Text color="red">{errors.quantity}</Text>}
-                            {errors.password && <Text color="red">{errors.category}</Text>}
+                            {errors.title && <Text color="red">{errors.title}</Text>}
+                            {errors.description && <Text color="red">{errors.description}</Text>}
+                            {errors.price && <Text color="red">{errors.price}</Text>}
+                            {errors.quantity && <Text color="red">{errors.quantity}</Text>}
+                            {errors.category && <Text color="red">{errors.category}</Text>}
                             <ModalFooter>
                                 <Button colorScheme="blue" mr={3} onClick={closeModalPro}>
                                     Close
@@ -284,8 +360,7 @@ export default function ColumnsTable(props) {
             </Flex>
 
 
-
-            {/* ////////////////////////////////////////////////table////////////////////////////////////////////////////  */}
+            {/* ////////////////////////////////////////////////view////////////////////////////////////////////////////  */}
 
 
             <Modal isOpen={isModalViewOpen} onClose={closeModalViewA}>
@@ -306,6 +381,9 @@ export default function ColumnsTable(props) {
                                         mb='4px'>
                                         {productInfo.title}
                                     </Text>
+                                    <FormControl id="profilePicture" mt={4}>
+                                        <img src={productInfo.images} alt="Image" style={{ maxWidth: "250px", maxHeight: "250px", margin: "auto" }} />
+                                    </FormControl>
                                     <SimpleGrid columns='2' gap='20px'>
                                         <Information
                                             boxShadow={cardShadow}
@@ -335,12 +413,11 @@ export default function ColumnsTable(props) {
                 </ModalContent>
             </Modal>
 
-
+            {/* ////////////////////////////////////////////////delete////////////////////////////////////////////////////  */}
             <AlertDialog
                 isOpen={isDeleteDialogOpen}
                 leastDestructiveRef={cancelRef}
-                onClose={cancelDelete}
-            >
+                onClose={cancelDelete}>
                 <AlertDialogOverlay>
                     <AlertDialogContent>
                         <AlertDialogHeader fontSize="lg" fontWeight="bold">
@@ -362,6 +439,72 @@ export default function ColumnsTable(props) {
                     </AlertDialogContent>
                 </AlertDialogOverlay>
             </AlertDialog>
+
+            {/* ////////////////////////////////////////////////edit////////////////////////////////////////////////////  */}
+            <Modal isOpen={isEditModalOpen} onClose={closeEditModal}>
+                <ModalOverlay />
+                <ModalContent maxW={'800px'}>
+                    <ModalHeader>Edit Product</ModalHeader>
+                    <ModalCloseButton />
+                    {editedProduct && ( // Vérifiez si editedEvent est disponible
+                        <ModalBody>
+
+                            <FormControl id="profilePicture" mt={4}>
+                                <img src={editedProduct.images} alt="Image" style={{ maxWidth: "250px", maxHeight: "250px", margin: "auto" }} />
+                                <input type="file" name="images" onChange={handleImagesChange} />
+                            </FormControl>
+                            <Grid templateColumns="1fr 1fr" gap={4}>
+                                <FormControl>
+                                    <FormLabel>Title</FormLabel>
+                                    <Input type="text"
+                                        name="title"
+                                        value={editedProduct.title} onChange={(e) => setEditedProduct({ ...editedProduct, title: e.target.value })}
+                                    />
+                                </FormControl>
+                                <FormControl >
+                                    <FormLabel>Price</FormLabel>
+                                    <Input type="number"
+                                        name="price"
+                                        value={editedProduct.price} onChange={(e) => setEditedProduct({ ...editedProduct, price: e.target.value })}
+                                    />
+                                </FormControl>
+
+                            </Grid>
+                            <FormControl mt={4}>
+                                <FormLabel>Description</FormLabel>
+                                <Input type="text"
+                                    name="description"
+                                    value={editedProduct.description} onChange={(e) => setEditedProduct({ ...editedProduct, description: e.target.value })}
+                                />
+                            </FormControl>
+                            <FormControl mt={4}>
+                                <FormLabel>Quantity</FormLabel>
+                                <Input type="number"
+                                    name="quantity"
+                                    value={editedProduct.quantity} onChange={(e) => setEditedProduct({ ...editedProduct, quantity: e.target.value })}
+                                />
+                            </FormControl>
+                            <FormControl>
+                                <FormLabel>Category</FormLabel>
+                                <Select name="category" value={editedProduct.category} onChange={(e) => setEditedProduct({ ...editedProduct, category: e.target.value })}>
+                                    <option selected disabled >-select category-</option>
+                                    <option value="book">Book</option>
+                                    <option value="instrument">Instument</option>
+                                </Select>
+                            </FormControl>
+                        </ModalBody>
+                    )}
+                    {errors.title && <Text color="red">{errors.title}</Text>}
+                    {errors.description && <Text color="red">{errors.description}</Text>}
+                    {errors.price && <Text color="red">{errors.price}</Text>}
+                    {errors.quantity && <Text color="red">{errors.quantity}</Text>}
+                    {errors.category && <Text color="red">{errors.category}</Text>}
+                    <ModalFooter>
+                        <Button colorScheme="blue" mr={3} onClick={handleSaveEdit}>Save</Button>
+                        <Button onClick={closeEditModal}>Cancel</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
 
 
             <Table {...getTableProps()} variant='simple' color='gray.500' mb='24px'>
@@ -395,7 +538,11 @@ export default function ColumnsTable(props) {
                             <Tr {...row.getRowProps()} key={index}>
                                 {row.cells.map((cell, index) => {
                                     let data = "";
-                                    if (cell.column.Header === "title") {
+                                    if (cell.column.Header === "Image") {
+                                        data = (
+                                            <img src={cell.value} alt="Image" style={{ maxWidth: "50px", maxHeight: "50px" }} />
+                                        );
+                                    } else if (cell.column.Header === "title") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
                                                 {cell.value}
@@ -435,7 +582,7 @@ export default function ColumnsTable(props) {
                                                     me='5px'
                                                     color={"green.500"}
                                                     cursor="pointer"
-                                                /*onClick={() => handleEdit(row.original)}*/
+                                                    onClick={() => handleEdit(row.original)}
                                                 />
                                                 {/* Delete icon */}
 

@@ -27,6 +27,7 @@ import Scheduling from "views/admin/Scheduling";
 import ExamTables from "views/admin/examTables";
 import Tickets from "views/admin/tickets";
 import productTable from "views/admin/productTable";
+import ordersTable from "views/admin/ordersTable";
 
 
 const routes = [
@@ -85,16 +86,22 @@ const routes = [
       />
     ),
     component: Events,
-    // secondary: true,HEAD
-  },{
-
-  }, {
-
-    name: "Products",
+    secondary: true,
+  },
+  {
+    name: "Products Table",
     layout: "/admin",
     icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
     path: "/products",
     component: productTable,
+
+  },
+  {
+    name: "Orders Table",
+    layout: "/admin",
+    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+    path: "/orders",
+    component: ordersTable,
 
   },
   {

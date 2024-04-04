@@ -22,6 +22,14 @@ import Wishlist from "./pages/shop/pages/Wishlist";
 import CompareProduct from "./pages/shop/pages/CompareProduct";
 import AccountComponent from "./pages/Account";
 import ExamsComponent from "./pages/Exams";
+
+import Cart from "./pages/shop/pages/Cart.jsx";
+import Checkout from "./pages/shop/pages/Checkout.jsx";
+import Success from "./pages/shop/pages/Success.jsx";
+import Fail from "./pages/shop/pages/Fail.jsx";
+import Orders from "./pages/shop/pages/Orders.jsx";
+ 
+
 import Piano from "./pages/Virtualinstrument/Piano";
 import Drums from "./pages/Virtualinstrument/Drums";
 import SubscribePage from "./pages/Subscribe";
@@ -79,12 +87,22 @@ function App() {
         <Route path="/events" element={<EventsPage />} />
         <Route path="/shop" element={<Home />} />
         <Route path="/shop/products" element={<OurStore />} />
-        <Route path="/shop/products/id" element={<SingleProduct />} />
+        <Route path="/shop/products/:id" element={<SingleProduct />} />
         <Route path="/shop/wishlist" element={<Wishlist />} />
         <Route path="/shop/compare-product" element={<CompareProduct />} />
+        <Route path="/shop/cart" element={<Cart />} />
+        <Route path="/shop/my-orders" element={<Orders />} />
+        <Route path="/shop/checkout" element={<Checkout />} />
+        <Route path="/success" element={<Success />} />
+        <Route path="/fail" element={<Fail />} />
+
+        {/* <Route path="/blog" element={<BlogPage />} />
+        <Route path="/blog-details" element={<BlogDetailsPage />} /> */}
+
         <Route path="/subscribe" element={<SubscribePage />} />
         <Route path="/piano" element={<Piano />} />
         <Route path="/drums" element={<Drums />} />
+
 
       </Routes>
     </>
