@@ -32,6 +32,10 @@ import NotesPage from "./pages/Exams/notespage.jsx";
 import AccountComponent from "./pages/Account";
 import ExamsComponent from "./pages/Exams";
 
+import PlanningComponent from "./pages/Planning";
+ 
+
+
 import Cart from "./pages/shop/pages/Cart.jsx";
 import Checkout from "./pages/shop/pages/Checkout.jsx";
 import Success from "./pages/shop/pages/Success.jsx";
@@ -42,6 +46,7 @@ import Orders from "./pages/shop/pages/Orders.jsx";
 import Piano from "./pages/Virtualinstrument/Piano";
 import Drums from "./pages/Virtualinstrument/Drums";
 import SubscribePage from "./pages/Subscribe";
+
 
 function App() {
   useEffect(() => {
@@ -100,8 +105,12 @@ function App() {
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog-details" element={<BlogDetailsPage />} />
 
+        <Route path="/planning" element={<PlanningComponent />} />
+
+
         <Route path="/exam-details/:id" element={<ExamDetailsPage />} />
         <Route path="/notes" element={<NotesPage />} />
+
         <Route path="/events" element={<EventsPage />} />
 
         <Route path="/events/:eventId" element={<EventDetailPage />} />
@@ -119,9 +128,6 @@ function App() {
         <Route path="/shop/checkout" element={<Checkout />} />
         <Route path="/success" element={<Success />} />
         <Route path="/fail" element={<Fail />} />
-
-        {/* <Route path="/blog" element={<BlogPage />} />
-        <Route path="/blog-details" element={<BlogDetailsPage />} /> */}
 
         <Route path="/subscribe" element={<SubscribePage />} />
         <Route path="/piano" element={<Piano />} />

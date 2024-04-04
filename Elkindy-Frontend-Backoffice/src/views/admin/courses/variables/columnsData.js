@@ -4,16 +4,16 @@
       accessor: "name",
     },
     {
-      Header: "type",
-      accessor: "type",
-    },
-    {
-      Header: "duration",
-      accessor: "duration",
+      Header: "level",
+      accessor: "level",
     },
     {
       Header: "capacity",
       accessor: "capacity",
+    },
+    {
+      Header: "users",
+      accessor: "users",
     },
     {
       Header: "ACTIONS",
