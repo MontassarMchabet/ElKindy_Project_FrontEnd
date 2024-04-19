@@ -128,7 +128,6 @@ function App() {
         <Route path="/shop/checkout" element={<Checkout />} />
         <Route path="/success" element={<Success />} />
         <Route path="/fail" element={<Fail />} />
-
         <Route path="/subscribe" element={<SubscribePage />} />
         <Route path="/piano" element={<Piano />} />
         <Route path="/drums" element={<Drums />} />

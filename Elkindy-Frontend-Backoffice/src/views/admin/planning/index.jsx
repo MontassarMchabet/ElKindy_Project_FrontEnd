@@ -38,7 +38,7 @@ export default function Planning() {
                 //const courseResponse = await axios.get(`http://localhost:9090/api/classroom/getById/${planning.classroomId}`);
                 let ClassroomName = "";
                 if (planning.classroomId === undefined) {
-                    ClassroomName = "Individual";
+                    ClassroomName = "--";
                 } else {
                     const studentResponse = await axios.get(`http://localhost:9090/api/classroom/getById/${planning.classroomId}`);
                     ClassroomName = studentResponse.data.name;
@@ -48,7 +48,7 @@ export default function Planning() {
                 const teacherResponse = await axios.get(`http://localhost:9090/api/auth/user/${planning.teacherId}`);
                 let studentName = "";
                 if (planning.studentIds === undefined) {
-                    studentName = "solfege";
+                    studentName = "--";
                 } else {
                     const studentResponse = await axios.get(`http://localhost:9090/api/auth/user/${planning.studentIds}`);
                     studentName = studentResponse.data.name;

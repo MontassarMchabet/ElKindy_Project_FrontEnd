@@ -84,7 +84,7 @@ const TimeZone = () => {
           <table id='property' title='Properties' className='property-panel-table' style={{ width: '100%', marginBottom: '18px' }}>
 
           </table>
-          <ScheduleComponent style={{marginTop:100}} width='100%' height='650px' ref={scheduleObj} selectedDate={new Date()}  workHours={{ start: '11:00' }} eventSettings={{ dataSource: data,allowEditing: false ,allowAdding:false,allowDeleting:false }}   actionBegin={onActionBegin}>
+          <ScheduleComponent style={{marginTop:120}} width='100%' height='650px' ref={scheduleObj} selectedDate={new Date()} startHour='09:00'  eventSettings={{ dataSource: data,allowEditing: false ,allowAdding:false,allowDeleting:false }}   actionBegin={onActionBegin}>
             <Inject services={[Day, Week, Month, Agenda, Resize, DragAndDrop,ExcelExport]}/>
           </ScheduleComponent>
         </div>
