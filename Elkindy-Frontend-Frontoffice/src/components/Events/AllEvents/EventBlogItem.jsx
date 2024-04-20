@@ -50,7 +50,7 @@ const EventItem = ({ item }) => {
             Read More
           </Link>
 
-          <button className="button-book-ticket" ><Link to={`/events/${item._id}/${item.name}/bookTickets`}>
+          <button className="button-book-ticket" style={{color:'white'}} ><Link to={`/events/${item._id}/${item.name}/bookTickets`}>
           Book Ticket
           </Link></button>{' '}
 

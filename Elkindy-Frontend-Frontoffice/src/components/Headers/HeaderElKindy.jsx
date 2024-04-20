@@ -164,8 +164,8 @@ const HeaderOne = () => {
                                                     <Link to="/events">Events</Link>
                                                 </li>
 
-                                                <li className={cn(isActiveClassName("/"))}>
-                                                    <Link to="/">Planning</Link>
+                                                <li className={cn(isActiveClassName("/planning"))}>
+                                                    <Link to="/planning">Planning</Link>
                                                 </li>
 
                                                

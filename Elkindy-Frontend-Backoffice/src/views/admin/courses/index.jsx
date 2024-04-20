@@ -11,14 +11,19 @@ export default function Settings() {
     const [isRoomEditModalOpen, setIsRoomEditModalOpen] = useState(false); 
     const [CoursessData, setCoursesData] = useState([]);
     const [RoomsData, setRoomData] = useState([]);
+    const [currentPage, setCurrentPage] = useState(0); // Ajoutez un état pour la page courante
+    const [pageCount, setPageCount] = useState(0); // Ajoutez un état pour le nombre total de pages
+    const itemsPerPage = 3
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [currentPage]);
 
     const fetchData = async () => {
         try {
-            const CourseResponse = await axios.get('http://localhost:9090/api/Course/getall');
-            setCoursesData(CourseResponse.data);
+            const CourseResponse = await axios.get(`http://localhost:9090/api/classroom/getall?page=${currentPage}&_limit=${itemsPerPage}`);
+            setCoursesData(CourseResponse.data.classroom);
+            setPageCount(Math.ceil(CourseResponse.data.totalDocuments / itemsPerPage));
+            console.log(Math.ceil(pageCount))
             const RoomResponse = await axios.get('http://localhost:9090/api/Room/getall');
             setRoomData(RoomResponse.data);
             
@@ -26,6 +31,9 @@ export default function Settings() {
             console.error('Error fetching data:', error);
         }
     };
+    const handlePageClick = (nextPage) => {
+        setCurrentPage(nextPage);
+      };
      // Fonction pour fermer la modal d'update
      const closeCourseEditModal = () => {
         setIsCourseEditModalOpen(false);
@@ -56,7 +64,7 @@ export default function Settings() {
     const handleDelete = async () => {
         setIsCourseDeleteDialogOpen(false);
         try {
-            await axios.delete(`http://localhost:9090/api/Course/delete/${deletingUserId}`);
+            await axios.delete(`http://localhost:9090/api/classroom/delete/${deletingUserId}`);
             console.log("Course deleted successfully");
             setIsCourseEditModalOpen(false);
             fetchData();
@@ -115,6 +123,9 @@ export default function Settings() {
                     isEditModalOpen={isCourseEditModalOpen} 
                     closeEditModal={closeCourseEditModal} 
                     setIsEditModalOpen={setIsCourseEditModalOpen} 
+                    pageCount={pageCount}
+                    handlePageClick={handlePageClick}
+                    currentPage={currentPage}
                 />
             </SimpleGrid>
             <SimpleGrid

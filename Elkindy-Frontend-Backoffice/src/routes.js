@@ -8,13 +8,17 @@ import {
   MdLock,
   MdOutlineShoppingCart,
   MdPages,
-  MdPageview,
+  MdOutlineCalendarMonth ,
   MdOutlinePages,
-  MdAddAlarm,
+  MdEditCalendar ,
   MdAddTask,
+
+  MdMapsHomeWork ,
+
   MdOutlineMusicNote,
   MdOutlineMusicVideo,
   MdOutlineEvent,
+
 } from "react-icons/md";
 
 // Admin Imports
@@ -28,7 +32,12 @@ import RTL from "views/admin/rtl";
 import UserTables from "views/admin/userTables";
 import Courses from "views/admin/courses";
 import Scheduling from "views/admin/Scheduling";
+
+import Planning from "views/admin/planning";
 import ExamTables from "views/admin/examTables";
+import TeacherScheduling from "views/admin/Scheduling/teacherScheduling";
+
+
 import Tickets from "views/admin/tickets";
 import productTable from "views/admin/productTable";
 import ordersTable from "views/admin/ordersTable";
@@ -74,9 +83,8 @@ const routes = [
     ),
     component: ExamTables,
 
-    },{
 
-  }, 
+    }, 
   {
 
     name: " Events Calendar",
@@ -108,11 +116,11 @@ const routes = [
     ),
     component: Events,
     secondary: true,
+
   },
 
   {
     name: "Products Table",
-
     layout: "/admin",
     icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
     path: "/products",
@@ -143,25 +151,42 @@ const routes = [
   },
 
   {
-    name: "Courses Tables",
+    name: "Room & Classroom",
     layout: "/admin",
-    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+    icon: <Icon as={MdMapsHomeWork } width='20px' height='20px' color='inherit' />,
     path: "/course",
     component: Courses,
   },
   {
-    name: "Schedule",
+    name: "Planning",
     layout: "/admin",
-    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+    icon: <Icon as={MdEditCalendar } width='20px' height='20px' color='inherit' />,
+    path: "/planning",
+    component:Planning ,
+  },
+  {
+    name: "Sdudent Calendar",
+    layout: "/admin",
+    icon: <Icon as={MdOutlineCalendarMonth } width='20px' height='20px' color='inherit' />,
     path: "/schedule",
     component: Scheduling,
   },
+  {
+    name: "Teacher Calendar",
+    layout: "/admin",
+    icon: <Icon as={MdOutlineCalendarMonth } width='20px' height='20px' color='inherit' />,
+    path: "/teachercalender",
+    component: TeacherScheduling,
+  },
+  
 
   {
     layout: "/admin",
     path: "/:eventId/tickets",
     component: Tickets,
-  },
+  }
+  
+  
 
 ];
 

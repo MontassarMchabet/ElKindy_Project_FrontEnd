@@ -29,6 +29,8 @@ const DeveloperAreaTabs = () => {
   }, []);
   ////////////////////////////////////////////////////////////** */
   //EDIT PROFILE
+  const [profilePictureFile, setProfilePictureFile] = useState("");
+
   const handleEditClick = () => {
     setShowModal(true);
     setFormData(user);
@@ -44,14 +46,33 @@ const DeveloperAreaTabs = () => {
       [e.target.name]: e.target.value
     });
   };
-
+  const handleProfilePictureChange = (e) => {
+    setProfilePictureFile(e.target.files[0]);
+  };
   const handleSubmitClient = async (e) => {
     e.preventDefault();
     try {
+      if (profilePictureFile) {
+        const formDataToSend = new FormData();
+        formDataToSend.append("image", profilePictureFile);
+
+        const uploadResponse = await api.post(
+          "http://localhost:9090/api/image/uploadimage",
+          formDataToSend,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        user.profilePicture = uploadResponse.data.downloadURL[0];
+      }
+
       await api.patch(`http://localhost:9090/api/auth/editClient/${user._id}`, formData);
       const response = await api.get(`http://localhost:9090/api/auth/user/${user._id}`);
       setUser(response.data);
       setShowModal(false);
+      window.location.reload();
     } catch (error) {
       console.error('Error updating user data:', error);
     }
@@ -336,7 +357,10 @@ const DeveloperAreaTabs = () => {
                 {user?.role === 'client' && (
                   <form onSubmit={handleSubmitClient}>
                     {/* Client form fields */}
-                    <img src={`${user.profilePicture}`} style={{ width: "100px", height: "100px", borderRadius: "50%" }} />
+                    <formData id="profilePicture" mt={4}>
+                      <img src={user.profilePicture} alt="Profile Picture" style={{ maxWidth: "150px", maxHeight: "150px", borderRadius: "50%", margin: "auto" }} />
+                      <input type="file" name="profilePicture" onChange={handleProfilePictureChange} />
+                    </formData>
                     <div className="form-group">
                       <label htmlFor="name">Name</label>
                       <input
