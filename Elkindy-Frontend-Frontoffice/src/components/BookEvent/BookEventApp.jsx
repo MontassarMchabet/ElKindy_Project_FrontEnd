@@ -44,7 +44,7 @@ function App() {
     <Layout header={4} footer={1}>
       
         <div className="book">
-          <LeftPanel />
+          {/* <LeftPanel /> */}
           <RightPanel />
         </div>
       

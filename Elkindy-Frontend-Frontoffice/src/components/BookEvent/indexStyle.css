@@ -39,7 +39,7 @@
 
 .book .left,
 .right {
-    width: 80%;
+    width: 100%;
     position: relative;
     height: 100%;
     /* border: 1px solid #fff; */
@@ -102,30 +102,6 @@
     background: unset;
 }
 
-.book .right::before {
-    position: absolute;
-    content: '';
-    width: 95%;
-    height: 290px;
-    /* border: 1px solid #fff; */
-    /* background: url(/img/events/bruno_mantovanicheloisa_bortz.jpeg)no-repeat center -30px/cover; */
-    background: url('img/bruno_mantovanicheloisa_bortz.jpeg') no-repeat center -30px/cover;
-
-    z-index: -10;
-    border-radius: 20px;
-}
-
-.book .right::after {
-    position: absolute;
-    content: '';
-    width: 95%;
-    height: 200px;
-    /* border: 1px solid #fff; */
-    top: 0;
-    background: linear-gradient(0deg, transparent, #1f2025);
-    z-index: -10;
-    border-radius: 20px;
-}
 
 .book .right .head_time {
     position: relative;
@@ -294,9 +270,9 @@
     box-shadow: inset 0px 10px 20px var(--color);
     text-align: center;
     padding-top: 15px;
-    color: #fff;
+    color: #f89340;
     letter-spacing: 5px;
-    font-size: 12px;
+    font-size: 20px;
     /* display: none; */
 }
 

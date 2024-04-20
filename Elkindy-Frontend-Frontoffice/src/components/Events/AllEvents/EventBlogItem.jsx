@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const EventItem = ({ item }) => {
   return (
     <div className="inner-blog-item-1">
-      <Link to={item.url} className="inner-blog-thumb">
+      <Link to={`/events/${item._id}`} className="inner-blog-thumb">
         <img src={item.imageUrl} alt="" style={{ width: "450px", height: "225px" }} />
       </Link>
 
@@ -40,7 +40,7 @@ const EventItem = ({ item }) => {
         </div>
 
         <h2 className="title">
-          <Link to={item.url}>{item.name}</Link>
+          <Link to={`/events/${item._id}`}>{item.name}</Link>
         </h2>
 
         <p>{item.description}</p>

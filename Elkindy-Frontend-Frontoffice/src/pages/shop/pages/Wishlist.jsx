@@ -56,7 +56,7 @@ const Wishlist = () => {
                     />
                     <div className="wishlist-card-image">
                       <img
-                        src={watch}
+                        src={item.images}
                         className="img-fluid w-100"
                         alt="watch"
                       />
