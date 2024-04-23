@@ -45,7 +45,12 @@ export default function ColumnsTable(props) {
     const textColorPrimary = useColorModeValue("secondaryGray.900", "white");
     const [editedRoom, seteditedRoom] = useState({}); 
  
-        const handleSaveEdit = async () => {
+    const handleSaveEdit = async () => {
+        const isCorrectDuration = await checkDurationOfCourse(editedRoom.startDate, editedRoom.endDate,editedRoom.type);
+        if (!isCorrectDuration) {
+           openDurationPopup();
+           return;
+        }
             const isRoomAvailable = await checkRoomAvailability(editedRoom.roomId, editedRoom.date, editedRoom.startDate, editedRoom.endDate);
         if (!isRoomAvailable) {
             openRoomAvailablePopup();
@@ -69,13 +74,7 @@ export default function ColumnsTable(props) {
                     return; // Arrêtez le traitement si la salle n'est pas disponible
                 }
          }
-        const isCorrectDuration = await checkDurationOfCourse(editedRoom.startDate, editedRoom.endDate,editedRoom.type);
-    
-    // Afficher une alerte en fonction du résultat
-        if (!isCorrectDuration) {
-           openDurationPopup();
-           return;
-        }
+        
         if(editedRoom.type==="solfège"){
                 const TotalStudyHours = await calculateTotalStudyHours(editedRoom.classroomId, editedRoom.date, editedRoom.startDate, editedRoom.endDate);
                 if (!TotalStudyHours) {
@@ -386,6 +385,16 @@ const calculateTotalStudyHours  = async (classroomId,date,startTime, endTime) =>
             fetchData();
             closeModalR();
             console.log(response.data);
+            setFormData({
+                date: "",
+                startDate: "",
+                endDate: "",
+                type: "",
+                roomId: "",
+                teacherId: "",
+                studentIds: "",
+                classroomId: ""
+            });
         } catch (error) {
             console.error("Error registering prof:", error);
         }

@@ -123,7 +123,7 @@ const GroupCustomWorkDays = () => {
     return (<div className='schedule-control-section'>
       <div className='col-lg-12 control-section'>
         <div className='control-wrapper'>
-          <ScheduleComponent style={{marginTop:100}} ref={schedule => scheduleObj = schedule} cssClass='custom-work-days' width='100%' height='650px' selectedDate={new Date()} currentView='WorkWeek' resourceHeaderTemplate={resourceHeaderTemplate} eventSettings={{ dataSource: data,allowEditing: false ,allowAdding:false ,allowDeleting:false  }}    group={{ resources: ['teachers'] }} >
+          <ScheduleComponent style={{marginTop:100}} ref={schedule => scheduleObj = schedule} cssClass='custom-work-days' width='100%' height='650px' selectedDate={new Date()} startHour='09:00' currentView='WorkWeek' resourceHeaderTemplate={resourceHeaderTemplate} eventSettings={{ dataSource: data,allowEditing: false ,allowAdding:false ,allowDeleting:false  }}    group={{ resources: ['teachers'] }} >
             <ResourcesDirective>
               <ResourceDirective field='teacherId' title='Doctor Name' name='teachers' dataSource={resourceData} textField='text' idField='id' groupIDField='groupId' colorField='color' workDaysField='workDays' startHourField='startHour' endHourField='endHour'/>
             </ResourcesDirective>

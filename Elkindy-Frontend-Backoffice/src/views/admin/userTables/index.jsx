@@ -5,7 +5,7 @@ import ProfTable from "views/admin/userTables/components/ProfTable";
 import React, { useState, useEffect, useRef } from "react";
 import api from "services/api";
 import { adminsData, profsData, clientsData } from "./variables/columnsData";
-
+import axios from "axios";
 export default function Settings() {
 
     ////////////////////////////////////////////////////////////////////
@@ -14,8 +14,10 @@ export default function Settings() {
     const [adminssData, setAdminsData] = useState([]);
     const [clientssData, setClientsData] = useState([]);
     const [profssData, setProfsData] = useState([]);
+    const [classroomOptions, setclassroomOptions] = useState([]);
     useEffect(() => {
         fetchData();
+        fetchClassroomOptions();
     }, []);
     const fetchData = async () => {
         try {
@@ -35,7 +37,26 @@ export default function Settings() {
                     'Content-Type': 'application/json'
                 }
             });
-            setClientsData(clientResponse.data);
+            console.log(clientResponse.data)
+            const updatedPlannings = await Promise.all(clientResponse.data.map(async (planning) => {
+        
+                let ClassroomName = "";
+                if (planning.classroom === undefined) {
+                    ClassroomName = "--";
+                } else {
+                    const studentResponse = await axios.get(`http://localhost:9090/api/classroom/getById/${planning.classroom}`);
+                    ClassroomName = studentResponse.data.name;
+                    console.log(ClassroomName)
+                }
+               
+                return {
+                    ...planning,
+                     courseName: ClassroomName, 
+                    
+                };
+            }));
+       
+            setClientsData(updatedPlannings);
 
             const profResponse = await api.get('http://localhost:9090/api/auth/profs', {
                 headers: {
@@ -49,9 +70,17 @@ export default function Settings() {
             console.error('Error fetching data:', error);
         }
     };
-
+    
     ////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////
+    const fetchClassroomOptions = async () => {
+        try {
+            const response = await axios.get('http://localhost:9090/api/classroom/getall');
+            setclassroomOptions(response.data.classroom);
+        } catch (error) {
+            console.error('Error fetching classroom:', error);
+        }
+    };
     ////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////
     // EDIT UWU
@@ -196,6 +225,7 @@ export default function Settings() {
                         isEditModalOpenC={isEditModalOpenC}
                         closeEditModalC={closeEditModalC}
                         setIsEditModalOpenC={setIsEditModalOpenC}
+                        classroomoptions={classroomOptions}
                     />
                 </SimpleGrid>
             </Box>

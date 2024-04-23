@@ -58,6 +58,7 @@ export  const adminsData = [
     Header: "Verified",
     accessor: "isEmailVerified",
   },
+  
   {
     Header: "ACTIONS",
   },
@@ -154,6 +155,14 @@ export const clientsData = [
   {
     Header: "Verified",
     accessor: "isEmailVerified",
+  },
+  {
+    Header: "level",
+    accessor: "level",
+  },
+  {
+    Header: "classroom",
+    accessor: "classroom",
   },
   {
     Header: "ACTIONS",

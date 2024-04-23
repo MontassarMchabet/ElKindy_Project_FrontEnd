@@ -14,7 +14,7 @@ import {
     Th,
     Thead,
     Tr,
-    useColorModeValue,
+    useColorModeValue,Select
 } from "@chakra-ui/react";
 import {
     InputGroup,
@@ -50,7 +50,7 @@ import Information from "views/admin/profile/components/Information";
 import { MdCheckCircle, MdCancel, MdOutlineError } from "react-icons/md";
 export default function ColumnsTable(props) {
     const { columnsData, tabledata, handledelete, canceldelete, cancelref, confirmDelete, isDeleteDialogOpen,
-        isModalOpenC, openModalC, closeModalC, closeEditModalC, isEditModalOpenC, setIsEditModalOpenC, fetchData } = props;
+        isModalOpenC, openModalC, closeModalC, closeEditModalC, isEditModalOpenC, setIsEditModalOpenC, fetchData , classroomoptions} = props;
     const [show, setShow] = React.useState(false);
     const handleClick = () => setShow(!show);
     ////////////////////////
@@ -598,7 +598,18 @@ export default function ColumnsTable(props) {
                                 <FormLabel>School Grade</FormLabel>
                                 <Input type="text" value={editedUser.level} onChange={(e) => setEditedUser({ ...editedUser, level: e.target.value })} />
                             </FormControl>
-
+                            <FormControl>
+                            <FormLabel>Classroom</FormLabel>
+                            <Select
+                             name="classroom"
+                            value={editedUser.classroom}
+                            onChange={(e) => setEditedUser({ ...editedUser, classroom: e.target.value })}  >                                             
+                             <option value="">Select Classroom</option>
+                            {classroomoptions.map(classroom => (
+                            <option key={classroom.id} value={classroom._id}>{classroom.name}</option>
+                            ))}
+                            </Select>                                            
+                            </FormControl>                                                                     
                             
                         </ModalBody>
                     )}
@@ -758,7 +769,21 @@ export default function ColumnsTable(props) {
                                                 {cell.value}
                                             </Text>
                                         );
-                                    } else if (cell.column.Header === "Birth date") {
+                                    } else if (cell.column.Header === "level") {
+                                        data = (
+                                            <Text color={textColor} fontSize='sm' fontWeight='700'>
+                                                {cell.value}
+                                            </Text>
+                                        );
+                                    }
+                                    else if (cell.column.Header === "classroom") {
+                                        data = (
+                                            <Text color={textColor} fontSize='sm' fontWeight='700'>
+                                                 {row.original.courseName}
+                                            </Text>
+                                        );
+                                    }
+                                     else if (cell.column.Header === "Birth date") {
                                         const date = new Date(cell.value);
                                         const formattedDate = date.toISOString().split('T')[0];
                                         data = (
@@ -766,6 +791,7 @@ export default function ColumnsTable(props) {
                                                 {formattedDate}
                                             </Text>
                                         );
+
                                         /*} else if (cell.column.Header === "PROGRESS") {
                                             data = (
                                                 <Flex align='center'>
