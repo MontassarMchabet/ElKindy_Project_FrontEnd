@@ -6,7 +6,7 @@ import cn from "classnames";
 const HeaderTwo = () => {
   useEffect(() => {
     /*=============================================
-	=     Menu sticky & Scroll to top      =
+  =     Menu sticky & Scroll to top      =
 =============================================*/
     $(window).on("scroll", function () {
       var scroll = $(window).scrollTop();
@@ -51,7 +51,7 @@ const HeaderTwo = () => {
     }
 
     /*=============================================
-	=          header btn active               =
+  =          header btn active               =
 =============================================*/
     $(function () {
       $(".header-btn").on("click", function () {
@@ -179,7 +179,7 @@ const HeaderTwo = () => {
                           className={cn(
                             "menu-item-has-children",
                             ["/blog", "/blog-details"].includes(pathname) &&
-                              "active"
+                            "active"
                           )}
                         >
                           <a href="#">News</a>
@@ -198,7 +198,7 @@ const HeaderTwo = () => {
                         </li>
 
 
-                        
+
 
 
                       </ul>

@@ -168,20 +168,20 @@ const HeaderOne = () => {
                                                     <Link to="/planning">Planning</Link>
                                                 </li>
 
-                                               
-                                                {isLoggedIn ? (
-                                                            <>
-                                                               <li className={cn(isActiveClassName("/exams"))}>
-                                                    <Link to="/exams">Exams</Link>
-                                                </li>
 
-                                                            </>
-                                                        ) : (
-                                                            <>
-                                                                
-                                                            </>
-                                                        )}
-                                             
+                                                {isLoggedIn ? (
+                                                    <>
+                                                        <li className={cn(isActiveClassName("/exams"))}>
+                                                            <Link to="/exams">Exams</Link>
+                                                        </li>
+
+                                                    </>
+                                                ) : (
+                                                    <>
+
+                                                    </>
+                                                )}
+
 
                                                 <li className={cn(isActiveClassName("/shop"))}>
                                                     <Link to="/shop">Shop</Link>
@@ -269,7 +269,7 @@ const HeaderOne = () => {
                                         </div>
                                         <div className="nav-logo">
                                             <Link to="/">
-                                                <img src="/img/logo/logo.png" alt="Logo" />
+                                                <img src="/img/logo/logokindy.png" alt="Logo" />
                                             </Link>
                                         </div>
                                         <div className="menu-outer">

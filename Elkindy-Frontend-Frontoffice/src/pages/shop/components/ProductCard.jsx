@@ -17,15 +17,15 @@ const ProductCard = (props) => {
   let location = useLocation();
   const dispatch = useDispatch();
 
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const addToWish = (prodId) => {
-    if (prodId) { 
-        dispatch(addToWishlist(prodId));
+    if (prodId) {
+      dispatch(addToWishlist(prodId));
     } else {
-        console.error("Product ID is undefined");
+      console.error("Product ID is undefined");
     }
-}
+  }
 
   return (
     <>
@@ -41,12 +41,12 @@ const navigate = useNavigate();
               className="product-card position-relative"
             >
               <div className="wishlist-icon position-absolute">
-                <button className="border-0 bg-transparent" onClick={(e)=>{addToWish(item._id)}}>
+                <button className="border-0 bg-transparent" onClick={(e) => { addToWish(item._id) }}>
                   <img src={wish} alt="wishlist" />
                 </button>
               </div>
               <div  >
-                <img src={item.images} className="img-fluid mx-auto" alt="product image"style={{height:250}} />
+                <img src={item.images} className="img-fluid mx-auto" alt="product image" style={{ height: 250 }} />
                 {/*<img src={watch2} className="img-fluid mx-auto" alt="product image" />*/}
               </div>
               <div className="product-details">
@@ -72,7 +72,7 @@ const navigate = useNavigate();
                     <img src={prodcompare} alt="compare" />
                   </button>
                   <button className="border-0 bg-transparent">
-                    <img onClick={()=>navigate("/shop/products/"+item._id)} src={view} alt="view" />
+                    <img onClick={() => navigate("/shop/products/" + item._id)} src={view} alt="view" />
                   </button>
                   <button className="border-0 bg-transparent">
                     <img src={addcart} alt="addcart" />
