@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="0f4fef58-9529-44ee-bcfd-c478cc978bf1" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/Elkindy-Frontend-Backoffice/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/Elkindy-Frontend-Backoffice/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Elkindy-Frontend-Backoffice/src/views/admin/eventsCalendar/components/EventCalendar.js" beforeDir="false" afterPath="$PROJECT_DIR$/Elkindy-Frontend-Backoffice/src/views/admin/eventsCalendar/components/EventCalendar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Elkindy-Frontend-Frontoffice/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Elkindy-Frontend-Frontoffice/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Elkindy-Frontend-Frontoffice/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/Elkindy-Frontend-Frontoffice/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Elkindy-Frontend-Frontoffice/src/components/BookEvent/BookEventApp.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Elkindy-Frontend-Frontoffice/src/components/BookEvent/BookEventApp.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Elkindy-Frontend-Frontoffice/src/components/BookEvent/DateAndTime.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Elkindy-Frontend-Frontoffice/src/components/BookEvent/RightPanel.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Elkindy-Frontend-Frontoffice/src/components/BookEvent/RightPanel.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Elkindy-Frontend-Frontoffice/src/components/BookEvent/videos/Orchestre symphonique du Conservatoire .mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Elkindy-Frontend-Frontoffice/src/components/Events/EventsDetail/BlogCommentItem.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Elkindy-Frontend-Frontoffice/src/components/Events/EventsDetail/BlogCommentItem.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Elkindy-Frontend-Frontoffice/src/components/Events/EventsDetail/EventDetails.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/Elkindy-Frontend-Frontoffice/src/components/Events/EventsDetail/EventDetails.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Elkindy-Frontend-Frontoffice/src/services/eventsCommentApi.js" beforeDir="false" afterPath="$PROJECT_DIR$/Elkindy-Frontend-Frontoffice/src/services/eventsCommentApi.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Elkindy-Frontend-Frontoffice/src/styles/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/Elkindy-Frontend-Frontoffice/src/styles/style.css" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 7
+}]]></component>
+  <component name="ProjectId" id="2fc7uXUmNOHtpGWFVYKKxgdRpy6" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "EventManagement",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0f4fef58-9529-44ee-bcfd-c478cc978bf1" name="Changes" comment="" />
+      <created>1714088744064</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1714088744064</updated>
+      <workItem from="1714088748229" duration="12000" />
+    </task>
+    <servers />
+  </component>
+</project>

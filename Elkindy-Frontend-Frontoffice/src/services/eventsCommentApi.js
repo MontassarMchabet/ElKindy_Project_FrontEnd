@@ -51,9 +51,9 @@ export async function deleteComment(id, config) {
     throw error;
   }
 }
-export async function deleteMyComment(commentId) {
+export async function deleteMyComment(id) {
   try {
-    const response = await axios.delete(`${apiURL}/deletemyComment/${commentId}`);
+    const response = await axios.delete(`${apiURL}/deleteMyComment/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error deleting comment:", error);

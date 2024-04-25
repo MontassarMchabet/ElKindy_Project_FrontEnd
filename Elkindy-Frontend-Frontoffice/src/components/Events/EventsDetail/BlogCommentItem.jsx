@@ -59,6 +59,7 @@ const BlogCommentItem = ({ comment, className }) => {
 
       getUserIdFromToken();
   }, []);
+  console.log('userid',userId)
   const handleEditButtonClick = () => {
     setIsEditing(true);
   };
@@ -76,8 +77,6 @@ const BlogCommentItem = ({ comment, className }) => {
 
 const handleSaveButtonClick = async () => {
   try {
-    console.log("userId: ", userId); // Assurez-vous que userId est défini correctement
-    console.log('commentId',comment._id)
     await updateComment(comment._id, { comment: editedComment, user: userId });
     setIsEditing(false);
   } catch (error) {

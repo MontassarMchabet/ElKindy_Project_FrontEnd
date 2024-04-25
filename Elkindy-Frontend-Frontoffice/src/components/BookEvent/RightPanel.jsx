@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import JsBarcode from "jsbarcode";
-import DateAndTime from './DateAndTime';
 import { getEventById } from "../../services/eventsApi";
 import { getEventTickets } from "../../services/eventsApi";
 import { updateEvent } from "../../services/eventsApi";
@@ -8,16 +7,30 @@ import { addTickets } from "../../services/ticketsApi";
 import { useParams } from "react-router-dom";
 import { jwtDecode } from 'jwt-decode';
 import Cookies from 'js-cookie';
+import Swal from 'sweetalert2'
+import { createAnOrder } from '../../pages/shop/features/productSlice';
+import axios from "axios";
+
+
 
 
 const RightPanel = () => {
     const [eventDetails, setEventDetails] = useState(null);
-    const { eventId, movieParam } = useParams();
+    const { eventId } = useParams();
     const [mainDate, setMainDate] = useState(null);
     const [selectedSeats, setSelectedSeats] = useState([]);
     const [movieData, setMovieData] = useState([]);
     const [eventTickets, setEventTickets] = useState([]);
     const [userId, setUserId] = useState(null);
+    const [totalPrice, setTotalPrice] = useState(null);
+
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+            confirmButton: "btn btn-success",
+            cancelButton: "btn btn-danger"
+        },
+        buttonsStyling: false
+    });
 
     useEffect(() => {
         const getUserIdFromToken = () => {
@@ -46,6 +59,7 @@ const RightPanel = () => {
         fetchEventDetails();
     }, [eventId]);
 
+
     useEffect(() => {
         if (eventDetails) {
             const filteredData = eventDetails.series ? [eventDetails] : [];
@@ -69,7 +83,7 @@ const RightPanel = () => {
 
     const handleBookTicketClick = () => {
         // Vider les anciens tickets avant de commencer le traitement des sièges sélectionnés
-    document.getElementById('ticket').innerHTML = '';
+        document.getElementById('ticket').innerHTML = '';
         const selectedSeats = document.getElementsByClassName('selected');
         Array.from(selectedSeats).forEach((el) => {
             const seatNo = parseInt(el.getAttribute('book')) + 1;
@@ -101,6 +115,7 @@ const RightPanel = () => {
                 }
             }
             document.getElementById('chair').innerHTML = ''; // Ajoutez cette ligne pour vider les sièges existants
+
             // const data = PvrData.filter((obj) => obj.date === mainDate && obj.movie === window.location.href.split('?')[1]);
             // addSeats(data);
 
@@ -130,7 +145,7 @@ const RightPanel = () => {
                 const minutes = date.getMinutes();
                 return `${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
             };
-            
+
             ticketDiv.innerHTML = `
                             <div class="barcode">
                                 <div class="card1">
@@ -172,11 +187,13 @@ const RightPanel = () => {
                             </div>        `;
             document.getElementById('ticket').appendChild(ticketDiv);
             JsBarcode(`#${seatSr}${seatNo}barcode`, `619${seatSr.toUpperCase()}${seatNo}${seatPrice}${mainDate}`);
+
         });
     };
 
     const handleBackTicketClick = () => {
-        document.getElementById('chair').innerHTML = ''; // Ajoutez cette ligne pour vider les sièges existants
+        // document.getElementById('chair').innerHTML = ''; // Ajoutez cette ligne pour vider les sièges existants
+        document.getElementById('ticket').innerHTML = '';
 
         document.getElementById('screen').style.display = 'inline-block';
         document.getElementById('chair').style.display = 'block';
@@ -186,8 +203,145 @@ const RightPanel = () => {
         document.getElementById('back_ticket').style.display = 'none';
         document.getElementById('ticket').style.display = 'none';
         setSelectedSeats([]);
+        document.getElementById('chair').innerHTML = ''; // Ajoutez cette ligne pour vider les sièges existants
+
     };
 
+    // const payment = async () => {
+    //     await axios
+    //         .post("http://localhost:9090/tickets/payement",)
+    //         .then((res) => {
+    //             const { result } = res.data
+    //             window.location.href = result.link;
+    //             console.log(res.data);
+
+    //             swalWithBootstrapButtons.fire({
+    //                 title: "Reservation confirmed!",
+    //                 text: "Your reservation has been successfully confirmed.",
+    //                 icon: "success"
+    //             });
+    //         })
+    //         .catch((err) => console.error(err));
+
+
+    // }
+    // const handleConfirmReservation = async () => {
+    //     try {
+    //         // Calculer le prix total en multipliant le prix de l'événement par le nombre de sièges sélectionnés
+    //         const totalPrice = eventDetails.price * selectedSeats.length;
+
+    //         // Mettre à jour la capacité de la salle en soustrayant le nombre de sièges sélectionnés
+    //         const updatedRoomCapacity = eventDetails.room_capacity - selectedSeats.length;
+
+    //         // Obtenir la date actuelle
+    //         const currentDate = new Date();
+
+    //         // Afficher une alerte avec les boutons de Bootstrap pour confirmer la réservation
+    //         const result = await swalWithBootstrapButtons.fire({
+    //             title: "Do you want to confirm the reservation?",
+    //             text: "If you have confirmed, you will be redirected to the payment page.",
+    //             icon: "warning",
+    //             showCancelButton: true,
+    //             confirmButtonText: "Yes",
+    //             cancelButtonText: "No, Cancel",
+    //             reverseButtons: true
+    //         });
+
+    //         if (result.isConfirmed) {
+    //             // Mettre à jour l'événement dans la base de données en utilisant l'API updateEvent
+    //             await updateEvent(eventDetails._id, { room_capacity: updatedRoomCapacity });
+
+    //             // Maintenant, vous pouvez ajouter les billets comme vous le faisiez auparavant
+    //             const ticketResponse = await addTickets({
+    //                 event: eventDetails._id, // L'ID de l'événement
+    //                 user: userId, // L'ID de l'utilisateur
+    //                 price: totalPrice, // Le prix total des billets
+    //                 selectedSeats: selectedSeats, // Les sièges sélectionnés
+    //                 date: currentDate // Date actuelle
+    //             });
+
+    //             // Si la réservation des billets est réussie
+    //             console.log('Billets ajoutés:', ticketResponse);
+    //             console.log('Utilisateur:', userId);
+
+    //             // Mettre à jour l'affichage ou rediriger l'utilisateur vers une autre page
+    //             window.location.href = `/events/${eventDetails._id}/${eventDetails.movieParam}/bookTickets`;
+    //             payment(price);
+    //             // Afficher une alerte de succès
+    //             // swalWithBootstrapButtons.fire({
+    //             //     title: "Reservation confirmed!",
+    //             //     text: "Your reservation has been successfully confirmed.",
+    //             //     icon: "success"
+    //             // });
+    //             // document.getElementById('chair').innerHTML = ''; // Ajoutez cette ligne pour vider les sièges existants
+
+    //         } else if (result.dismiss === Swal.DismissReason.cancel) {
+    //             // L'utilisateur a annulé la réservation
+    //             swalWithBootstrapButtons.fire({
+    //                 title: "Cancelled",
+    //                 text: "Your reservation has been cancelled.",
+    //                 icon: "error"
+    //             }).then(() => {
+    //                 // Redirection vers une autre page après que l'utilisateur a annulé la réservation
+    //                 window.location.href = `/events/${eventDetails._id}/${eventDetails.movieParam}/bookTickets`;
+    //             });
+    //         }
+    //     } catch (error) {
+    //         console.error('Error confirming reservation:', error);
+    //         // Gérer les erreurs d'ajout de billet
+    //         swalWithBootstrapButtons.fire({
+    //             title: "An error occurred while confirming your reservation. Please try again later.",
+    //             icon: "error"
+    //         });
+    //     }
+    // };
+
+    // const payment =  (price) => {
+    //     try {
+    //         const res =  axios.post("http://localhost:9090/tickets/payement", { price: price });
+    //         const { result } = res.data;
+    //         window.location.href = result.link;
+    //         console.log("res.daatat",res.data);
+    //         console.log("res.link",result.link);
+
+    //         swalWithBootstrapButtons.fire({
+    //             title: "Reservation confirmed!",
+    //             text: "Your reservation has been successfully confirmed.",
+    //             icon: "success"
+    //         });
+    //     } catch (err) {
+    //         console.error(err);
+    //         // Gérer les erreurs de paiement
+    //         swalWithBootstrapButtons.fire({
+    //             title: "Payment Error",
+    //             text: "An error occurred during the payment process. Please try again later.",
+    //             icon: "error"
+    //         });
+    //     }
+    // };
+    // const payment = async (price) => {
+    //     try {
+    //         const res = await axios.post("http://localhost:9090/tickets/payement", { price: price });
+    //         const { result } = res.data;
+    //         window.location.href = result.link;
+    //         console.log("res.data", res.data);
+    //         console.log("result.link", result.link);
+
+    //         swalWithBootstrapButtons.fire({
+    //             title: "Reservation confirmed!",
+    //             text: "Your reservation has been successfully confirmed.",
+    //             icon: "success"
+    //         });
+    //     } catch (err) {
+    //         console.error(err);
+    //         // Gérer les erreurs de paiement
+    //         swalWithBootstrapButtons.fire({
+    //             title: "Payment Error",
+    //             text: "An error occurred during the payment process. Please try again later.",
+    //             icon: "error"
+    //         });
+    //     }
+    // };
 
 
     const handleConfirmReservation = async () => {
@@ -197,133 +351,223 @@ const RightPanel = () => {
 
             // Mettre à jour la capacité de la salle en soustrayant le nombre de sièges sélectionnés
             const updatedRoomCapacity = eventDetails.room_capacity - selectedSeats.length;
-            console.log(updatedRoomCapacity, 'updatedroommcapacity');
 
             // Obtenir la date actuelle
             const currentDate = new Date();
 
-            // Mettre à jour l'événement dans la base de données en utilisant l'API updateEvent
-            await updateEvent(eventDetails._id, { room_capacity: updatedRoomCapacity });
-
-            // Maintenant, vous pouvez ajouter les billets comme vous le faisiez auparavant
-            const ticketResponse = await addTickets({
-                event: eventDetails._id, // L'ID de l'événement
-                user: userId, // L'ID de l'utilisateur
-                price: totalPrice, // Le prix total des billets
-                selectedSeats: selectedSeats, // Les sièges sélectionnés
-                date: currentDate // Date actuelle
+            // Afficher une alerte avec les boutons de Bootstrap pour confirmer la réservation
+            const result = await swalWithBootstrapButtons.fire({
+                title: "Do you want to confirm the reservation?",
+                text: "If you have confirmed, you will be redirected to the payment page.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No, Cancel",
+                reverseButtons: true
             });
 
-            // Si la réservation des billets est réussie
-            console.log('Tickets added:', ticketResponse);
-            console.log('useer:', userId);
+            if (result.isConfirmed) {
+                // Mettre à jour l'événement dans la base de données en utilisant l'API updateEvent
+                await updateEvent(eventDetails._id, { room_capacity: updatedRoomCapacity });
 
-            // Mettre à jour l'affichage ou rediriger l'utilisateur vers une autre page
-            alert('Your reservation has been successfully confirmed!');
-            window.location.href = `/events/${eventDetails._id}/${eventDetails.movieParam}/bookTickets`;
+                // Maintenant, vous pouvez ajouter les billets comme vous le faisiez auparavant
+                const ticketResponse = await addTickets({
+                    event: eventDetails._id, // L'ID de l'événement
+                    user: userId, // L'ID de l'utilisateur
+                    price: totalPrice, // Le prix total des billets
+                    selectedSeats: selectedSeats, // Les sièges sélectionnés
+                    date: currentDate // Date actuelle
+                });
 
+                // Si la réservation des billets est réussie, procéder au paiement
+                console.log('Billets ajoutés:', ticketResponse);
+                console.log('Utilisateur:', userId);
+
+
+                // Effectuer le paiement via une requête POST axios
+                await axios.post("http://localhost:9090/tickets/payement", { amount: totalPrice })
+                    .then((res) => {
+                        const { result } = res.data;
+                        window.location.href = result.link;
+                        console.log(res.data);
+                    })
+                    .catch((err) => console.error(err));
+
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                // L'utilisateur a annulé la réservation
+                swalWithBootstrapButtons.fire({
+                    title: "Cancelled",
+                    text: "Your reservation has been cancelled.",
+                    icon: "error"
+                }).then(() => {
+                    // Redirection vers une autre page après que l'utilisateur a annulé la réservation
+                    window.location.href = `/events/${eventDetails._id}/${eventDetails.movieParam}/bookTickets`;
+                });
+            }
         } catch (error) {
             console.error('Error confirming reservation:', error);
-            // Gérer les erreurs d'ajout de billet
-            alert('An error occurred while confirming your reservation. Please try again later.');
+            // Gérer les erreurs de confirmation de la réservation
+            swalWithBootstrapButtons.fire({
+                title: "An error occurred while confirming your reservation. Please try again later.",
+                icon: "error"
+            });
+        }
+    };
+
+
+    // const handleConfirmReservation = async () => {
+    //     try {
+    //         // Calculer le prix total en multipliant le prix de l'événement par le nombre de sièges sélectionnés
+    //         const totalPrice = eventDetails.price * selectedSeats.length;
+
+    //         // Mettre à jour la capacité de la salle en soustrayant le nombre de sièges sélectionnés
+    //         const updatedRoomCapacity = eventDetails.room_capacity - selectedSeats.length;
+
+    //         // Obtenir la date actuelle
+    //         const currentDate = new Date();
+
+    //         // Afficher une alerte avec les boutons de Bootstrap pour confirmer la réservation
+    //         const result = await swalWithBootstrapButtons.fire({
+    //             title: "Do you want to confirm the reservation?",
+    //             text: "If you have confirmed, you will be redirected to the payment page.",
+    //             icon: "warning",
+    //             showCancelButton: true,
+    //             confirmButtonText: "Yes",
+    //             cancelButtonText: "No, Cancel",
+    //             reverseButtons: true
+    //         });
+
+    //         if (result.isConfirmed) {
+    //             // Mettre à jour l'événement dans la base de données en utilisant l'API updateEvent
+    //             await updateEvent(eventDetails._id, { room_capacity: updatedRoomCapacity });
+
+    //             // Maintenant, vous pouvez ajouter les billets comme vous le faisiez auparavant
+    //             const ticketResponse = await addTickets({
+    //                 event: eventDetails._id, // L'ID de l'événement
+    //                 user: userId, // L'ID de l'utilisateur
+    //                 price: totalPrice, // Le prix total des billets
+    //                 selectedSeats: selectedSeats, // Les sièges sélectionnés
+    //                 date: currentDate // Date actuelle
+    //             });
+
+    //             // Si la réservation des billets est réussie
+    //             console.log('Billets ajoutés:', ticketResponse);
+    //             console.log('Utilisateur:', userId);
+
+    //             // Mettre à jour l'affichage ou rediriger l'utilisateur vers une autre page
+    //             window.location.href = `/events/${eventDetails._id}/${eventDetails.movieParam}/bookTickets`;
+    //             payment(price);
+    //             // Afficher une alerte de succès
+    //             // swalWithBootstrapButtons.fire({
+    //             //     title: "Reservation confirmed!",
+    //             //     text: "Your reservation has been successfully confirmed.",
+    //             //     icon: "success"
+    //             // });
+    //             // document.getElementById('chair').innerHTML = ''; // Ajoutez cette ligne pour vider les sièges existants
+
+    //         } else if (result.dismiss === Swal.DismissReason.cancel) {
+    //             // L'utilisateur a annulé la réservation
+    //             swalWithBootstrapButtons.fire({
+    //                 title: "Cancelled",
+    //                 text: "Your reservation has been cancelled.",
+    //                 icon: "error"
+    //             }).then(() => {
+    //                 // Redirection vers une autre page après que l'utilisateur a annulé la réservation
+    //                 window.location.href = `/events/${eventDetails._id}/${eventDetails.movieParam}/bookTickets`;
+    //             });
+    //         }
+    //     } catch (error) {
+    //         console.error('Error confirming reservation:', error);
+    //         // Gérer les erreurs d'ajout de billet
+    //         swalWithBootstrapButtons.fire({
+    //             title: "An error occurred while confirming your reservation. Please try again later.",
+    //             icon: "error"
+    //         });
+    //     }
+    // };
+
+    const payment =  (price) => {
+        try {
+            const res =  axios.post("http://localhost:9090/tickets/payement", { price: price });
+            const { result } = res.data;
+            window.location.href = result.link;
+            console.log("res.daatat",res.data);
+            console.log("res.link",result.link);
+
+            swalWithBootstrapButtons.fire({
+                title: "Reservation confirmed!",
+                text: "Your reservation has been successfully confirmed.",
+                icon: "success"
+            });
+        } catch (err) {
+            console.error(err);
+            // Gérer les erreurs de paiement
+            swalWithBootstrapButtons.fire({
+                title: "Payment Error",
+                text: "An error occurred during the payment process. Please try again later.",
+                icon: "error"
+            });
         }
     };
 
 
 
-    const addSeats = (arr, eventTickets) => {
+    const addSeats = (arr) => {
         arr.forEach((el) => {
             const { series, seat } = el;
             console.log('EventTickets', eventTickets);
+            console.log(typeof series, "seriestype")
+            if (Array.isArray(eventTickets) && eventTickets.length > 0) {
+                if (Array.isArray(series)) {
+                    series.forEach((subSeries) => {
+                        let seriesArray = subSeries.split('-');
+                        seriesArray.forEach((character) => {
+                            let row_book = document.createElement('div');
+                            row_book.className = 'row_book';
 
-            if (typeof series === 'string') {
-                let seriesArray = series.split('-');
-                seriesArray.forEach((character) => {
-                    let row_book = document.createElement('div');
-                    row_book.className = 'row_book';
-
-                    for (let seats = 0; seats < seat; seats++) {
-                        if (seats === 0) {
-                            let span = document.createElement('span');
-                            span.innerText = character;
-                            row_book.appendChild(span);
-                        }
-                        let li = document.createElement('li');
-                        let seatId = character + seats;
-                        let isBooked = eventTickets.some(ticket => ticket.selectedSeats.includes(seatId));
-                        li.className = isBooked ? 'seat booked' : 'seat';
-                        li.id = seatId;
-                        li.setAttribute('book', seats);
-                        li.setAttribute('sr', character);
-                        li.innerText = seats + 1;
-
-                        li.onclick = () => {
-                            if (li.className === 'seat booked') {
-                                li.classList.remove('selected');
-                            } else {
-                                li.classList.toggle('selected');
-                            }
-
-                            let len = Array.from(document.getElementsByClassName('selected')).length;
-                            document.getElementById('book_ticket').style.display = len > 0 ? 'unset' : 'none';
-                        };
-
-                        row_book.appendChild(li);
-
-                        if (seats === seat - 1) {
-                            let span = document.createElement('span');
-                            span.innerText = character;
-                            row_book.appendChild(span);
-                        }
-                    }
-                    document.getElementById('chair').appendChild(row_book);
-                });
-            } else if (Array.isArray(series)) {
-                series.forEach((subSeries) => {
-                    let seriesArray = subSeries.split('-');
-                    seriesArray.forEach((character) => {
-                        let row_book = document.createElement('div');
-                        row_book.className = 'row_book';
-
-                        for (let seats = 0; seats < seat; seats++) {
-                            if (seats === 0) {
-                                let span = document.createElement('span');
-                                span.innerText = character;
-                                row_book.appendChild(span);
-                            }
-                            let li = document.createElement('li');
-                            let seatId = character + (seats + 1) + '-';
-                            console.log(seatId, 'seatId')
-                            let isBooked = eventTickets.some(ticket => ticket.selectedSeats.includes(seatId));
-                            console.log('isBooked', isBooked)
-                            li.className = isBooked ? 'seat booked' : 'seat';
-                            li.id = seatId;
-                            li.setAttribute('book', seats);
-                            li.setAttribute('sr', character);
-                            li.innerText = seats + 1;
-
-                            li.onclick = () => {
-                                if (li.className === 'seat booked') {
-                                    li.classList.remove('selected');
-                                } else {
-                                    li.classList.toggle('selected');
+                            for (let seats = 0; seats < seat; seats++) {
+                                if (seats === 0) {
+                                    let span = document.createElement('span');
+                                    span.innerText = character;
+                                    row_book.appendChild(span);
                                 }
+                                let li = document.createElement('li');
+                                let seatId = character + (seats + 1) + '-';
+                                console.log(seatId, 'seatId')
+                                let isBooked = eventTickets.some(ticket => ticket.selectedSeats.includes(seatId));
+                                console.log('isBooked', isBooked)
+                                li.className = isBooked ? 'seat booked' : 'seat';
+                                li.id = seatId;
+                                li.setAttribute('book', seats);
+                                li.setAttribute('sr', character);
+                                li.innerText = seats + 1;
 
-                                let len = Array.from(document.getElementsByClassName('selected')).length;
-                                document.getElementById('book_ticket').style.display = len > 0 ? 'unset' : 'none';
-                            };
+                                li.onclick = () => {
+                                    if (li.className === 'seat booked') {
+                                        li.classList.remove('selected');
+                                    } else {
+                                        li.classList.toggle('selected');
+                                    }
 
-                            row_book.appendChild(li);
+                                    let len = Array.from(document.getElementsByClassName('selected')).length;
+                                    document.getElementById('book_ticket').style.display = len > 0 ? 'unset' : 'none';
+                                };
 
-                            if (seats === seat - 1) {
-                                let span = document.createElement('span');
-                                span.innerText = character;
-                                row_book.appendChild(span);
+                                row_book.appendChild(li);
+
+                                if (seats === seat - 1) {
+                                    let span = document.createElement('span');
+                                    span.innerText = character;
+                                    row_book.appendChild(span);
+                                }
                             }
-                        }
-                        document.getElementById('chair').appendChild(row_book);
+                            document.getElementById('chair').appendChild(row_book);
+                        });
                     });
-                });
+
+                }
+            } else {
+                console.log("eventTickets is null or undefined.");
             }
         });
     };
@@ -331,38 +575,13 @@ const RightPanel = () => {
 
     return (
         <div className="right" >
-            <video src="/videos/Orchestre symphonique du Conservatoire .mp4" id="video"></video>
-
-            {/* {eventDetails && (
-
-                
-                <div className="head_time">
-                    
-                    <h1 id="title">{eventDetails.name}</h1>
-                    <div className="time">
-                        <h6 style={{ color: 'white' }}><i className="bi bi-clock"></i> {eventDetails.duration}</h6>
-                    </div>
-                </div>
-
-            )} */}
-            {eventDetails && (
-                <div className="head_time" >
-                    <h1 id="title">{eventDetails.name}</h1>
-                    <div className="time">
-                        <h6 style={{ color: 'white' }}><i className="bi bi-clock"></i> {eventDetails.duration}</h6>
-                    </div>
-                </div>
-            )}
-
-
-            <DateAndTime />
             <div className="screen" id="screen" >
                 The Scene
             </div>
             <div className="chair" id="chair">
                 {/* Afficher les sièges ici */}
                 {/* {addSeats(movieData)} */}
-                {addSeats(movieData, eventTickets)}
+                {addSeats(movieData)}
             </div>
             <div className="ticket" id="ticket">
                 {/* Les billets seront affichés ici */}
