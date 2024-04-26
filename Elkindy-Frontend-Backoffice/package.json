@@ -54,6 +54,7 @@
     "react-router-dom": "^5.3.4",
     "react-scripts": "5.0.0",
     "react-table": "^7.7.0",
+    "socket.io-client": "^4.7.5",
     "stream-browserify": "^3.0.0",
     "stylis": "^4.1.1",
     "stylis-plugin-rtl": "2.0.2",
@@ -93,8 +94,6 @@
   },
   "devDependencies": {
     "@types/react-router-dom": "^5.3.3",
-    "copy-cli": "^1.2.1",
-    "copy-webpack-plugin": "^12.0.2",
     "gh-pages": "^3.2.3"
   }
 }
