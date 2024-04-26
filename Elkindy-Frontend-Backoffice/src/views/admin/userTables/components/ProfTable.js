@@ -58,6 +58,7 @@ export default function ColumnsTable(props) {
     const iconColor = useColorModeValue("brand.500", "white");
     const tableInstance = useTable(
         {
+            initialState: { pageIndex: 0, pageSize: 5 },
             columns,
             data,
         },
@@ -76,6 +77,11 @@ export default function ColumnsTable(props) {
         page,
         prepareRow,
         initialState,
+        state: { pageIndex, pageSize },
+        previousPage,
+        nextPage,
+        canPreviousPage,
+        canNextPage,
     } = tableInstance;
     initialState.pageSize = 99999999999999999;
 
@@ -1025,6 +1031,17 @@ export default function ColumnsTable(props) {
                     })}
                 </Tbody>
             </Table>
+            <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                <Button onClick={() => previousPage()} disabled={!canPreviousPage}>
+                    Previous
+                </Button>
+                <Button onClick={() => nextPage()} disabled={!canNextPage}>
+                    Next
+                </Button>
+                <span>
+                    Page {pageIndex + 1} of {Math.ceil(data.length / pageSize)}
+                </span>
+            </div>
         </Card>
     );
 }

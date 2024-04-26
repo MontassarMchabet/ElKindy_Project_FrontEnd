@@ -321,6 +321,7 @@ export default function ColumnsTable(props) {
         {
             columns,
             data,
+            initialState: { pageIndex: 0, pageSize: 5 },
         },
         useGlobalFilter,
         useSortBy,
@@ -334,6 +335,11 @@ export default function ColumnsTable(props) {
         page,
         prepareRow,
         initialState,
+        state: { pageIndex, pageSize },
+        previousPage,
+        nextPage,
+        canPreviousPage,
+        canNextPage,
     } = tableInstance;
     initialState.pageSize = 99999999999999999;
 ////////////////////////////////////////////////////////////////
@@ -1023,6 +1029,17 @@ export default function ColumnsTable(props) {
                     })}
                 </Tbody>
             </Table>
+            <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                <Button onClick={() => previousPage()} disabled={!canPreviousPage}>
+                    Previous
+                </Button>
+                <Button onClick={() => nextPage()} disabled={!canNextPage}>
+                    Next
+                </Button>
+                <span>
+                    Page {pageIndex + 1} of {Math.ceil(data.length / pageSize)}
+                </span>
+            </div>
         </Card>
     );
 }
