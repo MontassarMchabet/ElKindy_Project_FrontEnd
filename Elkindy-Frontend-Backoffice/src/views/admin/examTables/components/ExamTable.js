@@ -2,8 +2,16 @@ import axios from "axios";
 import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button, Textarea } from "@chakra-ui/react";
 import { ViewIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { AddIcon } from '@chakra-ui/icons'
+import pdfToText from 'react-pdftotext'
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, ModalFooter, FormControl, FormLabel, Input, Grid, SimpleGrid ,Select } from "@chakra-ui/react";
 import { AnswersData } from "../variables/columnsData";
+import {
+    Paginator,
+    Previous,
+    Next,
+    PageGroup,
+    Container as PageContainer
+  } from 'chakra-paginator';
 import Answers from "./AnswersTab";
 import React, { useState, useEffect, useRef ,useMemo} from "react";
 import {
@@ -52,7 +60,7 @@ import Information from "views/admin/profile/components/Information";
 
 export default function ColumnsTable(props) {
     const { columnsData, tableData, handleDelete, cancelDelete, cancelRef, confirmDelete, isDeleteDialogOpen,
-        isModalOpenA, openModalA, closeModalA, fetchData , isEditModalOpen, closeEditModal,setIsEditModalOpen,setExamData} = props;
+        isModalOpenA, openModalA, closeModalA, fetchData , isEditModalOpen, closeEditModal,setIsEditModalOpen,setExamData,pageCount,handlePageClick} = props;
 
     const textColorPrimary = useColorModeValue("secondaryGray.900", "white");
     const cardShadow = useColorModeValue(
@@ -68,6 +76,7 @@ export default function ColumnsTable(props) {
         {
             columns,
             data,
+            initialState: { pageIndex: 0, pageSize: 5 }, 
         },
         useGlobalFilter,
         useSortBy,
@@ -98,8 +107,26 @@ export default function ColumnsTable(props) {
     const openEditModal = () => {
     setIsEditModalOpen(true);
 };
+const baseStyles= {
+    w: 7,
+    fontSize: 'sm'
+  };
+const normalStyles = {
+    ...baseStyles,
+    _hover: {
+      bg: 'green.300'
+    },
+    bg: 'red.300'
+  };
+  
 
-
+  const activeStyles= {
+    ...baseStyles,
+    _hover: {
+      bg: 'blue.300'
+    },
+    bg: 'green.300'
+  };
 const [quizzes, setQuizzes] = useState([]);
 
   useEffect(() => {
@@ -279,8 +306,14 @@ const handleSubmitB = async (e) => {
         page,
         prepareRow,
         initialState,
+        state: { pageIndex, pageSize },
+        previousPage,
+        nextPage,
+        canPreviousPage,
+        canNextPage,
+        setGlobalFilter, 
     } = tableInstance;
-    initialState.pageSize = 99999999999999999;
+    
 
     const textColor = useColorModeValue("secondaryGray.900", "white");
     const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
@@ -359,16 +392,48 @@ const handleSubmitB = async (e) => {
       };
     
     const [errors, setErrors] = useState({});
-
+   
+    const handleChange = async (e) => {
+        const fieldName = e.target.name;
     
-    const handleChange = (e) => {
-        if (e.target.type === "file") {
-            setFormData({ ...formData, [e.target.name]: e.target.files[0] });
-        }  else {
-            setFormData({ ...formData, [e.target.name]: e.target.value });
+        if (e.target.type === 'file') {
+            const file = e.target.files[0];
+    
+            if (file) {
+                setFormData({ ...formData, [fieldName]: file });
+    
+                // Extract text from PDF file
+                try {
+                    const text = await pdfToText(file);
+                    console.log('Extracted text from PDF:', text);
+    
+                    // Send text to OpenAI API for generating a single long text response
+                    const openaiApiKey = 'test';
+                    const openaiApiUrl = 'https://api.openai.com/v1/completions';
+                    const prompt = text; // Use the extracted text as the prompt
+    
+                    const response = await axios.post(openaiApiUrl, {
+                        model: 'davinci-002', // Choose an appropriate OpenAI model
+                        prompt: prompt,
+                        max_tokens: 500, // Increase max_tokens to generate a longer response
+                        n: 1, // Generate a single completion
+                    }, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${openaiApiKey}`,
+                        }
+                    });
+    
+                    console.log('Generated long text:', response.data.choices[0].text);
+                    // Handle the generated long text response here
+                } catch (error) {
+                    console.error('Failed to extract text from PDF or generate long text:', error);
+                }
+            }
+        } else {
+            setFormData({ ...formData, [fieldName]: e.target.value });
         }
     };
-
 // Validation function for the form
 const validateFormQ = () => {
     let errors2 = {};
@@ -1095,6 +1160,17 @@ if (!question.point.trim()) {
                     })}
                 </Tbody>
             </Table>
+            <div style={{ textAlign: 'center', marginTop: '20px' }}>
+        <Button onClick={() => previousPage()} disabled={!canPreviousPage}>
+          Previous
+        </Button>
+        <Button onClick={() => nextPage()} disabled={!canNextPage}>
+          Next
+        </Button>
+        <span>
+          Page {pageIndex + 1} of {Math.ceil(data.length / pageSize)}
+        </span>
+      </div>
         </Card>
     );
 }
