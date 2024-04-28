@@ -9,6 +9,7 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import axios from "axios";
 import { data } from "jquery";
 import AnswersPage from "./answers";
+import pdfToText from 'react-pdftotext'
 import { Popup } from 'reactjs-popup';
 import SpaceTwo from "../SpaceTwo/SpaceTwo";
 import { useNavigate } from 'react-router-dom';
@@ -91,7 +92,55 @@ const ExamDet = () => {
         setAnswerFile(e.target.files[0]);
     };
 
-    const handleSubmitAnswer = async () => {
+    function calculateSimilarity(text1, text2) {
+     
+      const tokenize = (text) => {
+          return new Set(text.toLowerCase().match(/\b\w+\b/g));
+      };
+  
+     
+      const dotProduct = (vector1, vector2) => {
+          let product = 0;
+          for (const word in vector1) {
+              if (word in vector2) {
+                  product += vector1[word] * vector2[word];
+              }
+          }
+          return product;
+      };
+  
+     
+      const magnitude = (vector) => {
+          let sum = 0;
+          for (const word in vector) {
+              sum += Math.pow(vector[word], 2);
+          }
+          return Math.sqrt(sum);
+      };
+  
+      // Tokenize both texts
+      const tokens1 = tokenize(text1);
+      const tokens2 = tokenize(text2);
+  
+      const vector1 = {};
+      const vector2 = {};
+      for (const word of tokens1) {
+          vector1[word] = 1; 
+      }
+      for (const word of tokens2) {
+          vector2[word] = 1;
+      }
+  
+      
+      const dotProd = dotProduct(vector1, vector2);
+      const mag1 = magnitude(vector1);
+      const mag2 = magnitude(vector2);
+      const similarity = dotProd / (mag1 * mag2);
+  console.log(similarity)
+      return similarity;
+  }
+  
+  /*  const handleSubmitAnswer = async () => {
         try {
             console.log("examDetails:", examDetails);
     
@@ -135,9 +184,123 @@ const ExamDet = () => {
         } catch (error) {
             console.error("Error creating answer:", error);
         }
-    };
+    };*/
   
-
+    const handleSubmitAnswer = async () => {
+      try {
+          console.log("examDetails:", examDetails);
+  
+          const isValid = !!answerFile;
+  
+          if (isValid && examDetails && user) {
+              const examId = examDetails._id;
+              const clientId = user._id;
+              console.log(examId);
+              console.log(clientId);
+  
+             
+              const pdfAnswersResponse = await axios.get(`http://localhost:9090/api/answer/fetch-answer-pdf-by-exam/${examId}`);
+              const allAnswers = pdfAnswersResponse.data;
+              
+              
+              const text = await pdfToText(answerFile);
+              console.log(answerFile)
+              
+  console.log(text)
+              
+              let isCheatingDetected = false;
+              for (const answer of allAnswers) {
+                console.log("Answer PDF URL:", answer);
+                   
+                try {// Convert the Buffer object to a Blob
+                   const pdfBlob = new Blob([answer]);
+console.log(pdfBlob)
+                   // Convert the Blob to a File
+                   const pdfFile = new File([pdfBlob], "answer.pdf", { type: "application/pdf" });
+console.log(pdfFile)
+                const pdfAnswerText = await pdfToText(pdfFile);
+                console.log(pdfAnswerText)
+                  const similarity = calculateSimilarity(text, text);
+                  if (similarity >= 0.7) { // Stop looking if similarity is 70 or higher
+                      isCheatingDetected = true;
+                      break;
+                  }
+                  console.log(`Similarity with answer ${answer._id}: ${similarity}`);
+                } catch (error) {
+                  console.error("Error extracting text from PDF:", error);
+                  // Handle the error appropriately, e.g., log, display an error message, etc.
+              }
+              }
+  
+              if (isCheatingDetected) {
+                  // Handle cheating detection (e.g., show a warning message to the user)
+                  console.log('Cheating detected! Are you sure you want to submit your answer?');
+                  // Optionally, you can prompt the user to confirm submission
+                  const confirmSubmission = window.confirm('Cheating detected! Are you sure you want to submit your answer?');
+                  if (confirmSubmission) {
+                      // Proceed with submission if user confirms
+                      const formDataToSend = new FormData();
+                      formDataToSend.append("image", answerFile);
+                      console.log(formDataToSend);
+  
+                      const uploadResponse = await axios.post(
+                          "http://localhost:9090/api/image/uploadimage",
+                          formDataToSend,
+                          {
+                              headers: {
+                                  "Content-Type": "multipart/form-data",
+                              },
+                          }
+                      );
+  
+                      const answerPdf = uploadResponse.data.downloadURL[0];
+  
+                      const response = await axios.post(
+                          "http://localhost:9090/api/answer",
+                          { examId, answerPdf, clientId }
+                      );
+  
+                      console.log("Answer created:", response.data);
+  
+                      setShowModal(false);
+                  } else {
+                      console.log('Submission cancelled.');
+                  }
+              } else {
+                  // No cheating detected, proceed with submission
+                  const formDataToSend = new FormData();
+                  formDataToSend.append("image", answerFile);
+                  console.log(formDataToSend);
+  
+                  const uploadResponse = await axios.post(
+                      "http://localhost:9090/api/image/uploadimage",
+                      formDataToSend,
+                      {
+                          headers: {
+                              "Content-Type": "multipart/form-data",
+                          },
+                      }
+                  );
+  
+                  const answerPdf = uploadResponse.data.downloadURL[0];
+  
+                  const response = await axios.post(
+                      "http://localhost:9090/api/answer",
+                      { examId, answerPdf, clientId }
+                  );
+  
+                  console.log("Answer created:", response.data);
+  
+                  setShowModal(false);
+              }
+          } else {
+              console.error("Please select an answer file or exam details and user are not available");
+          }
+      } catch (error) {
+          console.error("Error creating answer:", error);
+      }
+  };
+  
     const handleDeleteExam = async (examId) => {
         // Display a confirmation dialog
         const confirmDelete = window.confirm('Are you sure you want to delete this exam?');

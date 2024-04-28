@@ -407,16 +407,16 @@ const handleSubmitB = async (e) => {
                     const text = await pdfToText(file);
                     console.log('Extracted text from PDF:', text);
     
-                    // Send text to OpenAI API for generating a single long text response
+                  
                     const openaiApiKey = 'test';
                     const openaiApiUrl = 'https://api.openai.com/v1/completions';
-                    const prompt = text; // Use the extracted text as the prompt
+                    const prompt = text; 
     
                     const response = await axios.post(openaiApiUrl, {
-                        model: 'davinci-002', // Choose an appropriate OpenAI model
+                        model: 'davinci-002',
                         prompt: prompt,
-                        max_tokens: 500, // Increase max_tokens to generate a longer response
-                        n: 1, // Generate a single completion
+                        max_tokens: 500,
+                        n: 1, 
                     }, {
                         headers: {
                             'Content-Type': 'application/json',
