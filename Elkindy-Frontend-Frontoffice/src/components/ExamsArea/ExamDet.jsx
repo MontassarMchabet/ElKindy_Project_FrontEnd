@@ -136,15 +136,17 @@ const ExamDet = () => {
       const mag1 = magnitude(vector1);
       const mag2 = magnitude(vector2);
       const similarity = dotProd / (mag1 * mag2);
-  console.log(similarity)
+  console.log(similarity*100)
       return similarity;
   }
+
+
     const handleSubmitAnswer = async () => {
       try {
           console.log("examDetails:", examDetails);
   
           const isValid = !!answerFile;
-  
+          let maxSimilarity = 0; 
           if (isValid && examDetails && user) {
               const examId = examDetails._id;
               const clientId = user._id;
@@ -175,10 +177,9 @@ const ExamDet = () => {
                 const pdfBlob = response.data;
                 console.log("Blob: ", pdfBlob);
                 
-                // Create a unique filename using the index 'i'
                 const filename = `answer_${i}.pdf`;
                 
-                // Create a File object from the Blob
+                
                 const pdfFile = new File([pdfBlob], filename, { type: 'application/pdf' });
                 console.log("File new : ", pdfFile);
                   const pdfAnswerText = await pdfToText(pdfFile);
@@ -186,6 +187,11 @@ const ExamDet = () => {
 
 
                   const similarity = calculateSimilarity(text, pdfAnswerText);
+
+                  if (similarity > maxSimilarity) {
+                    maxSimilarity = similarity; 
+                }
+        
                   if (similarity >= 0.7) { 
                       isCheatingDetected = true;
                       break;
@@ -198,12 +204,11 @@ const ExamDet = () => {
               }
   
               if (isCheatingDetected) {
-                  // Handle cheating detection (e.g., show a warning message to the user)
-                  console.log('Cheating detected! Are you sure you want to submit your answer?');
-                  // Optionally, you can prompt the user to confirm submission
-                  const confirmSubmission = window.confirm('Cheating detected! Are you sure you want to submit your answer?');
+                  
+                const confirmMessage = `We have detected a significant similarity (${(maxSimilarity * 100).toFixed(2)}%) between your answer and another submission for this exam. We take academic integrity seriously and do not tolerate cheating. Are you sure you want to proceed with uploading your answer?`;
+                const confirmSubmission = window.confirm(confirmMessage);
                   if (confirmSubmission) {
-                      // Proceed with submission if user confirms
+                     
                       const formDataToSend = new FormData();
                       formDataToSend.append("image", answerFile);
                       console.log(formDataToSend);
@@ -232,7 +237,7 @@ const ExamDet = () => {
                       console.log('Submission cancelled.');
                   }
               } else {
-                  // No cheating detected, proceed with submission
+                  
                   const formDataToSend = new FormData();
                   formDataToSend.append("image", answerFile);
                   console.log(formDataToSend);
