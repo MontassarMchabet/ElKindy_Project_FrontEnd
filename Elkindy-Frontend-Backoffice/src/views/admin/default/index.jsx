@@ -223,11 +223,10 @@ export default function UserReports() {
 
 
 
-
+      <TotalSpent totalIncomeThisMonth={totalIncomeThisMonth} />
 
       <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap='20px' mb='20px'>
-        <TotalSpent />
-        <WeeklyRevenue />
+        {/* <WeeklyRevenue /> */}
       </SimpleGrid>
 
       <SimpleGrid columns={{ base: 1, md: 1, xl: 2 }} gap='20px' mb='20px'>
@@ -238,19 +237,20 @@ export default function UserReports() {
           fetchDataTopClients={fetchDataTopClients}
         />
         <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap='20px'>
-          <DailyTraffic />
+          {/* <DailyTraffic /> */}
+          <MiniCalendar h='100%' minW='100%' selectRange={false} />
           <PieCard />
         </SimpleGrid>
       </SimpleGrid>
 
       <SimpleGrid columns={{ base: 1, md: 1, xl: 2 }} gap='20px' mb='20px'>
-        <ComplexTable
+        {/* <ComplexTable
           columnsData={columnsDataComplex}
           tableData={tableDataComplex}
-        />
+        /> */}
         <SimpleGrid columns={{ base: 1, md: 2, xl: 2 }} gap='20px'>
-          <Tasks />
-          <MiniCalendar h='100%' minW='100%' selectRange={false} />
+          {/* <Tasks /> */}
+
         </SimpleGrid>
       </SimpleGrid>
 

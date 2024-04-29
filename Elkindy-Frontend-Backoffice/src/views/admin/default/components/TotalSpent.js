@@ -10,7 +10,7 @@ import {
 // Custom components
 import Card from "components/card/Card.js";
 import LineChart from "components/charts/LineChart";
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { MdBarChart, MdOutlineCalendarToday } from "react-icons/md";
 // Assets
@@ -19,12 +19,54 @@ import {
   lineChartDataTotalSpent,
   lineChartOptionsTotalSpent,
 } from "variables/charts";
+import api from "services/api";
+
 
 export default function TotalSpent(props) {
-  const { ...rest } = props;
+  const { totalIncomeThisMonth, ...rest } = props;
+
+  const [subscriptionData, setSubscriptionData] = useState([]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await api.get('http://localhost:9090/api/auth/subscription/type');
+      console.log('Response:', response.data);
+      const subscriptionByMonth = response.data.subscriptionByMonth;
+
+      // Define the months
+      const months = Array.from({ length: 12 }, (_, i) => i + 1);
+
+      // Initialize an array to store the chart data
+      const chartData = [];
+
+      // Define the subscription types
+      const subscriptionTypes = ['yearly', 'monthly', '6 months'];
+
+      // Populate chartData with data for each subscription type
+      subscriptionTypes.forEach(type => {
+        // Capitalize the first letter of the type
+        const typeName = type.charAt(0).toUpperCase() + type.slice(1);
+
+        // Extract data for the current subscription type
+        const typeData = months.map(month => subscriptionByMonth[month]?.[type] || 0);
+
+        chartData.push({ name: typeName, data: typeData });
+      });
+
+      console.log('ChartData:', chartData);
+
+      setSubscriptionData(chartData);
+    } catch (error) {
+      console.error('Error fetching subscription data:', error);
+    }
+  };
+
 
   // Chakra Color Mode
-
   const textColor = useColorModeValue("secondaryGray.900", "white");
   const textColorSecondary = useColorModeValue("secondaryGray.600", "white");
   const boxBg = useColorModeValue("secondaryGray.300", "whiteAlpha.100");
@@ -86,7 +128,7 @@ export default function TotalSpent(props) {
             textAlign='start'
             fontWeight='700'
             lineHeight='100%'>
-            $37.5K
+            ${totalIncomeThisMonth}
           </Text>
           <Flex align='center' mb='20px'>
             <Text
@@ -95,12 +137,12 @@ export default function TotalSpent(props) {
               fontWeight='500'
               mt='4px'
               me='12px'>
-              Total Spent
+              Total
             </Text>
             <Flex align='center'>
               <Icon as={RiArrowUpSFill} color='green.500' me='2px' mt='2px' />
               <Text color='green.500' fontSize='sm' fontWeight='700'>
-                +2.45%
+                +20.45%
               </Text>
             </Flex>
           </Flex>
@@ -112,9 +154,10 @@ export default function TotalSpent(props) {
             </Text>
           </Flex>
         </Flex>
-        <Box minH='260px' minW='75%' mt='auto'>
+        <Box minH='260px' minW='90%' mt='auto'>
           <LineChart
-            chartData={lineChartDataTotalSpent}
+            // chartData={lineChartDataTotalSpent}
+            chartData={subscriptionData}
             chartOptions={lineChartOptionsTotalSpent}
           />
         </Box>
