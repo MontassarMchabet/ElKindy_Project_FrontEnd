@@ -39,7 +39,7 @@ export default function Settings() {
             });
             console.log(clientResponse.data)
             const updatedPlannings = await Promise.all(clientResponse.data.map(async (planning) => {
-        
+
                 let ClassroomName = "";
                 if (planning.classroom === undefined) {
                     ClassroomName = "--";
@@ -48,14 +48,14 @@ export default function Settings() {
                     ClassroomName = studentResponse.data.name;
                     console.log(ClassroomName)
                 }
-               
+
                 return {
                     ...planning,
-                     courseName: ClassroomName, 
-                    
+                    courseName: ClassroomName,
+
                 };
             }));
-       
+
             setClientsData(updatedPlannings);
 
             const profResponse = await api.get('http://localhost:9090/api/auth/profs', {
@@ -70,7 +70,7 @@ export default function Settings() {
             console.error('Error fetching data:', error);
         }
     };
-    
+
     ////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////
     const fetchClassroomOptions = async () => {
@@ -160,75 +160,75 @@ export default function Settings() {
     };
 
     return (
-        
-            <Box width="3150px" pt={{ base: "130px", md: "80px", xl: "80px" }}>
-                <SimpleGrid
-                    mb='20px'
-                    columns={{ sm: 1, md: 2 }}
-                    spacing={{ base: "20px", xl: "20px" }}>
-                    <AdminTable
-                        columnsData={adminsData}
-                        tabledata={adminssData}
-                        handledelete={handledelete}
-                        canceldelete={canceldelete}
-                        cancelref={cancelref}
-                        confirmDelete={confirmDelete}
-                        isDeleteDialogOpen={isDeleteDialogOpen}
-                        openModalA={openModalA}
-                        closeModalA={closeModalA}
-                        isModalOpenA={isModalOpenA}
-                        fetchData={fetchData}
-                        isEditModalOpen={isEditModalOpen}
-                        closeEditModal={closeEditModal}
-                        setIsEditModalOpen={setIsEditModalOpen}
-                    />
-                </SimpleGrid>
 
-                <SimpleGrid
-                    mb='20px'
-                    columns={{ sm: 1, md: 2 }}
-                    spacing={{ base: "20px", xl: "20px" }}>
-                    <ProfTable
-                        columnsData={profsData}
-                        tabledata={profssData}
-                        handledelete={handledelete}
-                        canceldelete={canceldelete}
-                        cancelref={cancelref}
-                        confirmDelete={confirmDelete}
-                        isDeleteDialogOpen={isDeleteDialogOpen}
-                        openModalP={openModalP}
-                        closeModalP={closeModalP}
-                        isModalOpenP={isModalOpenP}
-                        fetchData={fetchData}
-                        isEditModalOpenP={isEditModalOpenP}
-                        closeEditModalP={closeEditModalP}
-                        setIsEditModalOpenP={setIsEditModalOpenP}
-                    />
-                </SimpleGrid>
+        <Box width="3150px" pt={{ base: "130px", md: "80px", xl: "80px" }}>
+            <SimpleGrid
+                mb='20px'
+                columns={{ sm: 1, md: 2 }}
+                spacing={{ base: "20px", xl: "20px" }}>
+                <AdminTable
+                    columnsData={adminsData}
+                    tabledata={adminssData}
+                    handledelete={handledelete}
+                    canceldelete={canceldelete}
+                    cancelref={cancelref}
+                    confirmDelete={confirmDelete}
+                    isDeleteDialogOpen={isDeleteDialogOpen}
+                    openModalA={openModalA}
+                    closeModalA={closeModalA}
+                    isModalOpenA={isModalOpenA}
+                    fetchData={fetchData}
+                    isEditModalOpen={isEditModalOpen}
+                    closeEditModal={closeEditModal}
+                    setIsEditModalOpen={setIsEditModalOpen}
+                />
+            </SimpleGrid>
 
-                <SimpleGrid
-                    mb='20px'
-                    columns={{ sm: 1, md: 2 }}
-                    spacing={{ base: "20px", xl: "20px" }}>
-                    <ClientTable
-                        columnsData={clientsData}
-                        tabledata={clientssData}
-                        handledelete={handledelete}
-                        canceldelete={canceldelete}
-                        cancelref={cancelref}
-                        confirmDelete={confirmDelete}
-                        isDeleteDialogOpen={isDeleteDialogOpen}
-                        openModalC={openModalC}
-                        closeModalC={closeModalC}
-                        isModalOpenC={isModalOpenC}
-                        fetchData={fetchData}
-                        isEditModalOpenC={isEditModalOpenC}
-                        closeEditModalC={closeEditModalC}
-                        setIsEditModalOpenC={setIsEditModalOpenC}
-                        classroomoptions={classroomOptions}
-                    />
-                </SimpleGrid>
-            </Box>
-        
+            <SimpleGrid
+                mb='20px'
+                columns={{ sm: 1, md: 2 }}
+                spacing={{ base: "20px", xl: "20px" }}>
+                <ProfTable
+                    columnsData={profsData}
+                    tabledata={profssData}
+                    handledelete={handledelete}
+                    canceldelete={canceldelete}
+                    cancelref={cancelref}
+                    confirmDelete={confirmDelete}
+                    isDeleteDialogOpen={isDeleteDialogOpen}
+                    openModalP={openModalP}
+                    closeModalP={closeModalP}
+                    isModalOpenP={isModalOpenP}
+                    fetchData={fetchData}
+                    isEditModalOpenP={isEditModalOpenP}
+                    closeEditModalP={closeEditModalP}
+                    setIsEditModalOpenP={setIsEditModalOpenP}
+                />
+            </SimpleGrid>
+
+            <SimpleGrid
+                mb='20px'
+                columns={{ sm: 1, md: 2 }}
+                spacing={{ base: "20px", xl: "20px" }}>
+                <ClientTable
+                    columnsData={clientsData}
+                    tabledata={clientssData}
+                    handledelete={handledelete}
+                    canceldelete={canceldelete}
+                    cancelref={cancelref}
+                    confirmDelete={confirmDelete}
+                    isDeleteDialogOpen={isDeleteDialogOpen}
+                    openModalC={openModalC}
+                    closeModalC={closeModalC}
+                    isModalOpenC={isModalOpenC}
+                    fetchData={fetchData}
+                    isEditModalOpenC={isEditModalOpenC}
+                    closeEditModalC={closeEditModalC}
+                    setIsEditModalOpenC={setIsEditModalOpenC}
+                    classroomoptions={classroomOptions}
+                />
+            </SimpleGrid>
+        </Box>
+
     );
 }
