@@ -6,6 +6,8 @@ import ProductCard from "../components/ProductCard";
 import ReactImageZoom from "react-image-zoom"
 import wish from "../public/images/wish.svg";
 import Color from "../components/Color";
+import { FcLikePlaceholder } from "react-icons/fc";
+import { FcLike } from "react-icons/fc";
 // import { TbGitCompare } from "react-icons/tb";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -203,11 +205,11 @@ const SingleProduct = () => {
                                         </div>
                                         {alreadyAddedToWish ? <div>
                                             <a onClick={(e) => { addToWish(productState._id); setAlreadyAddedToWish(false) }}>
-                                                <AiFillHeart className="fs-5 me-2" /> Already in the Wishlist
+                                                <FcLike className="fs-5 me-2" /> Already in the Wishlist
                                             </a>
                                         </div> : <div>
                                             <a onClick={(e) => { addToWish(productState._id) }}>
-                                                <AiOutlineHeart className="fs-5 me-2" /> Add to Wishlist
+                                                <FcLikePlaceholder className="fs-5 me-2" /> Add to Wishlist
                                             </a>
                                         </div>}
                                         

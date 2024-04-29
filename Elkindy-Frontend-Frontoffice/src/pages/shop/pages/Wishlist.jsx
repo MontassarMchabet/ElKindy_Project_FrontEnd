@@ -59,6 +59,7 @@ const Wishlist = () => {
                         src={item.images}
                         className="img-fluid w-100"
                         alt="watch"
+                        style={{borderRadius: 30}}
                       />
                     </div>
                     <div className="py-3 px-3">

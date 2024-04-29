@@ -33,7 +33,27 @@ const Checkout = () => {
     const [shippingInfo, setShippingInfo] = useState(null)
     const [cartProductState, setCartProductState] = useState([])
     
-    
+    const sendMail = async () => {
+        try {
+            const storedToken = Cookies.get('token');
+            const decodedToken = jwtDecode(storedToken);
+            console.log(decodedToken);
+            const email = decodedToken.email;
+            console.log(email);
+            const username = decodedToken.username;
+            console.log(username);
+            const response = await axios.post("http://localhost:9090/api/order/orderMail", {
+                email: email,
+                username: username
+            });
+            if (response.data) {
+                return response.data;
+            }
+        } catch (error) {
+            console.error('Error adding order:', error);
+            throw error;
+        }
+    };
 
     useEffect(() => {
         let sum = 0;
@@ -76,16 +96,17 @@ const Checkout = () => {
     console.log(shippingInfo);
     console.log(cartProductState);
     const checkOutHandler = async () => {
-        await axios
+        /*await axios
             .post("http://localhost:9090/api/order/payement", { amount: totalAmount+7 })
             .then((res) => {
                 const { result } = res.data
                 window.location.href = result.link;
                 console.log(res.data);
             })
-            .catch((err) => console.error(err));
+            .catch((err) => console.error(err));*/
         
         dispatch(createAnOrder({totalPrice:totalAmount,totalPriceAfterDiscount:totalAmount,orderItems:cartProductState,shippingInfo:shippingInfo}))
+        sendMail()
         dispatch(emptyCart())
     }
 

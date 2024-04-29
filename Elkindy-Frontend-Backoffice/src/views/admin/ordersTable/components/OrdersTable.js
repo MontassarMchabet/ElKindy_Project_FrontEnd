@@ -39,6 +39,7 @@ import Card from "components/card/Card";
 //import Menu from "components/menu/MainMenu";
 import { MdCheckCircle, MdCancel, MdOutlineError } from "react-icons/md";
 import Information from "views/admin/profile/components/Information";
+import { Socket, io } from "socket.io-client";
 
 
 export default function ColumnsTable(props) {
@@ -136,22 +137,40 @@ export default function ColumnsTable(props) {
         return Object.keys(errors).length === 0;
     };
 
+    const [socket, setSocket] = useState(null);
+
+    useEffect(() => {
+        setSocket(io("http://localhost:8089"));
+    }, []);
 
 
-
+    const handleNotification = () => {
+        if (socket) {
+            console.log(socket);
+            const notificationData = {
+                senderName: "Admin",
+                receiverName: editedOrder.user.username,
+                orderStatus: editedOrder.orderStatus,
+            };
+    
+            socket.emit("sendNotification", notificationData);
+            console.log("Sending notification:", notificationData); 
+        }
+    };
 
     const handleSaveEdit = async () => {
-        
-            try {
-                await axios.put(`http://localhost:9090/api/order/update-order/${editedOrder._id}`, editedOrder);
-
-                setIsEditModalOpen(false);
-                fetchData();
-            } catch (error) {
-                console.error("Error updating user:", error);
-            }
-        
+        try {
+            await axios.put(`http://localhost:9090/api/order/update-order/${editedOrder._id}`, editedOrder);
+            setIsEditModalOpen(false);
+            fetchData();
+            handleNotification();
+            await axios.post("http://localhost:9090/api/order/notif", {senderName: "Admin", receiverName:editedOrder.user.username, orderStatus: editedOrder.orderStatus});
+        } catch (error) {
+            console.error("Error updating user:", error);
+        }
     };
+
+
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
     const handleEdit = (orderStatus) => {
@@ -196,7 +215,7 @@ export default function ColumnsTable(props) {
                     <ModalHeader>Product Information</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        {productInfo && productInfo.orderItems && productInfo.orderItems.map((item,index)=>{
+                        {productInfo && productInfo.orderItems && productInfo.orderItems.map((item, index) => {
                             return (
                                 <React.Fragment key={index}>
                                     <Card mb={{ base: "0px", "2xl": "20px" }} {...rest}>
@@ -236,7 +255,7 @@ export default function ColumnsTable(props) {
                                     </Card>
                                 </React.Fragment>
                             )
-                        }) }
+                        })}
                     </ModalBody>
                 </ModalContent>
             </Modal>
