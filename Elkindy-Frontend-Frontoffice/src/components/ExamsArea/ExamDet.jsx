@@ -139,53 +139,6 @@ const ExamDet = () => {
   console.log(similarity)
       return similarity;
   }
-  
-  /*  const handleSubmitAnswer = async () => {
-        try {
-            console.log("examDetails:", examDetails);
-    
-            const isValid = !!answerFile; 
-        
-            if (isValid && examDetails && user) {
-                const examId = examDetails._id;
-                const clientId = user._id; 
-                console.log(examId)
-                console.log(clientId)
-                const formDataToSend = new FormData();
-                formDataToSend.append("image", answerFile);
-    console.log(formDataToSend)
-               
-                const uploadResponse = await axios.post(
-                    "http://localhost:9090/api/image/uploadimage",
-                    formDataToSend,
-                    {
-                        headers: {
-                            "Content-Type": "multipart/form-data",
-                        },
-                    }
-                );
-            
-               
-                const answerPdf = uploadResponse.data.downloadURL[0];
-            
-                
-                const response = await axios.post(
-                    "http://localhost:9090/api/answer",
-                    { examId, answerPdf, clientId }
-                );
-            
-                
-                console.log("Answer created:", response.data);
-            
-                setShowModal(false);
-            } else {
-                console.error("Please select an answer file or exam details and user are not available");
-            }
-        } catch (error) {
-            console.error("Error creating answer:", error);
-        }
-    };*/
-  
     const handleSubmitAnswer = async () => {
       try {
           console.log("examDetails:", examDetails);
@@ -197,38 +150,50 @@ const ExamDet = () => {
               const clientId = user._id;
               console.log(examId);
               console.log(clientId);
-  
-             
-              const pdfAnswersResponse = await axios.get(`http://localhost:9090/api/answer/fetch-answer-pdf-by-exam/${examId}`);
-              const allAnswers = pdfAnswersResponse.data;
               
-              
+              const pdfAnswersResponse = await axios.get(`http://localhost:9090/api/answer/answers/${examId}`);
+        const answerPdfUrls = pdfAnswersResponse.data.map(answer => answer.answerPdf);
+        console.log("answers pdf ", answerPdfUrls);
+
               const text = await pdfToText(answerFile);
-              console.log(answerFile)
               
-  console.log(text)
+              console.log(text);
               
               let isCheatingDetected = false;
-              for (const answer of allAnswers) {
-                console.log("Answer PDF URL:", answer);
+              for (let i = 0; i < answerPdfUrls.length; i++) {
+               
                    
-                try {// Convert the Buffer object to a Blob
-                   const pdfBlob = new Blob([answer]);
-console.log(pdfBlob)
-                   // Convert the Blob to a File
-                   const pdfFile = new File([pdfBlob], "answer.pdf", { type: "application/pdf" });
-console.log(pdfFile)
-                const pdfAnswerText = await pdfToText(pdfFile);
-                console.log(pdfAnswerText)
-                  const similarity = calculateSimilarity(text, text);
-                  if (similarity >= 0.7) { // Stop looking if similarity is 70 or higher
+                try {
+
+                  const pdfUrl = answerPdfUrls[i];
+                  console.log("single url " , pdfUrl)
+                  const response = await axios.get('http://localhost:9090/api/answer/fetch-pdf', {
+                    params: { url: pdfUrl },
+                    responseType: 'blob' 
+                });
+                console.log(response)
+                const pdfBlob = response.data;
+                console.log("Blob: ", pdfBlob);
+                
+                // Create a unique filename using the index 'i'
+                const filename = `answer_${i}.pdf`;
+                
+                // Create a File object from the Blob
+                const pdfFile = new File([pdfBlob], filename, { type: 'application/pdf' });
+                console.log("File new : ", pdfFile);
+                  const pdfAnswerText = await pdfToText(pdfFile);
+                  console.log("Text from PDF:", pdfAnswerText);
+
+
+                  const similarity = calculateSimilarity(text, pdfAnswerText);
+                  if (similarity >= 0.7) { 
                       isCheatingDetected = true;
                       break;
                   }
-                  console.log(`Similarity with answer ${answer._id}: ${similarity}`);
+                  console.log(`Similarity with answer : ${similarity}`);
                 } catch (error) {
                   console.error("Error extracting text from PDF:", error);
-                  // Handle the error appropriately, e.g., log, display an error message, etc.
+                
               }
               }
   
