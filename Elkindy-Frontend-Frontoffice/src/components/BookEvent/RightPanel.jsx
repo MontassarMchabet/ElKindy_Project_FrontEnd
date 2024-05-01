@@ -20,9 +20,9 @@ const RightPanel = () => {
     const [mainDate, setMainDate] = useState(null);
     const [selectedSeats, setSelectedSeats] = useState([]);
     const [movieData, setMovieData] = useState([]);
-    const [eventTickets, setEventTickets] = useState([]);
+    const [eventTickets, setEventTickets] = useState(0);
     const [userId, setUserId] = useState(null);
-    const [totalPrice, setTotalPrice] = useState(null);
+  
 
     const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
@@ -207,143 +207,7 @@ const RightPanel = () => {
 
     };
 
-    // const payment = async () => {
-    //     await axios
-    //         .post("http://localhost:9090/tickets/payement",)
-    //         .then((res) => {
-    //             const { result } = res.data
-    //             window.location.href = result.link;
-    //             console.log(res.data);
-
-    //             swalWithBootstrapButtons.fire({
-    //                 title: "Reservation confirmed!",
-    //                 text: "Your reservation has been successfully confirmed.",
-    //                 icon: "success"
-    //             });
-    //         })
-    //         .catch((err) => console.error(err));
-
-
-    // }
-    // const handleConfirmReservation = async () => {
-    //     try {
-    //         // Calculer le prix total en multipliant le prix de l'événement par le nombre de sièges sélectionnés
-    //         const totalPrice = eventDetails.price * selectedSeats.length;
-
-    //         // Mettre à jour la capacité de la salle en soustrayant le nombre de sièges sélectionnés
-    //         const updatedRoomCapacity = eventDetails.room_capacity - selectedSeats.length;
-
-    //         // Obtenir la date actuelle
-    //         const currentDate = new Date();
-
-    //         // Afficher une alerte avec les boutons de Bootstrap pour confirmer la réservation
-    //         const result = await swalWithBootstrapButtons.fire({
-    //             title: "Do you want to confirm the reservation?",
-    //             text: "If you have confirmed, you will be redirected to the payment page.",
-    //             icon: "warning",
-    //             showCancelButton: true,
-    //             confirmButtonText: "Yes",
-    //             cancelButtonText: "No, Cancel",
-    //             reverseButtons: true
-    //         });
-
-    //         if (result.isConfirmed) {
-    //             // Mettre à jour l'événement dans la base de données en utilisant l'API updateEvent
-    //             await updateEvent(eventDetails._id, { room_capacity: updatedRoomCapacity });
-
-    //             // Maintenant, vous pouvez ajouter les billets comme vous le faisiez auparavant
-    //             const ticketResponse = await addTickets({
-    //                 event: eventDetails._id, // L'ID de l'événement
-    //                 user: userId, // L'ID de l'utilisateur
-    //                 price: totalPrice, // Le prix total des billets
-    //                 selectedSeats: selectedSeats, // Les sièges sélectionnés
-    //                 date: currentDate // Date actuelle
-    //             });
-
-    //             // Si la réservation des billets est réussie
-    //             console.log('Billets ajoutés:', ticketResponse);
-    //             console.log('Utilisateur:', userId);
-
-    //             // Mettre à jour l'affichage ou rediriger l'utilisateur vers une autre page
-    //             window.location.href = `/events/${eventDetails._id}/${eventDetails.movieParam}/bookTickets`;
-    //             payment(price);
-    //             // Afficher une alerte de succès
-    //             // swalWithBootstrapButtons.fire({
-    //             //     title: "Reservation confirmed!",
-    //             //     text: "Your reservation has been successfully confirmed.",
-    //             //     icon: "success"
-    //             // });
-    //             // document.getElementById('chair').innerHTML = ''; // Ajoutez cette ligne pour vider les sièges existants
-
-    //         } else if (result.dismiss === Swal.DismissReason.cancel) {
-    //             // L'utilisateur a annulé la réservation
-    //             swalWithBootstrapButtons.fire({
-    //                 title: "Cancelled",
-    //                 text: "Your reservation has been cancelled.",
-    //                 icon: "error"
-    //             }).then(() => {
-    //                 // Redirection vers une autre page après que l'utilisateur a annulé la réservation
-    //                 window.location.href = `/events/${eventDetails._id}/${eventDetails.movieParam}/bookTickets`;
-    //             });
-    //         }
-    //     } catch (error) {
-    //         console.error('Error confirming reservation:', error);
-    //         // Gérer les erreurs d'ajout de billet
-    //         swalWithBootstrapButtons.fire({
-    //             title: "An error occurred while confirming your reservation. Please try again later.",
-    //             icon: "error"
-    //         });
-    //     }
-    // };
-
-    // const payment =  (price) => {
-    //     try {
-    //         const res =  axios.post("http://localhost:9090/tickets/payement", { price: price });
-    //         const { result } = res.data;
-    //         window.location.href = result.link;
-    //         console.log("res.daatat",res.data);
-    //         console.log("res.link",result.link);
-
-    //         swalWithBootstrapButtons.fire({
-    //             title: "Reservation confirmed!",
-    //             text: "Your reservation has been successfully confirmed.",
-    //             icon: "success"
-    //         });
-    //     } catch (err) {
-    //         console.error(err);
-    //         // Gérer les erreurs de paiement
-    //         swalWithBootstrapButtons.fire({
-    //             title: "Payment Error",
-    //             text: "An error occurred during the payment process. Please try again later.",
-    //             icon: "error"
-    //         });
-    //     }
-    // };
-    // const payment = async (price) => {
-    //     try {
-    //         const res = await axios.post("http://localhost:9090/tickets/payement", { price: price });
-    //         const { result } = res.data;
-    //         window.location.href = result.link;
-    //         console.log("res.data", res.data);
-    //         console.log("result.link", result.link);
-
-    //         swalWithBootstrapButtons.fire({
-    //             title: "Reservation confirmed!",
-    //             text: "Your reservation has been successfully confirmed.",
-    //             icon: "success"
-    //         });
-    //     } catch (err) {
-    //         console.error(err);
-    //         // Gérer les erreurs de paiement
-    //         swalWithBootstrapButtons.fire({
-    //             title: "Payment Error",
-    //             text: "An error occurred during the payment process. Please try again later.",
-    //             icon: "error"
-    //         });
-    //     }
-    // };
-
-
+  
     const handleConfirmReservation = async () => {
         try {
             // Calculer le prix total en multipliant le prix de l'événement par le nombre de sièges sélectionnés
@@ -355,55 +219,94 @@ const RightPanel = () => {
             // Obtenir la date actuelle
             const currentDate = new Date();
 
-            // Afficher une alerte avec les boutons de Bootstrap pour confirmer la réservation
-            const result = await swalWithBootstrapButtons.fire({
-                title: "Do you want to confirm the reservation?",
-                text: "If you have confirmed, you will be redirected to the payment page.",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Yes",
-                cancelButtonText: "No, Cancel",
-                reverseButtons: true
-            });
-
-            if (result.isConfirmed) {
-                // Mettre à jour l'événement dans la base de données en utilisant l'API updateEvent
-                await updateEvent(eventDetails._id, { room_capacity: updatedRoomCapacity });
-
-                // Maintenant, vous pouvez ajouter les billets comme vous le faisiez auparavant
-                const ticketResponse = await addTickets({
-                    event: eventDetails._id, // L'ID de l'événement
-                    user: userId, // L'ID de l'utilisateur
-                    price: totalPrice, // Le prix total des billets
-                    selectedSeats: selectedSeats, // Les sièges sélectionnés
-                    date: currentDate // Date actuelle
+            if (totalPrice > 0) {
+                // Afficher une alerte avec les boutons de Bootstrap pour confirmer la réservation
+                const result = await swalWithBootstrapButtons.fire({
+                    title: "Do you want to confirm the reservation?",
+                    text: "If you have confirmed, you will be redirected to the payment page.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "No, Cancel",
+                    reverseButtons: true
                 });
 
-                // Si la réservation des billets est réussie, procéder au paiement
-                console.log('Billets ajoutés:', ticketResponse);
-                console.log('Utilisateur:', userId);
+                if (result.isConfirmed) {
+                    // Mettre à jour l'événement dans la base de données en utilisant l'API updateEvent
+                    await updateEvent(eventDetails._id, { room_capacity: updatedRoomCapacity });
 
+                    // Maintenant, vous pouvez ajouter les billets comme vous le faisiez auparavant
+                    const ticketResponse = await addTickets({
+                        event: eventDetails._id, // L'ID de l'événement
+                        user: userId, // L'ID de l'utilisateur
+                        price: totalPrice, // Le prix total des billets
+                        selectedSeats: selectedSeats, // Les sièges sélectionnés
+                        date: currentDate // Date actuelle
+                    });
 
-                // Effectuer le paiement via une requête POST axios
-                await axios.post("http://localhost:9090/tickets/payement", { amount: totalPrice })
-                    .then((res) => {
-                        const { result } = res.data;
-                        window.location.href = result.link;
-                        console.log(res.data);
-                    })
-                    .catch((err) => console.error(err));
+                    // Si la réservation des billets est réussie, procéder au paiement
+                    console.log('Billets ajoutés:', ticketResponse);
+                    console.log('Utilisateur:', userId);
 
-            } else if (result.dismiss === Swal.DismissReason.cancel) {
-                // L'utilisateur a annulé la réservation
-                swalWithBootstrapButtons.fire({
-                    title: "Cancelled",
-                    text: "Your reservation has been cancelled.",
-                    icon: "error"
-                }).then(() => {
-                    // Redirection vers une autre page après que l'utilisateur a annulé la réservation
-                    window.location.href = `/events/${eventDetails._id}/${eventDetails.movieParam}/bookTickets`;
+                    // Effectuer le paiement via une requête POST axios
+                    await axios.post("http://localhost:9090/tickets/payement", { amount: totalPrice })
+                        .then((res) => {
+                            const { result } = res.data;
+                            window.location.href = result.link;
+                            console.log(res.data);
+                        })
+                        .catch((err) => console.error(err));
+
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    // L'utilisateur a annulé la réservation
+                    swalWithBootstrapButtons.fire({
+                        title: "Cancelled",
+                        text: "Your reservation has been cancelled.",
+                        icon: "error"
+                    }).then(() => {
+                        // Redirection vers une autre page après que l'utilisateur a annulé la réservation
+                        window.location.href = `/events/${eventDetails._id}/${eventDetails.movieParam}/bookTickets`;
+                    });
+                }
+            } else {
+                const result = await swalWithBootstrapButtons.fire({
+                    title: "Do you want to confirm the reservation?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "No, Cancel",
+                    reverseButtons: true
                 });
+                if (result.isConfirmed) {
+                    // Si le prix total est égal à 0, pas besoin de paiement
+                    // Mettre à jour l'événement dans la base de données en utilisant l'API updateEvent
+                    await updateEvent(eventDetails._id, { room_capacity: updatedRoomCapacity });
+
+                    // Ajouter les billets comme vous le faisiez auparavant
+                    const ticketResponse = await addTickets({
+                        event: eventDetails._id,
+                        user: userId,
+                        price: totalPrice,
+                        selectedSeats: selectedSeats,
+                        date: currentDate
+                    });
+
+                    // Si la réservation des billets est réussie
+                    console.log('Billets ajoutés:', ticketResponse);
+                    console.log('Utilisateur:', userId);
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    // L'utilisateur a annulé la réservation
+                    swalWithBootstrapButtons.fire({
+                        title: "Cancelled",
+                        text: "Your reservation has been cancelled.",
+                        icon: "error"
+                    }).then(() => {
+                        // Redirection vers une autre page après que l'utilisateur a annulé la réservation
+                        window.location.href = `/events/${eventDetails._id}/${eventDetails.movieParam}/bookTickets`;
+                    });
+                }
             }
+
         } catch (error) {
             console.error('Error confirming reservation:', error);
             // Gérer les erreurs de confirmation de la réservation
@@ -414,110 +317,12 @@ const RightPanel = () => {
         }
     };
 
-
-    // const handleConfirmReservation = async () => {
-    //     try {
-    //         // Calculer le prix total en multipliant le prix de l'événement par le nombre de sièges sélectionnés
-    //         const totalPrice = eventDetails.price * selectedSeats.length;
-
-    //         // Mettre à jour la capacité de la salle en soustrayant le nombre de sièges sélectionnés
-    //         const updatedRoomCapacity = eventDetails.room_capacity - selectedSeats.length;
-
-    //         // Obtenir la date actuelle
-    //         const currentDate = new Date();
-
-    //         // Afficher une alerte avec les boutons de Bootstrap pour confirmer la réservation
-    //         const result = await swalWithBootstrapButtons.fire({
-    //             title: "Do you want to confirm the reservation?",
-    //             text: "If you have confirmed, you will be redirected to the payment page.",
-    //             icon: "warning",
-    //             showCancelButton: true,
-    //             confirmButtonText: "Yes",
-    //             cancelButtonText: "No, Cancel",
-    //             reverseButtons: true
-    //         });
-
-    //         if (result.isConfirmed) {
-    //             // Mettre à jour l'événement dans la base de données en utilisant l'API updateEvent
-    //             await updateEvent(eventDetails._id, { room_capacity: updatedRoomCapacity });
-
-    //             // Maintenant, vous pouvez ajouter les billets comme vous le faisiez auparavant
-    //             const ticketResponse = await addTickets({
-    //                 event: eventDetails._id, // L'ID de l'événement
-    //                 user: userId, // L'ID de l'utilisateur
-    //                 price: totalPrice, // Le prix total des billets
-    //                 selectedSeats: selectedSeats, // Les sièges sélectionnés
-    //                 date: currentDate // Date actuelle
-    //             });
-
-    //             // Si la réservation des billets est réussie
-    //             console.log('Billets ajoutés:', ticketResponse);
-    //             console.log('Utilisateur:', userId);
-
-    //             // Mettre à jour l'affichage ou rediriger l'utilisateur vers une autre page
-    //             window.location.href = `/events/${eventDetails._id}/${eventDetails.movieParam}/bookTickets`;
-    //             payment(price);
-    //             // Afficher une alerte de succès
-    //             // swalWithBootstrapButtons.fire({
-    //             //     title: "Reservation confirmed!",
-    //             //     text: "Your reservation has been successfully confirmed.",
-    //             //     icon: "success"
-    //             // });
-    //             // document.getElementById('chair').innerHTML = ''; // Ajoutez cette ligne pour vider les sièges existants
-
-    //         } else if (result.dismiss === Swal.DismissReason.cancel) {
-    //             // L'utilisateur a annulé la réservation
-    //             swalWithBootstrapButtons.fire({
-    //                 title: "Cancelled",
-    //                 text: "Your reservation has been cancelled.",
-    //                 icon: "error"
-    //             }).then(() => {
-    //                 // Redirection vers une autre page après que l'utilisateur a annulé la réservation
-    //                 window.location.href = `/events/${eventDetails._id}/${eventDetails.movieParam}/bookTickets`;
-    //             });
-    //         }
-    //     } catch (error) {
-    //         console.error('Error confirming reservation:', error);
-    //         // Gérer les erreurs d'ajout de billet
-    //         swalWithBootstrapButtons.fire({
-    //             title: "An error occurred while confirming your reservation. Please try again later.",
-    //             icon: "error"
-    //         });
-    //     }
-    // };
-
-    const payment =  (price) => {
-        try {
-            const res =  axios.post("http://localhost:9090/tickets/payement", { price: price });
-            const { result } = res.data;
-            window.location.href = result.link;
-            console.log("res.daatat",res.data);
-            console.log("res.link",result.link);
-
-            swalWithBootstrapButtons.fire({
-                title: "Reservation confirmed!",
-                text: "Your reservation has been successfully confirmed.",
-                icon: "success"
-            });
-        } catch (err) {
-            console.error(err);
-            // Gérer les erreurs de paiement
-            swalWithBootstrapButtons.fire({
-                title: "Payment Error",
-                text: "An error occurred during the payment process. Please try again later.",
-                icon: "error"
-            });
-        }
-    };
-
-
-
     const addSeats = (arr) => {
         arr.forEach((el) => {
             const { series, seat } = el;
             console.log('EventTickets', eventTickets);
             console.log(typeof series, "seriestype")
-            if (Array.isArray(eventTickets) && eventTickets.length > 0) {
+            if (Array.isArray(eventTickets) ) {
                 if (Array.isArray(series)) {
                     series.forEach((subSeries) => {
                         let seriesArray = subSeries.split('-');

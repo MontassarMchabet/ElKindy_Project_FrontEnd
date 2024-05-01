@@ -51,12 +51,13 @@
 // export default BlogComments;
 
 
+
 import React, { useState, useEffect } from "react";
 import { getEventComments } from "../../../services/eventsApi";
 import BlogCommentItem from "./BlogCommentItem";
 import { useParams } from "react-router-dom";
 
-const BlogComments = () => {
+const BlogComments = ({commentsData, updateComments ,filterBadWords}) => {
   const [comments, setComments] = useState([]);
   const { eventId } = useParams();
 
@@ -73,17 +74,31 @@ const BlogComments = () => {
     fetchComments();
   }, [eventId]);
 
+  // // Fonction pour mettre à jour les commentaires après l'édition ou la suppression
+  // const updateComments = async () => {
+  //   try {
+  //     const updatedCommentsData = await getEventComments(eventId);
+  //     setComments(updatedCommentsData);
+  //   } catch (error) {
+  //     console.error("Erreur lors de la mise à jour des commentaires :", error);
+  //   }
+  // };
+  
+
   return (
     <div className="comment-wrap">
       <h2 className="title">
-        {comments.length} <span>Comments</span>
+        {commentsData.length} <span>Comments</span>
       </h2>
 
       <div className="latest-comments">
         <ul className="list-wrap">
-          {comments.map((comment, index) => (
+          {commentsData.map((comment, index) => (
             <li key={index}>
-              <BlogCommentItem comment={comment} />
+              <BlogCommentItem comment={comment} 
+              updateComments={updateComments} 
+              filterBadWords={filterBadWords} 
+              />
             </li>
           ))}
         </ul>
@@ -93,3 +108,87 @@ const BlogComments = () => {
 };
 
 export default BlogComments;
+
+
+
+// const BlogComments = ({ updateComments }) => {
+//   const [comments, setComments] = useState([]);
+//   const { eventId } = useParams();
+
+//   useEffect(() => {
+//     const fetchComments = async () => {
+//       try {
+//         const commentsData = await getEventComments(eventId);
+//         setComments(commentsData);
+//       } catch (error) {
+//         console.error("Erreur lors de la récupération des commentaires :", error);
+//       }
+//     };
+
+//     fetchComments();
+//   }, [eventId]);
+
+//   return (
+//     <div className="comment-wrap">
+//       <h2 className="title">
+//         {comments.length} <span>Comments</span>
+//       </h2>
+
+//       <div className="latest-comments">
+//         <ul className="list-wrap">
+//           {comments.map((comment, index) => (
+//             <li key={index}>
+//               <BlogCommentItem comment={comment} updateComments={updateComments}/>
+              
+//             </li>
+//           ))}
+//         </ul>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default BlogComments;
+
+// import React, { useState, useEffect } from "react";
+// import { getEventComments } from "../../../services/eventsApi";
+// import BlogCommentItem from "./BlogCommentItem";
+// import { useParams } from "react-router-dom";
+
+// const BlogComments = () => {
+//   const [comments, setComments] = useState([]);
+//   const { eventId } = useParams();
+
+//   useEffect(() => {
+//     const fetchComments = async () => {
+//       try {
+//         const commentsData = await getEventComments(eventId);
+//         setComments(commentsData);
+//       } catch (error) {
+//         console.error("Erreur lors de la récupération des commentaires :", error);
+//       }
+//     };
+
+//     fetchComments();
+//   }, [eventId]);
+
+//   return (
+//     <div className="comment-wrap">
+//       <h2 className="title">
+//         {comments.length} <span>Comments</span>
+//       </h2>
+
+//       <div className="latest-comments">
+//         <ul className="list-wrap">
+//           {comments.map((comment, index) => (
+//             <li key={index}>
+//               <BlogCommentItem comment={comment} />
+//             </li>
+//           ))}
+//         </ul>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default BlogComments;

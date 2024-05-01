@@ -9,7 +9,7 @@ function App() {
     <Layout header={4} footer={1}>
       
         <div className="book">
-          {/* <LeftPanel /> */}
+          
           <RightPanel />
         </div>
       

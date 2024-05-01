@@ -438,7 +438,7 @@
 .book .right .book_tic {
     position: absolute;
     right: 5%;
-    bottom: 40px;
+    bottom: -29px;
     padding: 8px 9.5px;
     border-radius: 50%;
     border: none;
@@ -451,17 +451,20 @@
     display: none;
 }
 
+
 .book .right .book_tic:hover {
     color: #000;
 }
 
 .book .right .ticket {
-    width: 100%;
+    width: 85%;
     height: 75%;
     /* border: 1px solid #fff; */
-    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 100px;
     overflow-y: auto;
     display: none;
+    
 }
 
 .book .right .ticket::-webkit-scrollbar {
