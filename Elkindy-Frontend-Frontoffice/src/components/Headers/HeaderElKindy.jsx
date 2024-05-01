@@ -119,19 +119,21 @@ const HeaderOne = () => {
             const storedToken = Cookies.get('token');
             const decodedToken = jwtDecode(storedToken);
             const { userId, role } = decodedToken;
+            console.log(userId,role)
 
-            const response = await api.put(`http://localhost:9090/api/auth/cancelSubscription/${userId}`);
             const responseHistory = await api.post(`http://localhost:9090/api/auth/cancelSubscriptionHistory/${userId}`);
+            const response = await api.put(`http://localhost:9090/api/auth/cancelSubscription/${userId}`);
 
+            console.log(response);
             console.log(responseHistory);
         } catch (error) {
             console.error('Error canceling subscription:', error);
         }
     };
+
     const handleConfirmCancel = () => {
         cancelSubscription();
         setShowConfirmation(false);
-        window.location.reload();
     };
 
     const handleCancel = () => {

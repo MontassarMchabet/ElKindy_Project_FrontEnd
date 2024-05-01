@@ -201,11 +201,11 @@ export default function UserReports() {
           value={totalClients}
         />
         <MiniStatistics
-          growth={`+${percentageIncreaseSubscription}%`}
+          growth={`${percentageIncreaseSubscription}%`}
           name='Subscriptions this month'
           value={totalSubscriptionsThisMonth}
         />
-        <MiniStatistics
+        {/* <MiniStatistics
           startContent={
             <IconBox
               w='56px'
@@ -218,7 +218,7 @@ export default function UserReports() {
           }
           name='Total Projects'
           value='2935'
-        />
+        /> */}
       </SimpleGrid>
 
 
