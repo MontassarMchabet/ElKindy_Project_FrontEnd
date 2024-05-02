@@ -11,11 +11,17 @@ class PieChart extends React.Component {
     };
   }
 
-  componentDidMount() {
-    this.setState({
-      chartData: this.props.chartData,
-      chartOptions: this.props.chartOptions,
-    });
+  componentDidUpdate(prevProps) {
+    // Check if chartData or chartOptions props have changed
+    if (
+      prevProps.chartData !== this.props.chartData ||
+      prevProps.chartOptions !== this.props.chartOptions
+    ) {
+      this.setState({
+        chartData: this.props.chartData,
+        chartOptions: this.props.chartOptions,
+      });
+    }
   }
 
   render() {

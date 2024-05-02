@@ -8,12 +8,12 @@ import {
   MdLock,
   MdOutlineShoppingCart,
   MdPages,
-  MdOutlineCalendarMonth ,
+  MdOutlineCalendarMonth,
   MdOutlinePages,
-  MdEditCalendar ,
+  MdEditCalendar,
   MdAddTask,
-
-  MdMapsHomeWork ,
+  MdStar,
+  MdMapsHomeWork,
 
   MdOutlineMusicNote,
   MdOutlineMusicVideo,
@@ -31,6 +31,7 @@ import Profile from "views/admin/profile";
 import DataTables from "views/admin/dataTables";
 import RTL from "views/admin/rtl";
 import UserTables from "views/admin/userTables";
+import SubscriptionHistoryTable from "views/admin/subscriptionHistoryTable";
 import Courses from "views/admin/courses";
 import Scheduling from "views/admin/Scheduling";
 
@@ -60,6 +61,41 @@ const routes = [
     component: Profile,
   },
   {
+    name: "Users Tables",
+    layout: "/admin",
+    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+    path: "/users",
+    component: UserTables,
+  },
+  {
+    name: "Subscription Table",
+    layout: "/admin",
+    icon: <Icon as={MdStar} width='20px' height='20px' color='inherit' />,
+    path: "/subscriptions",
+    component: SubscriptionHistoryTable,
+  },
+  {
+    name: "Products Table",
+    layout: "/admin",
+    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+    path: "/products",
+    component: productTable,
+  },
+  {
+    name: "Orders Table",
+    layout: "/admin",
+    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+    path: "/orders",
+    component: ordersTable,
+  },
+  {
+    name: "Data Tables",
+    layout: "/admin",
+    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+    path: "/data-tables",
+    component: DataTables,
+  },
+  {
     name: "Marketplace",
     layout: "/admin",
     path: "/marketplace",
@@ -83,11 +119,8 @@ const routes = [
       <Icon as={MdAddTask} width='20px' height='20px' color='inherit' />
     ),
     component: ExamTables,
-
-
-    }, 
+  },
   {
-
     name: " Events Calendar",
     layout: "/admin",
     path: "/calendarevent",
@@ -103,7 +136,6 @@ const routes = [
     secondary: true,
   },
   {
-
     name: " ElKindy Events",
     layout: "/admin",
     path: "/event",
@@ -117,9 +149,7 @@ const routes = [
     ),
     component: Events,
     secondary: true,
-
   },
-
   {
     name: "Products Table",
     layout: "/admin",
@@ -164,45 +194,39 @@ const routes = [
     path: "/users",
     component: UserTables,
   },
-
   {
     name: "Room & Classroom",
     layout: "/admin",
-    icon: <Icon as={MdMapsHomeWork } width='20px' height='20px' color='inherit' />,
+    icon: <Icon as={MdMapsHomeWork} width='20px' height='20px' color='inherit' />,
     path: "/course",
     component: Courses,
   },
   {
     name: "Planning",
     layout: "/admin",
-    icon: <Icon as={MdEditCalendar } width='20px' height='20px' color='inherit' />,
+    icon: <Icon as={MdEditCalendar} width='20px' height='20px' color='inherit' />,
     path: "/planning",
-    component:Planning ,
+    component: Planning,
   },
   {
     name: "Sdudent Calendar",
     layout: "/admin",
-    icon: <Icon as={MdOutlineCalendarMonth } width='20px' height='20px' color='inherit' />,
+    icon: <Icon as={MdOutlineCalendarMonth} width='20px' height='20px' color='inherit' />,
     path: "/schedule",
     component: Scheduling,
   },
   {
     name: "Teacher Calendar",
     layout: "/admin",
-    icon: <Icon as={MdOutlineCalendarMonth } width='20px' height='20px' color='inherit' />,
+    icon: <Icon as={MdOutlineCalendarMonth} width='20px' height='20px' color='inherit' />,
     path: "/teachercalender",
     component: TeacherScheduling,
   },
-  
-
   {
     layout: "/admin",
     path: "/:eventId/tickets",
     component: Tickets,
   }
-  
-  
-
 ];
 
 export default routes;

@@ -27,8 +27,8 @@ const BannerOne = () => {
   let buttonText = 'Subscribe now';
 
   if (user) {
-    if (user.isSubscribed) {
-      destinationUrl = '/contactus';
+    if (user.isSubscribed || user.role== "admin" || user.role== "prof") {
+      destinationUrl = '/contact';
       buttonText = 'Contact us';
     } else {
       destinationUrl = '/subscribe';

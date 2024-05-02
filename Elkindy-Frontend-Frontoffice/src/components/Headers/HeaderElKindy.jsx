@@ -11,6 +11,11 @@ import './Headercss.css';
 import axios from "axios";
 import { FcApproval } from "react-icons/fc";
 
+const imageCancel = require('../../img/imageCancel.jpg');
+
+
+
+
 
 const HeaderOne = () => {
     useEffect(() => {
@@ -102,7 +107,7 @@ const HeaderOne = () => {
             }
         };
         fetchUserData();
-    }, []);
+    }, [user]);
 
     const isLoggedIn = Cookies.get('token') !== undefined;
     const handleLogout = () => {
@@ -113,6 +118,58 @@ const HeaderOne = () => {
         window.location.href = "/";
     };
 
+
+    const [showConfirmation, setShowConfirmation] = useState(false);
+
+    const handleCancelSubscription = () => {
+        setShowConfirmation(true);
+    };
+
+    const cancelSubscription = async () => {
+        try {
+            const storedToken = Cookies.get('token');
+            const decodedToken = jwtDecode(storedToken);
+            const { userId, role } = decodedToken;
+            console.log(userId,role)
+
+            const responseHistory = await api.post(`http://localhost:9090/api/auth/cancelSubscriptionHistory/${userId}`);
+            const response = await api.put(`http://localhost:9090/api/auth/cancelSubscription/${userId}`);
+
+            console.log(response);
+            console.log(responseHistory);
+        } catch (error) {
+            console.error('Error canceling subscription:', error);
+        }
+    };
+
+    const handleConfirmCancel = () => {
+        cancelSubscription();
+        setShowConfirmation(false);
+    };
+
+    const handleCancel = () => {
+        setShowConfirmation(false);
+    };
+
+
+    const yesButtonStyle = {
+        backgroundColor: '#FF6347', // Red
+        color: 'white',
+        padding: '10px 20px',
+        border: 'none',
+        borderRadius: '5px',
+        cursor: 'pointer',
+        marginRight: '10px',
+    };
+
+    const noButtonStyle = {
+        backgroundColor: '#4169E1', // Blue
+        color: 'white',
+        padding: '10px 20px',
+        border: 'none',
+        borderRadius: '5px',
+        cursor: 'pointer',
+    }
     const [notifications, setNotifications] = useState([]);
     const [open, setOpen] = useState(false);
     const [socket, setSocket] = useState(null);
@@ -176,6 +233,7 @@ const HeaderOne = () => {
         }
         setNotifications([]);
         setOpen(false);
+
     };
 
 
@@ -235,20 +293,21 @@ const HeaderOne = () => {
                                                     <Link to="/events">Events</Link>
                                                 </li>
 
-                                                <li className={cn(isActiveClassName("/planning"))}>
-                                                    <Link to="/planning">Planning</Link>
-                                                </li>
 
 
-                                                {isLoggedIn ? (
+
+                                                {isLoggedIn && (
                                                     <>
-                                                        <li className={cn(isActiveClassName("/exams"))}>
-                                                            <Link to="/exams">Exams</Link>
-                                                        </li>
-
-                                                    </>
-                                                ) : (
-                                                    <>
+                                                        {(user?.role === 'admin' || user?.role === 'prof' || (user?.role === 'client' && user.isSubscribed)) && (
+                                                            <>
+                                                                <li className={cn(isActiveClassName("/planning"))}>
+                                                                    <Link to="/planning">Planning</Link>
+                                                                </li>
+                                                                <li className={cn(isActiveClassName("/exams"))}>
+                                                                    <Link to="/exams">Exams</Link>
+                                                                </li>
+                                                            </>
+                                                        )}
 
                                                     </>
                                                 )}
@@ -293,6 +352,11 @@ const HeaderOne = () => {
                                                                 {user?.role === 'admin' && (
                                                                     <li>
                                                                         <a href="http://localhost:3000/elkindy#/admin/dashboard">Dashboard</a>
+                                                                    </li>
+                                                                )}
+                                                                {user?.isSubscribed && (
+                                                                    <li>
+                                                                        <a style={{ color: 'red' }} onClick={handleCancelSubscription}>Cancel Subscription</a>
                                                                     </li>
                                                                 )}
                                                             </ul>
@@ -386,6 +450,65 @@ const HeaderOne = () => {
 
                                     </nav>
                                 </div>
+
+
+                                {showConfirmation && (
+                                    <div>
+                                        <div
+                                            style={{
+                                                position: "fixed",
+                                                top: 0,
+                                                left: 0,
+                                                width: "100%",
+                                                height: "100%",
+                                                background: "rgba(0, 0, 0, 0.5)",
+                                                zIndex: 9998,
+                                            }}
+                                        />
+                                        <div
+                                            style={{
+                                                background: "white",
+                                                width: "600px",
+                                                height: "300px",
+                                                position: "fixed",
+                                                borderRadius: "60px",
+                                                boxShadow: "0px 0px 10000px rgba(255, 255, 255, 0.5)",
+                                                left: "50%",
+                                                top: "50%",
+                                                transform: "translate(-50%, -50%)",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                zIndex: 9999,
+                                            }}
+                                        >
+
+
+                                            <div style={{ marginLeft: "20px", marginRight: "20px", position:"absolute", marginTop:"-150px" }}>
+                                                <img src={imageCancel}
+                                                    style={{
+                                                        width: "200px",
+                                                        height: "200px",
+                                                        borderRadius: "50%",
+                                                        marginLeft: "160px",
+                                                    }}
+                                                />
+                                                <h5 className="modal-title" style={{ textAlign: "center" }}>
+                                                    Are you sure you want to cancel your subscription?
+                                                </h5>
+                                                <div style={{
+                                                    display: "flex",
+                                                    justifyContent: "center",
+                                                    marginTop: "20px",
+                                                }}>
+                                                    <button onClick={handleConfirmCancel} style={yesButtonStyle}>Yes</button>
+                                                    <button onClick={handleCancel} style={noButtonStyle}>No</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
 
                                 {/* <!-- Mobile Menu  --> */}
                                 <div className="mobile-menu">
