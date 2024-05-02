@@ -909,6 +909,9 @@
   .menu-nav {
     justify-content: space-between;
   }
+  .logo img {
+    display: none;
+  }
   .header-action {
     margin-right: 40px;
   }
@@ -2238,4 +2241,18 @@
   .inner-contact-form-wrap {
     padding: 40px 30px;
   }
+}
+
+/* Extra Small devices (landscape phones, 576px and up) */
+@media only screen and (min-width: 100px) and (max-width: 575px) { 
+.book .right .ticket {
+  width: 100%;
+  height: 75%;
+  /* border: 1px solid #fff; */
+  margin-top: 2px;
+  margin-left: 0px;
+  overflow-y: auto;
+  display: none;
+  
+}
 }

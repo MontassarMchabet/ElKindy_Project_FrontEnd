@@ -2,8 +2,16 @@ import axios from "axios";
 import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button, Textarea } from "@chakra-ui/react";
 import { ViewIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { AddIcon } from '@chakra-ui/icons'
+import pdfToText from 'react-pdftotext'
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, ModalFooter, FormControl, FormLabel, Input, Grid, SimpleGrid ,Select } from "@chakra-ui/react";
 import { AnswersData } from "../variables/columnsData";
+import {
+    Paginator,
+    Previous,
+    Next,
+    PageGroup,
+    Container as PageContainer
+  } from 'chakra-paginator';
 import Answers from "./AnswersTab";
 import React, { useState, useEffect, useRef ,useMemo} from "react";
 import {
@@ -52,7 +60,7 @@ import Information from "views/admin/profile/components/Information";
 
 export default function ColumnsTable(props) {
     const { columnsData, tableData, handleDelete, cancelDelete, cancelRef, confirmDelete, isDeleteDialogOpen,
-        isModalOpenA, openModalA, closeModalA, fetchData , isEditModalOpen, closeEditModal,setIsEditModalOpen,setExamData} = props;
+        isModalOpenA, examId ,openModalA, closeModalA, fetchData , isEditModalOpen, closeEditModal,setIsEditModalOpen,setExamData,pageCount,handlePageClick} = props;
 
     const textColorPrimary = useColorModeValue("secondaryGray.900", "white");
     const cardShadow = useColorModeValue(
@@ -68,6 +76,7 @@ export default function ColumnsTable(props) {
         {
             columns,
             data,
+            initialState: { pageIndex: 0, pageSize: 5 }, 
         },
         useGlobalFilter,
         useSortBy,
@@ -98,8 +107,26 @@ export default function ColumnsTable(props) {
     const openEditModal = () => {
     setIsEditModalOpen(true);
 };
+const baseStyles= {
+    w: 7,
+    fontSize: 'sm'
+  };
+const normalStyles = {
+    ...baseStyles,
+    _hover: {
+      bg: 'green.300'
+    },
+    bg: 'red.300'
+  };
+  
 
-
+  const activeStyles= {
+    ...baseStyles,
+    _hover: {
+      bg: 'blue.300'
+    },
+    bg: 'green.300'
+  };
 const [quizzes, setQuizzes] = useState([]);
 
   useEffect(() => {
@@ -279,8 +306,14 @@ const handleSubmitB = async (e) => {
         page,
         prepareRow,
         initialState,
+        state: { pageIndex, pageSize },
+        previousPage,
+        nextPage,
+        canPreviousPage,
+        canNextPage,
+        setGlobalFilter, 
     } = tableInstance;
-    initialState.pageSize = 99999999999999999;
+    
 
     const textColor = useColorModeValue("secondaryGray.900", "white");
     const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
@@ -309,14 +342,46 @@ const handleSubmitB = async (e) => {
     const handleClick = () => setShow(!show);
 
 
-
+    const [numberOfAnswers, setNumberOfAnswers] = useState(0);
     const [isModalViewOpen, setIsModalViewOpen] = useState(false);
     const [examInfo, setExamInfo] = useState(null);
     const [answersData, setAnswersData] = useState([]);
+    
+    const [answersCounts, setAnswersCounts] = useState({});
+
+    const fetchAnswersForEachExam = async (ids) => {
+        try {
+            const counts = [];
+            // Iterate through each exam ID
+            for (const id of ids) {
+                // Fetch number of answers for the current exam ID
+                const response = await fetch(`http://localhost:9090/api/answer/answers/${id}`);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch answers for exam ID: ${id}`);
+                }
+                const answers = await response.json();
+                const numberOfAnswers = answers.length;
+                counts.push(numberOfAnswers); // Push the number of answers to the array
+            
+            }
+            // Update state with the array of numbers
+            setAnswersCounts(counts);
+            console.log(answersCounts)
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    
+
+    
+    // Use the function inside useEffect
+    useEffect(() => {
+        fetchAnswersForEachExam(examId);
+    }, [examId]);
     const handleView = async (examData) => {
         try {
-            // Fetch answers data before opening the modal
-            const answersData = await fetchAnswersData(examData._id); // Assuming examData has an 'id' property
+            
+            const answersData = await fetchAnswersData(examData._id); 
             setExamInfo({ ...examData, answersData });
             setAnswersData(answersData)
             console.log(examData._id)
@@ -359,16 +424,48 @@ const handleSubmitB = async (e) => {
       };
     
     const [errors, setErrors] = useState({});
-
+   
+    const handleChange = async (e) => {
+        const fieldName = e.target.name;
     
-    const handleChange = (e) => {
-        if (e.target.type === "file") {
-            setFormData({ ...formData, [e.target.name]: e.target.files[0] });
-        }  else {
-            setFormData({ ...formData, [e.target.name]: e.target.value });
+        if (e.target.type === 'file') {
+            const file = e.target.files[0];
+    
+            if (file) {
+                setFormData({ ...formData, [fieldName]: file });
+    
+                // Extract text from PDF file
+                try {
+                    const text = await pdfToText(file);
+                    console.log('Extracted text from PDF:', text);
+    
+                  
+                    const openaiApiKey = 'test';
+                    const openaiApiUrl = 'https://api.openai.com/v1/completions';
+                    const prompt = text; 
+    
+                    const response = await axios.post(openaiApiUrl, {
+                        model: 'davinci-002',
+                        prompt: prompt,
+                        max_tokens: 500,
+                        n: 1, 
+                    }, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${openaiApiKey}`,
+                        }
+                    });
+    
+                    console.log('Generated long text:', response.data.choices[0].text);
+                    // Handle the generated long text response here
+                } catch (error) {
+                    console.error('Failed to extract text from PDF or generate long text:', error);
+                }
+            }
+        } else {
+            setFormData({ ...formData, [fieldName]: e.target.value });
         }
     };
-
 // Validation function for the form
 const validateFormQ = () => {
     let errors2 = {};
@@ -521,8 +618,22 @@ if (!question.point.trim()) {
                     "http://localhost:9090/api/exam/",
                     formDataToSendWithoutDateTime
                 );
-                fetchData();
-                closeModalA();
+                // Get the users of a specific level
+                const level = formData.level; 
+                const usersResponse = await axios.get(`http://localhost:9090/api/auth/users/${level}`);
+                const users = usersResponse.data;
+    console.log(users);
+                // Get the emails of the users
+                const emails = users.map(user => user.email);
+    console.log(emails)
+                // Call the sendVerificationCode method with the emails and users
+                const verificationCodeResponse = await axios.post(
+                    "http://localhost:9090/api/exam/verificationCode",
+                    { email: emails, username: users.map(user => user.username) }
+                );
+console.log("erorrrr",verificationCodeResponse)
+            fetchData();
+            closeModalA();
             } catch (error) {
                 console.error("Error adding Exam:", error);
             }
@@ -903,10 +1014,10 @@ if (!question.point.trim()) {
 
 
                 <Tbody {...getTableBodyProps()}>
-                    {page.map((row, index) => {
+                    {page.map((row, rowIndex) => {
                         prepareRow(row);
                         return (
-                            <Tr {...row.getRowProps()} key={index}>
+                            <Tr {...row.getRowProps()} key={rowIndex}>
                                 {row.cells.map((cell, index) => {
                                     let data = "";
                                     if (cell.column.Header === "Title") {
@@ -929,7 +1040,23 @@ if (!question.point.trim()) {
                                                 {formattedDate}
                                             </Text>
                                         );
-                                    } else if (cell.column.Header === "Type") {
+                                    } else if (cell.column.Header === "Progress") {
+                                        const progressValue = answersCounts[rowIndex] || 0;
+                                        console.log("valuee",index)
+                                        data = (
+                                          <Flex align='center'>
+                                             
+                <Progress
+                    variant='table'
+                    colorScheme='brandScheme'
+                    h='8px'
+                    w='108px'
+                    value={progressValue*10} 
+                />
+            
+                                          </Flex>
+                                        );
+                                      }else if (cell.column.Header === "Type") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
                                                 {cell.value}
@@ -1095,6 +1222,17 @@ if (!question.point.trim()) {
                     })}
                 </Tbody>
             </Table>
+            <div style={{ textAlign: 'center', marginTop: '20px' }}>
+        <Button onClick={() => previousPage()} disabled={!canPreviousPage}>
+          Previous
+        </Button>
+        <Button onClick={() => nextPage()} disabled={!canNextPage}>
+          Next
+        </Button>
+        <span>
+          Page {pageIndex + 1} of {Math.ceil(data.length / pageSize)}
+        </span>
+      </div>
         </Card>
     );
 }

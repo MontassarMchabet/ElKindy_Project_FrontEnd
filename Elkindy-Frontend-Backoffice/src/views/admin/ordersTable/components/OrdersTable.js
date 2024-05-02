@@ -1,14 +1,10 @@
 import axios from "axios";
-import api from "services/api";
 import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button, Select, Textarea } from "@chakra-ui/react";
 import { ViewIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
-import { AddIcon } from '@chakra-ui/icons'
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, ModalFooter, FormControl, FormLabel, Input, Grid, SimpleGrid } from "@chakra-ui/react";
 import {
     Flex,
-    Table,
-    Progress,
-    Icon,
+    Table,  
     Tbody,
     Td,
     Text,
@@ -17,17 +13,7 @@ import {
     Tr,
     useColorModeValue,
 } from "@chakra-ui/react";
-import {
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuList,
-    useDisclosure,
-    InputGroup,
-    InputRightElement,
-} from "@chakra-ui/react";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
-import { RiEyeCloseLine } from "react-icons/ri";
+import {useDisclosure} from "@chakra-ui/react";
 import React, { useEffect, useMemo, useState } from "react";
 import {
     useGlobalFilter,
@@ -36,14 +22,13 @@ import {
     useTable,
 } from "react-table";
 import Card from "components/card/Card";
-//import Menu from "components/menu/MainMenu";
-import { MdCheckCircle, MdCancel, MdOutlineError } from "react-icons/md";
 import Information from "views/admin/profile/components/Information";
+import { io } from "socket.io-client";
 
 
 export default function ColumnsTable(props) {
     const { columnsData, tableData, handleDelete, cancelDelete, cancelRef, confirmDelete, isDeleteDialogOpen,
-        isModalOpenPro, openModalPro, closeModalPro, fetchData } = props;
+        fetchData } = props;
 
     const textColorPrimary = useColorModeValue("secondaryGray.900", "white");
     const cardShadow = useColorModeValue(
@@ -52,9 +37,8 @@ export default function ColumnsTable(props) {
     );
     const columns = useMemo(() => columnsData, [columnsData]);
     const data = useMemo(() => tableData, [tableData]);
-    const textColorSecondary = "gray.400";
+
     const { ...rest } = props;
-    const iconColor = useColorModeValue("brand.500", "white");
     /////////////////////////////////////////////////
 
 
@@ -81,39 +65,19 @@ export default function ColumnsTable(props) {
     ////////////////////////////////////////////////////////////////
     const textColor = useColorModeValue("secondaryGray.900", "white");
     const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
-    const {
-        isOpen: isOpen1,
-        onOpen: onOpen1,
-        onClose: onClose1,
-    } = useDisclosure();
-    const bgList = useColorModeValue("white", "whiteAlpha.100");
-    const bgShadow = useColorModeValue(
-        "14px 17px 40px 4px rgba(112, 144, 176, 0.08)",
-        "unset"
-    );
-    const bgButton = useColorModeValue("secondaryGray.300", "whiteAlpha.100");
-    const bgHover = useColorModeValue(
-        { bg: "secondaryGray.400" },
-        { bg: "whiteAlpha.50" }
-    );
-    const bgFocus = useColorModeValue(
-        { bg: "secondaryGray.300" },
-        { bg: "whiteAlpha.100" }
-    );
-    const [show, setShow] = React.useState(false);
-    const handleClick = () => setShow(!show);
+
+
+
 
     const [isModalViewOpen, setIsModalViewOpen] = useState(false);
     const [productInfo, setProductInfo] = useState(null);
-    const [price, setPrice] = useState(0);
+
 
     const handleView = (productData) => {
         setProductInfo(productData);
         setIsModalViewOpen(true);
     };
-    const closeModalViewPro = () => {
-        setIsModalViewOpen(false);
-    };
+
 
     const closeModalViewA = () => {
         setIsModalViewOpen(false);
@@ -136,27 +100,43 @@ export default function ColumnsTable(props) {
         return Object.keys(errors).length === 0;
     };
 
+    const [socket, setSocket] = useState(null);
+
+    useEffect(() => {
+        setSocket(io("http://localhost:8089"));
+    }, []);
 
 
-
+    const handleNotification = () => {
+        if (socket) {
+            const notificationData = {
+                senderName: "Admin",
+                receiverName: editedOrder.user.username,
+                orderStatus: editedOrder.orderStatus,
+            };
+    
+            socket.emit("sendNotification", notificationData);
+        }
+    };
 
     const handleSaveEdit = async () => {
-        
-            try {
-                await axios.put(`http://localhost:9090/api/order/update-order/${editedOrder._id}`, editedOrder);
-
-                setIsEditModalOpen(false);
-                fetchData();
-            } catch (error) {
-                console.error("Error updating user:", error);
-            }
-        
+        try {
+            await axios.put(`http://localhost:9090/api/order/update-order/${editedOrder._id}`, editedOrder);
+            setIsEditModalOpen(false);
+            fetchData();
+            handleNotification();
+            await axios.post("http://localhost:9090/api/order/notif", {senderName: "Admin", receiverName:editedOrder.user.username, orderStatus: editedOrder.orderStatus});
+        } catch (error) {
+            console.error("Error updating user:", error);
+        }
     };
+
+
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
     const handleEdit = (orderStatus) => {
-        setEditedOrder(orderStatus); // Charger les données du cours à éditer dans editedEvent
-        openEditModal(); // Ouvrir le formulaire d'édition
+        setEditedOrder(orderStatus);
+        openEditModal();
     };
 
     const openEditModal = () => {
@@ -196,7 +176,7 @@ export default function ColumnsTable(props) {
                     <ModalHeader>Product Information</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        {productInfo && productInfo.orderItems && productInfo.orderItems.map((item,index)=>{
+                        {productInfo && productInfo.orderItems && productInfo.orderItems.map((item, index) => {
                             return (
                                 <React.Fragment key={index}>
                                     <Card mb={{ base: "0px", "2xl": "20px" }} {...rest}>
@@ -236,7 +216,7 @@ export default function ColumnsTable(props) {
                                     </Card>
                                 </React.Fragment>
                             )
-                        }) }
+                        })}
                     </ModalBody>
                 </ModalContent>
             </Modal>
@@ -274,7 +254,7 @@ export default function ColumnsTable(props) {
                 <ModalContent maxW={'800px'}>
                     <ModalHeader>Edit Order Status</ModalHeader>
                     <ModalCloseButton />
-                    {editedOrder && ( // Vérifiez si editedEvent est disponible
+                    {editedOrder && (
                         <ModalBody>
 
 

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useLocation, Routes, Route } from "react-router-dom";
+import { useLocation, Routes, Route, Router } from "react-router-dom";
 import WOW from "wow.js";
 import CreativeAgency from "./pages/Home/CreativeAgency";
 import PersonalPortfolio from "./pages/Home/PersonalPortfolio";
@@ -17,7 +17,6 @@ import EventsPage from "./pages/Events/EventsPage.jsx";
 import EventDetailPage from "./pages/Events/EventDetailsPage.jsx";
 import ReservationPage from "./components/BookEvent/BookEventApp.jsx";
 import AnimatedCursor from "react-animated-cursor";
-
 import ExamDetailsPage from "./pages/Exams/examdetails.jsx";
 import Home from "./pages/shop/pages/Home";
 import OurStore from "./pages/shop/pages/OurStore";
@@ -28,26 +27,26 @@ import PassQuiz from "./pages/Exams/passquiz.jsx";
 import AddExamsComponent from "./pages/Exams/addexam";
 import AddQuizsComponent from "./pages/Exams/addquizpage.jsx";
 import NotesPage from "./pages/Exams/notespage.jsx";
+import PlansPage from "./pages/Exams/planpages.jsx";
 
 import AccountComponent from "./pages/Account";
 import ExamsComponent from "./pages/Exams";
-
 import PlanningComponent from "./pages/Planning";
+
 import TeacherCreateMeetings from"./pages/TeacherCreateMeeting/index.jsx";
 import JoinMeetingss from"./pages/TeacherCreateMeeting/JoinMeeting.jsx";
 import MeetingPage from './components/TeacherCreateMeeting/JitsiMeet.jsx';
+
 import Cart from "./pages/shop/pages/Cart.jsx";
 import Checkout from "./pages/shop/pages/Checkout.jsx";
 import Success from "./pages/shop/pages/Success.jsx";
 import Fail from "./pages/shop/pages/Fail.jsx";
 import Orders from "./pages/shop/pages/Orders.jsx";
-
-
-
 import Piano from "./pages/Virtualinstrument/Piano";
 import Drums from "./pages/Virtualinstrument/Drums";
 import SubscribePage from "./pages/Subscribe";
-
+import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
+import FillInformations from "./components/FillInformations/FillInformations.jsx";
 
 function App() {
   useEffect(() => {
@@ -95,30 +94,22 @@ function App() {
         <Route path="/" element={<CreativeAgency />} />
         <Route path="/account" element={<AccountComponent />} />
         <Route path="/exams" element={<ExamsComponent />} />
-
         <Route path="/addexams" element={<AddExamsComponent />} />
         <Route path="/addquiz" element={<AddQuizsComponent />} />
-        {/* <Route path="/home-two" element={<PersonalPortfolio />} />
-        <Route path="/home-three" element={<DigitalAgency />} /> */}
-
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog-details" element={<BlogDetailsPage />} />
-
         <Route path="/planning" element={<PlanningComponent />} />
-
-
         <Route path="/exam-details/:id" element={<ExamDetailsPage />} />
         <Route path="/notes" element={<NotesPage />} />
 
-        <Route path="/events" element={<EventsPage />} />
+        <Route path="/classes" element={<PlansPage />} />
 
+        <Route path="/events" element={<EventsPage />} />
         <Route path="/events/:eventId" element={<EventDetailPage />} />
         <Route path="/events/:eventId/:movieParam/bookTickets" element={<ReservationPage />} />
-
         <Route path="/passquiz" element={<PassQuiz />} />
-
         <Route path="/shop" element={<Home />} />
         <Route path="/shop/products" element={<OurStore />} />
         <Route path="/shop/products/:id" element={<SingleProduct />} />
@@ -129,14 +120,24 @@ function App() {
         <Route path="/shop/checkout" element={<Checkout />} />
         <Route path="/success" element={<Success />} />
         <Route path="/fail" element={<Fail />} />
-        <Route path="/subscribe" element={<SubscribePage />} />
         <Route path="/piano" element={<Piano />} />
         <Route path="/drums" element={<Drums />} />
+
         <Route path="/CreateMeeting" element={<TeacherCreateMeetings />} />
         <Route path="/JoinMeeting" element={<JoinMeetingss />} />
         <Route path="/meeting/:roomName" element={<MeetingPage />} />
 
+        <Route path="/fillInfos" element={<FillInformations />} />
 
+
+        <Route
+          path="/subscribe"
+          element={<SubscribePage />}
+        />
+        {/* <Route
+          path="/subscribe"
+          element={<PrivateRoute element={<SubscribePage />} allowedRoles={['client']} />}
+        /> */}
       </Routes>
     </>
   );

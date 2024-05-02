@@ -22,7 +22,7 @@ import {
 import Card from "components/card/Card";
 import Menu from "components/menu/MainMenu";
 export default function CheckTable(props) {
-  const { columnsData, tableData } = props;
+  const { columnsData, tableData, fetchDataTopClients } = props;
 
   const columns = useMemo(() => columnsData, [columnsData]);
   const data = useMemo(() => tableData, [tableData]);
@@ -61,7 +61,7 @@ export default function CheckTable(props) {
           fontSize='22px'
           fontWeight='700'
           lineHeight='100%'>
-          Check Table
+          Top clients
         </Text>
         <Menu />
       </Flex>
@@ -87,6 +87,10 @@ export default function CheckTable(props) {
             </Tr>
           ))}
         </Thead>
+
+
+
+
         <Tbody {...getTableBodyProps()}>
           {page.map((row, index) => {
             prepareRow(row);
@@ -94,44 +98,30 @@ export default function CheckTable(props) {
               <Tr {...row.getRowProps()} key={index}>
                 {row.cells.map((cell, index) => {
                   let data = "";
-                  if (cell.column.Header === "NAME") {
+                  if (cell.column.Header === "Client ID") {
                     data = (
-                      <Flex align='center'>
-                        <Checkbox
-                          defaultChecked={cell.value[1]}
-                          colorScheme='brandScheme'
-                          me='10px'
+                      <Flex align="center">
+                        <img
+                          src={cell.row.original.profilePicture}
+                          width="40px"
+                          height="40px"
+                          style={{ borderRadius: "50%", marginRight: "10px" }}
+                          alt="Profile"
                         />
                         <Text color={textColor} fontSize='sm' fontWeight='700'>
-                          {cell.value[0]}
+                          {cell.row.original.username}
                         </Text>
                       </Flex>
                     );
-                  } else if (cell.column.Header === "PROGRESS") {
-                    data = (
-                      <Flex align='center'>
-                        <Text
-                          me='10px'
-                          color={textColor}
-                          fontSize='sm'
-                          fontWeight='700'>
-                          {cell.value}%
-                        </Text>
-                      </Flex>
-                    );
-                  } else if (cell.column.Header === "QUANTITY") {
-                    data = (
-                      <Text color={textColor} fontSize='sm' fontWeight='700'>
-                        {cell.value}
-                      </Text>
-                    );
-                  } else if (cell.column.Header === "DATE") {
+
+                  } else if (cell.column.Header === "Total Subscriptions") {
                     data = (
                       <Text color={textColor} fontSize='sm' fontWeight='700'>
                         {cell.value}
                       </Text>
                     );
                   }
+
                   return (
                     <Td
                       {...cell.getCellProps()}

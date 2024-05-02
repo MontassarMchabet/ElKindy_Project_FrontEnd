@@ -58,6 +58,7 @@ export default function ColumnsTable(props) {
     const iconColor = useColorModeValue("brand.500", "white");
     const tableInstance = useTable(
         {
+            initialState: { pageIndex: 0, pageSize: 5 },
             columns,
             data,
         },
@@ -76,6 +77,11 @@ export default function ColumnsTable(props) {
         page,
         prepareRow,
         initialState,
+        state: { pageIndex, pageSize },
+        previousPage,
+        nextPage,
+        canPreviousPage,
+        canNextPage,
     } = tableInstance;
     initialState.pageSize = 99999999999999999;
 
@@ -816,41 +822,6 @@ export default function ColumnsTable(props) {
                                 </FormControl>
                             </Grid>
                             <Grid templateColumns="1fr 1fr" gap={4}>
-                                <FormControl id="password" mt={4}>
-                                    <FormLabel>Password</FormLabel>
-                                    <InputGroup size='md'>
-                                        <Input type={show ? "text" : "password"} onChange={(e) => { setEditedUser({ ...editedUser, password: e.target.value }); validatePassword(e.target.value); }} />
-                                        <InputRightElement display='flex' alignItems='center' mt='1px'>
-                                            <Icon
-                                                color={textColorSecondary}
-                                                _hover={{ cursor: "pointer" }}
-                                                as={show ? RiEyeCloseLine : MdOutlineRemoveRedEye}
-                                                onClick={handleClick}
-                                            />
-                                        </InputRightElement>
-                                    </InputGroup>
-                                </FormControl>
-
-                                <FormControl mt={4}>
-                                    <FormLabel>Password Confirmation</FormLabel>
-                                    <InputGroup size='md'>
-                                        <Input
-                                            type={show ? "text" : "password"}
-                                            onChange={(e) => { setEditedUser({ ...editedUser, confirmPassword: e.target.value }); validateConfirmPassword(e.target.value); }}
-                                        />
-                                        <InputRightElement display='flex' alignItems='center' mt='1px'>
-                                            <Icon
-                                                color={textColorSecondary}
-                                                _hover={{ cursor: "pointer" }}
-                                                as={show ? RiEyeCloseLine : MdOutlineRemoveRedEye}
-                                                onClick={handleClick}
-                                            />
-                                        </InputRightElement>
-                                    </InputGroup>
-                                </FormControl>
-                            </Grid>
-
-                            <Grid templateColumns="1fr 1fr" gap={4}>
                                 <FormControl id="phoneNumber" mt={4}>
                                     <FormLabel>Phone Number</FormLabel>
                                     <Input type="number" value={editedUser.phoneNumber} onChange={(e) => { setEditedUser({ ...editedUser, phoneNumber: parseInt(e.target.value) }); validatePhoneNumber(e.target.value); }} />
@@ -1060,6 +1031,17 @@ export default function ColumnsTable(props) {
                     })}
                 </Tbody>
             </Table>
+            <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                <Button onClick={() => previousPage()} disabled={!canPreviousPage}>
+                    Previous
+                </Button>
+                <Button onClick={() => nextPage()} disabled={!canNextPage}>
+                    Next
+                </Button>
+                <span>
+                    Page {pageIndex + 1} of {Math.ceil(data.length / pageSize)}
+                </span>
+            </div>
         </Card>
     );
 }

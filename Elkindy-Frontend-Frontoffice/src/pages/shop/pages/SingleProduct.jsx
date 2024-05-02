@@ -1,40 +1,47 @@
 import React, { useEffect, useState } from "react";
 import "../App.css";
+import Sentiment from 'sentiment';
 import BreadCrumb from "../components/BreadCrumb";
 import Meta from "../components/Meta";
 import ProductCard from "../components/ProductCard";
-import ReactImageZoom from "react-image-zoom";
-import Color from "../components/Color";
-// import { TbGitCompare } from "react-icons/tb";
-import { AiOutlineHeart } from "react-icons/ai";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import watch from "../public/images/watch.jpg";
+import ReactImageZoom from "react-image-zoom"
+import { FcLikePlaceholder } from "react-icons/fc";
+import { FcLike } from "react-icons/fc";
+import { useLocation, useNavigate } from "react-router-dom";
 import Container from "../components/Container";
 import Header from "../components/Header";
 import Layout from "../../../layouts/Layout";
 import { useDispatch, useSelector } from "react-redux";
-import { addProdToCart, addRating, getAProduct, getUserCart } from "../features/productSlice";
+import { addProdToCart, addRating, addToWishlist, getAProduct, getUserCart } from "../features/productSlice";
 import Swal from "sweetalert2";
 import ReactStars from "react-stars";
 
 const SingleProduct = () => {
     const [quantity, setQuantity] = useState(1);
     const [alreadyAdded, setAlreadyAdded] = useState(false);
+    const [alreadyAddedToWish, setAlreadyAddedToWish] = useState(false);
     const location = useLocation()
     const navigate = useNavigate()
     const getProductId = location.pathname.split("/")[3]
     const dispatch = useDispatch();
     const productState = useSelector(state => state.product.product)
     const cartState = useSelector(state => state.product.cartProducts)
-    console.log(productState);
 
     useEffect(() => {
         dispatch(getAProduct(getProductId))
         dispatch(getUserCart())
     }, [])
-    
+
+    const addToWish = (prodId) => {
+        if (prodId) {
+            dispatch(addToWishlist(prodId));
+            setAlreadyAddedToWish(true)
+        } else {
+            console.error("Product ID is undefined");
+        }
+    }
+
     useEffect(() => {
-        // Check if cartState exists before trying to iterate over it
         if (cartState) {
             for (let index = 0; index < cartState.length; index++) {
                 if (getProductId === cartState[index].productId._id) {
@@ -45,7 +52,7 @@ const SingleProduct = () => {
     }, [cartState])
 
     const uploadCart = () => {
-        dispatch(addProdToCart({productId:productState._id, quantity, price:productState.price}))
+        dispatch(addProdToCart({ productId: productState._id, quantity, price: productState.price }))
     }
 
     const props = {
@@ -58,7 +65,6 @@ const SingleProduct = () => {
 
     const [orderedProduct, setorderedProduct] = useState(true);
     const copyToClipboard = (text) => {
-        console.log("text", text);
         var textField = document.createElement("textarea");
         textField.innerText = text;
         document.body.appendChild(textField);
@@ -67,29 +73,38 @@ const SingleProduct = () => {
         textField.remove();
     };
 
-    const [star, setStar]=useState(null)
-    const [comment, setComment]=useState(null)
-    const addRatingToProduct =() => {
-        if(star === null){
+    const [star, setStar] = useState(null)
+    const [comment, setComment] = useState(null)
+    const sentiment = new Sentiment();
+    const [inputText, setInputText] = useState("");
+    const [result, setResult] = useState();
+
+    useEffect(() => {
+        const tempResult = sentiment.analyze(inputText);
+        setResult(tempResult)
+    }, [inputText])
+
+    const addRatingToProduct = () => {
+        if (star === null) {
             Swal.fire({
                 position: "top-end",
                 icon: "error",
                 title: "please add a star rating",
                 showConfirmButton: false,
                 timer: 1500
-              });
-              return false;
-        }else if(comment === null){
+            });
+            return false;
+        } else if (comment === null) {
             Swal.fire({
                 position: "top-end",
                 icon: "error",
                 title: "please write a review about this product",
                 showConfirmButton: false,
                 timer: 1500
-              });
-              return false;
-        }else {
-            dispatch(addRating({star:star,comment:comment,prodId:getProductId}))
+            });
+            return false;
+        } else {
+            dispatch(addRating({ star: star, comment: comment, prodId: getProductId, score: result?.score }))
         }
         return false;
     };
@@ -112,36 +127,6 @@ const SingleProduct = () => {
                                     <ReactImageZoom {...props} />
                                 </div>
                             </div>
-                            {/*<div className="other-product-images d-flex flex-wrap gap-15">
-                                <div>
-                                    <img
-                                        src="https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?cs=srgb&dl=pexels-fernando-arcos-190819.jpg&fm=jpg"
-                                        className="img-fluid"
-                                        alt=""
-                                    />
-                                </div>
-                                <div>
-                                    <img
-                                        src="https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?cs=srgb&dl=pexels-fernando-arcos-190819.jpg&fm=jpg"
-                                        className="img-fluid"
-                                        alt=""
-                                    />
-                                </div>
-                                <div>
-                                    <img
-                                        src="https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?cs=srgb&dl=pexels-fernando-arcos-190819.jpg&fm=jpg"
-                                        className="img-fluid"
-                                        alt=""
-                                    />
-                                </div>
-                                <div>
-                                    <img
-                                        src="https://images.pexels.com/photos/190819/pexels-photo-190819.jpeg?cs=srgb&dl=pexels-fernando-arcos-190819.jpg&fm=jpg"
-                                        className="img-fluid"
-                                        alt=""
-                                    />
-                                </div>
-                            </div>*/}
                         </div>
                         <div className="col-6">
                             <div className="main-product-details">
@@ -160,7 +145,6 @@ const SingleProduct = () => {
                                             edit={false}
                                             activeColor="#ffd700"
                                         />
-                                        <p className="mb-0 t-review">( 2 Reviews )</p>
                                     </div>
                                     <a className="review-btn" href="#review">
                                         Write a Review
@@ -181,51 +165,48 @@ const SingleProduct = () => {
                                         <p className="product-data">in stock</p>
                                     </div>
                                     {
-                                        alreadyAdded===false && <>
-                                        <div className="d-flex align-items-center gap-15 flex-row mt-2 mb-3">
-                                        <h3 className="product-heading">Quantity :</h3>
-                                        <div className="">
-                                            <input
-                                                type="number"
-                                                name=""
-                                                min={1}
-                                                max={10}
-                                                className="form-control"
-                                                style={{ width: "70px" }}
-                                                id=""
-                                                onChange={(e)=>{setQuantity(e.target.value)}}
-                                                value={quantity}
-                                            />
-                                        </div>
-                                    </div>
+                                        alreadyAdded === false && <>
+                                            <div className="d-flex align-items-center gap-15 flex-row mt-2 mb-3">
+                                                <h3 className="product-heading">Quantity :</h3>
+                                                <div className="">
+                                                    <input
+                                                        type="number"
+                                                        name=""
+                                                        min={1}
+                                                        max={10}
+                                                        className="form-control"
+                                                        style={{ width: "70px" }}
+                                                        id=""
+                                                        onChange={(e) => { setQuantity(e.target.value) }}
+                                                        value={quantity}
+                                                    />
+                                                </div>
+                                            </div>
                                         </>
                                     }
 
                                     <div className="d-flex align-items-center gap-15 flex-row mt-2 mb-3">
-                                        <div className={ alreadyAdded?"ms-0":"ms-5" + 'd-flex align-items-center gap-30 ms-5' }>
+                                        <div className={alreadyAdded ? "ms-0" : "ms-5" + 'd-flex align-items-center gap-30 ms-5'}>
                                             <button
                                                 className="button border-0"
-                                                /*data-bs-toggle="modal"
-                                                data-bs-target="#staticBackdrop"*/
                                                 type="button"
-                                                onClick={() => { alreadyAdded? navigate('/shop/cart'):uploadCart() }}
+                                                onClick={() => { alreadyAdded ? navigate('/shop/cart') : uploadCart() }}
                                             >
-                                                {alreadyAdded?"Go To Cart":"Add to Cart"}
+                                                {alreadyAdded ? "Go To Cart" : "Add to Cart"}
                                             </button>
-                                            {/*<button className="button signup">Buy It Now</button>*/}
                                         </div>
                                     </div>
                                     <div className="d-flex align-items-center gap-15">
-                                        <div>
-                                            <a href="">
-                                                {/* <TbGitCompare className="fs-5 me-2" /> Add to Compare */}
+                                        {alreadyAddedToWish ? <div>
+                                            <a onClick={(e) => { addToWish(productState._id); setAlreadyAddedToWish(false) }}>
+                                                <FcLike className="fs-5 me-2" /> Already in the Wishlist
                                             </a>
-                                        </div>
-                                        <div>
-                                            <a href="">
-                                                <AiOutlineHeart className="fs-5 me-2" /> Add to Wishlist
+                                        </div> : <div>
+                                            <a onClick={(e) => { addToWish(productState._id) }}>
+                                                <FcLikePlaceholder className="fs-5 me-2" /> Add to Wishlist
                                             </a>
-                                        </div>
+                                        </div>}
+
                                     </div>
                                     <div className="d-flex gap-10 flex-column  my-3">
                                         <h3 className="product-heading">Description :</h3>
@@ -279,7 +260,6 @@ const SingleProduct = () => {
                                                 edit={false}
                                                 activeColor="#ffd700"
                                             />
-                                            <p className="mb-0">Based on 2 Reviews</p>
                                         </div>
                                     </div>
                                     {orderedProduct && (
@@ -292,53 +272,59 @@ const SingleProduct = () => {
                                 </div>
                                 <div className="review-form py-4">
                                     <h4>Write a Review</h4>
-                                        <div>
-                                            <ReactStars
-                                                count={5}
-                                                size={24}
-                                                edit={true}
-                                                activeColor="#ffd700"
-                                                onChange={(e)=>{
-                                                    setStar(e)
-                                                }}
-                                            />
-                                        </div>
-                                        <div>
-                                            <textarea
-                                                name=""
-                                                id=""
-                                                className="w-100 form-control"
-                                                cols="30"
-                                                rows="4"
-                                                placeholder="Comments"
-                                                onChange={(e)=>{
-                                                    setComment(e.target.value)
-                                                }}
-                                            ></textarea>
-                                        </div>
-                                        <div className="d-flex justify-content-end mt-3">
-                                            <button onClick={addRatingToProduct} className="button border-0" type="button">Submit Review</button>
-                                        </div>
+                                    <div>
+                                        <ReactStars
+                                            count={5}
+                                            size={24}
+                                            edit={true}
+                                            activeColor="#ffd700"
+                                            onChange={(e) => {
+                                                setStar(e)
+                                            }}
+                                        />
+                                    </div>
+                                    <div>
+                                        <textarea
+                                            name=""
+                                            id=""
+                                            className="w-100 form-control"
+                                            cols="30"
+                                            rows="4"
+                                            value={inputText}
+                                            placeholder="Comments"
+                                            onChange={(e) => {
+                                                setComment(e.target.value);
+                                                setInputText(e.target.value);
+                                            }}
+                                        ></textarea>
+                                    </div>
+                                    <div className="d-flex justify-content-end mt-3">
+                                        <button onClick={addRatingToProduct} className="button border-0" type="button">Submit Review</button>
+                                    </div>
                                 </div>
                                 <div className="reviews mt-4">
                                     {
-                                        productState && productState.ratings?.map((item,index) => {
-                                            return(
+                                        productState && productState.ratings?.map((item, index) => {
+                                            return (
                                                 <div className="review">
-                                        <div className="d-flex gap-10 align-items-center">
-                                            <h6 className="mb-0">{item?.postedby?.username}</h6>
-                                            <ReactStars
-                                                count={5}
-                                                size={24}
-                                                value={item?.star}
-                                                edit={false}
-                                                activeColor="#ffd700"
-                                            />
-                                        </div>
-                                        <p className="mt-3">
-                                            {item?.comment}
-                                        </p>
-                                    </div>
+                                                    <div className="d-flex gap-10 align-items-center">
+                                                        <img
+                                                            src={`${item?.postedby?.profilePicture}`}
+                                                            style={{ width: "40px", height: "40px", borderRadius: "50%", marginLeft: "10px", marginBottom: "15px" }}
+                                                        />
+                                                        <h6 className="mb-0">{item?.postedby?.username}</h6>
+                                                        <ReactStars
+                                                            count={5}
+                                                            size={24}
+                                                            value={item?.star}
+                                                            edit={false}
+                                                            activeColor="#ffd700"
+                                                        />
+                                                    </div>
+                                                    <p className="mt-3">
+                                                        {item?.comment}
+                                                    </p>
+                                                </div>
                                             )
                                         })
                                     }
@@ -350,7 +336,7 @@ const SingleProduct = () => {
                 <Container class1="popular-wrapper py-5 home-wrapper-2">
                     <div className="row">
                         <div className="col-12">
-                            
+
                         </div>
                     </div>
                     <div className="row">

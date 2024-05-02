@@ -9,6 +9,7 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import axios from "axios";
 import { data } from "jquery";
 import AnswersPage from "./answers";
+import pdfToText from 'react-pdftotext'
 import { Popup } from 'reactjs-popup';
 import SpaceTwo from "../SpaceTwo/SpaceTwo";
 import { useNavigate } from 'react-router-dom';
@@ -91,53 +92,185 @@ const ExamDet = () => {
         setAnswerFile(e.target.files[0]);
     };
 
-    const handleSubmitAnswer = async () => {
-        try {
-            console.log("examDetails:", examDetails);
-    
-            const isValid = !!answerFile; 
-        
-            if (isValid && examDetails && user) {
-                const examId = examDetails._id;
-                const clientId = user._id; 
-                console.log(examId)
-                console.log(clientId)
-                const formDataToSend = new FormData();
-                formDataToSend.append("image", answerFile);
-    console.log(formDataToSend)
-               
-                const uploadResponse = await axios.post(
-                    "http://localhost:9090/api/image/uploadimage",
-                    formDataToSend,
-                    {
-                        headers: {
-                            "Content-Type": "multipart/form-data",
-                        },
-                    }
-                );
-            
-               
-                const answerPdf = uploadResponse.data.downloadURL[0];
-            
-                
-                const response = await axios.post(
-                    "http://localhost:9090/api/answer",
-                    { examId, answerPdf, clientId }
-                );
-            
-                
-                console.log("Answer created:", response.data);
-            
-                setShowModal(false);
-            } else {
-                console.error("Please select an answer file or exam details and user are not available");
-            }
-        } catch (error) {
-            console.error("Error creating answer:", error);
-        }
-    };
+    function calculateSimilarity(text1, text2) {
+     
+      const tokenize = (text) => {
+          return new Set(text.toLowerCase().match(/\b\w+\b/g));
+      };
   
+     
+      const dotProduct = (vector1, vector2) => {
+          let product = 0;
+          for (const word in vector1) {
+              if (word in vector2) {
+                  product += vector1[word] * vector2[word];
+              }
+          }
+          return product;
+      };
+  
+     
+      const magnitude = (vector) => {
+          let sum = 0;
+          for (const word in vector) {
+              sum += Math.pow(vector[word], 2);
+          }
+          return Math.sqrt(sum);
+      };
+  
+      // Tokenize both texts
+      const tokens1 = tokenize(text1);
+      const tokens2 = tokenize(text2);
+  
+      const vector1 = {};
+      const vector2 = {};
+      for (const word of tokens1) {
+          vector1[word] = 1; 
+      }
+      for (const word of tokens2) {
+          vector2[word] = 1;
+      }
+  
+      
+      const dotProd = dotProduct(vector1, vector2);
+      const mag1 = magnitude(vector1);
+      const mag2 = magnitude(vector2);
+      const similarity = dotProd / (mag1 * mag2);
+  console.log(similarity*100)
+      return similarity;
+  }
 
+
+    const handleSubmitAnswer = async () => {
+      try {
+          console.log("examDetails:", examDetails);
+  
+          const isValid = !!answerFile;
+          let maxSimilarity = 0; 
+          if (isValid && examDetails && user) {
+              const examId = examDetails._id;
+              const clientId = user._id;
+              console.log(examId);
+              console.log(clientId);
+              
+              const pdfAnswersResponse = await axios.get(`http://localhost:9090/api/answer/answers/${examId}`);
+        const answerPdfUrls = pdfAnswersResponse.data.map(answer => answer.answerPdf);
+        console.log("answers pdf ", answerPdfUrls);
+
+              const text = await pdfToText(answerFile);
+              
+              console.log(text);
+              
+              let isCheatingDetected = false;
+              for (let i = 0; i < answerPdfUrls.length; i++) {
+               
+                   
+                try {
+
+                  const pdfUrl = answerPdfUrls[i];
+                  console.log("single url " , pdfUrl)
+                  const response = await axios.get('http://localhost:9090/api/answer/fetch-pdf', {
+                    params: { url: pdfUrl },
+                    responseType: 'blob' 
+                });
+                console.log(response)
+                const pdfBlob = response.data;
+                console.log("Blob: ", pdfBlob);
+                
+                const filename = `answer_${i}.pdf`;
+                
+                
+                const pdfFile = new File([pdfBlob], filename, { type: 'application/pdf' });
+                console.log("File new : ", pdfFile);
+                  const pdfAnswerText = await pdfToText(pdfFile);
+                  console.log("Text from PDF:", pdfAnswerText);
+
+
+                  const similarity = calculateSimilarity(text, pdfAnswerText);
+
+                  if (similarity > maxSimilarity) {
+                    maxSimilarity = similarity; 
+                }
+        
+                  if (similarity >= 0.7) { 
+                      isCheatingDetected = true;
+                      break;
+                  }
+                  console.log(`Similarity with answer : ${similarity}`);
+                } catch (error) {
+                  console.error("Error extracting text from PDF:", error);
+                
+              }
+              }
+  
+              if (isCheatingDetected) {
+                  
+                const confirmMessage = `We have detected a significant similarity (${(maxSimilarity * 100).toFixed(2)}%) between your answer and another submission for this exam. We take academic integrity seriously and do not tolerate cheating. Are you sure you want to proceed with uploading your answer?`;
+                const confirmSubmission = window.confirm(confirmMessage);
+                  if (confirmSubmission) {
+                     
+                      const formDataToSend = new FormData();
+                      formDataToSend.append("image", answerFile);
+                      console.log(formDataToSend);
+  
+                      const uploadResponse = await axios.post(
+                          "http://localhost:9090/api/image/uploadimage",
+                          formDataToSend,
+                          {
+                              headers: {
+                                  "Content-Type": "multipart/form-data",
+                              },
+                          }
+                      );
+  
+                      const answerPdf = uploadResponse.data.downloadURL[0];
+  
+                      const response = await axios.post(
+                          "http://localhost:9090/api/answer",
+                          { examId, answerPdf, clientId }
+                      );
+  
+                      console.log("Answer created:", response.data);
+  
+                      setShowModal(false);
+                  } else {
+                      console.log('Submission cancelled.');
+                  }
+              } else {
+                  
+                  const formDataToSend = new FormData();
+                  formDataToSend.append("image", answerFile);
+                  console.log(formDataToSend);
+  
+                  const uploadResponse = await axios.post(
+                      "http://localhost:9090/api/image/uploadimage",
+                      formDataToSend,
+                      {
+                          headers: {
+                              "Content-Type": "multipart/form-data",
+                          },
+                      }
+                  );
+  
+                  const answerPdf = uploadResponse.data.downloadURL[0];
+  
+                  const response = await axios.post(
+                      "http://localhost:9090/api/answer",
+                      { examId, answerPdf, clientId }
+                  );
+  
+                  console.log("Answer created:", response.data);
+  
+                  setShowModal(false);
+              }
+          } else {
+              console.error("Please select an answer file or exam details and user are not available");
+          }
+      } catch (error) {
+          console.error("Error creating answer:", error);
+      }
+  };
+  
     const handleDeleteExam = async (examId) => {
         // Display a confirmation dialog
         const confirmDelete = window.confirm('Are you sure you want to delete this exam?');

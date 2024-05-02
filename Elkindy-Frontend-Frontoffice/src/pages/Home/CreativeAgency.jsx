@@ -27,9 +27,11 @@ const CreativeAgency = () => {
       <InnerServicesArea />
       <TeamAreaTwo />
       <br /><br /><br /><br />
-      <ProjectAreaThree />
+      {/* <ProjectAreaThree /> */}
       
       <EventsAreaThree /> 
+      <br /><br /><br /><br />
+
       <TestimonialArea />
       <BlogAreaThree />
       <ConsultationArea />

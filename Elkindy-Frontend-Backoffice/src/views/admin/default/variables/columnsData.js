@@ -34,3 +34,15 @@ export const columnsDataComplex = [
     accessor: "progress",
   },
 ];
+
+
+export const topClientData = [
+  {
+    Header: "Client ID",
+    accessor: "_id",
+  },
+  {
+    Header: "Total Subscriptions",
+    accessor: "totalSubscriptions",
+  }
+];

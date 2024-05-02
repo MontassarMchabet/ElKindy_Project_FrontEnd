@@ -242,42 +242,40 @@ const DeveloperAreaTabs = () => {
                           <p>{`${user?.email}`}</p>
                         </div>
                       </li>
-                      <li>
-                        <div className="icon">
-                          <img src="/img/icon/developer_icon05.png" alt="" />
-                        </div>
-                        <div className="content">
-                          <span>Birth date:</span>
-                          <p>{user?.dateOfBirth ? user.dateOfBirth.substring(0, 10) : ''}</p>
-                        </div>
-                      </li>
-                      <li>
-                        <div className="icon">
-                          <img src="/img/icon/developer_icon05.png" alt="" />
-                        </div>
-                        <div className="content">
-                          <span>Instrument:</span>
-                          <p>{`${user?.instrument}`}</p>
-                        </div>
-                      </li>
-                      <li>
-                        <div className="icon">
-                          <img src="/img/icon/developer_icon05.png" alt="" />
-                        </div>
-                        <div className="content">
-                          <span>Father's Occupation:</span>
-                          <p>{`${user?.fatherOccupation}`}</p>
-                        </div>
-                      </li>
-                      <li>
-                        <div className="icon">
-                          <img src="/img/icon/developer_icon05.png" alt="" />
-                        </div>
-                        <div className="content">
-                          <span>School Grade:</span>
-                          <p>{`${user?.level}`}</p>
-                        </div>
-                      </li>
+
+
+                      {user?.isSubscribed && (
+                        <>
+                          <li>
+                            <div className="icon">
+                              <img src="/img/icon/developer_icon05.png" alt="" />
+                            </div>
+                            <div className="content">
+                              <span>Instrument:</span>
+                              <p>{`${user?.instrument}`}</p>
+                            </div>
+                          </li>
+
+                          <li>
+                            <div className="icon">
+                              <img src="/img/icon/developer_icon05.png" alt="" />
+                            </div>
+                            <div className="content">
+                              <span>Father's Occupation:</span>
+                              <p>{`${user?.fatherOccupation}`}</p>
+                            </div>
+                          </li>
+                          <li>
+                            <div className="icon">
+                              <img src="/img/icon/developer_icon05.png" alt="" />
+                            </div>
+                            <div className="content">
+                              <span>School Grade:</span>
+                              <p>{`${user?.level}`}</p>
+                            </div>
+                          </li>
+                        </>
+                      )}
                     </ul>
                   </div >
 
@@ -294,43 +292,55 @@ const DeveloperAreaTabs = () => {
                           <p>{`${user?.username}`}</p>
                         </div>
                       </li>
-
-                      <li>
-                        <div className="icon">
-                          <img src="/img/icon/developer_icon04.png" alt="" />
-                        </div>
-                        <div className="content">
-                          <span>Parent Phone:</span>
-                          <p>{`${user?.parentPhoneNumber}`}</p>
-                        </div>
-                      </li>
-                      <li>
-                        <div className="icon">
-                          <img src="/img/icon/developer_icon06.png" alt="" />
-                        </div>
-                        <div className="content">
-                          <span>Parent CIN:</span>
-                          <p>{`${user?.parentCinNumber}`}</p>
-                        </div>
-                      </li>
                       <li>
                         <div className="icon">
                           <img src="/img/icon/developer_icon05.png" alt="" />
                         </div>
                         <div className="content">
-                          <span>Other Instruments:</span>
-                          <p>{`${user?.otherInstruments}`}</p>
+                          <span>Birth date:</span>
+                          <p>{user?.dateOfBirth ? user.dateOfBirth.substring(0, 10) : ''}</p>
                         </div>
                       </li>
-                      <li>
-                        <div className="icon">
-                          <img src="/img/icon/developer_icon05.png" alt="" />
-                        </div>
-                        <div className="content">
-                          <span>Mother's Occupation:</span>
-                          <p>{`${user?.motherOccupation}`}</p>
-                        </div>
-                      </li>
+                      {user?.isSubscribed && (
+                        <>
+                          <li>
+                            <div className="icon">
+                              <img src="/img/icon/developer_icon04.png" alt="" />
+                            </div>
+                            <div className="content">
+                              <span>Parent Phone:</span>
+                              <p>{`${user?.parentPhoneNumber}`}</p>
+                            </div>
+                          </li>
+                          <li>
+                            <div className="icon">
+                              <img src="/img/icon/developer_icon06.png" alt="" />
+                            </div>
+                            <div className="content">
+                              <span>Parent CIN:</span>
+                              <p>{`${user?.parentCinNumber}`}</p>
+                            </div>
+                          </li>
+                          <li>
+                            <div className="icon">
+                              <img src="/img/icon/developer_icon05.png" alt="" />
+                            </div>
+                            <div className="content">
+                              <span>Other Instruments:</span>
+                              <p>{`${user?.otherInstruments}`}</p>
+                            </div>
+                          </li>
+                          <li>
+                            <div className="icon">
+                              <img src="/img/icon/developer_icon05.png" alt="" />
+                            </div>
+                            <div className="content">
+                              <span>Mother's Occupation:</span>
+                              <p>{`${user?.motherOccupation}`}</p>
+                            </div>
+                          </li>
+                        </>
+                      )}
                     </ul>
                   </div>
                 </div >

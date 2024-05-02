@@ -51,4 +51,23 @@ export async function deleteComment(id, config) {
     throw error;
   }
 }
- 
+// export async function deleteMyComment(id) {
+//   try {
+//     const response = await axios.delete(`${apiURL}/deleteMyComment/${id}`);
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error deleting comment:", error);
+//     throw error;
+//   }
+// }
+export async function deleteMyComment(id, userId) {
+  try {
+    const response = await axios.delete(`${apiURL}/deleteMyComment/${id}`, {
+      data: { user: userId }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting comment:", error);
+    throw error;
+  }
+}
