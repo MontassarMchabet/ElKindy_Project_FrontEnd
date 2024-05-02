@@ -27,6 +27,8 @@ import PassQuiz from "./pages/Exams/passquiz.jsx";
 import AddExamsComponent from "./pages/Exams/addexam";
 import AddQuizsComponent from "./pages/Exams/addquizpage.jsx";
 import NotesPage from "./pages/Exams/notespage.jsx";
+import PlansPage from "./pages/Exams/planpages.jsx";
+
 import AccountComponent from "./pages/Account";
 import ExamsComponent from "./pages/Exams";
 import PlanningComponent from "./pages/Planning";
@@ -96,6 +98,9 @@ function App() {
         <Route path="/planning" element={<PlanningComponent />} />
         <Route path="/exam-details/:id" element={<ExamDetailsPage />} />
         <Route path="/notes" element={<NotesPage />} />
+
+        <Route path="/classes" element={<PlansPage />} />
+
         <Route path="/events" element={<EventsPage />} />
         <Route path="/events/:eventId" element={<EventDetailPage />} />
         <Route path="/events/:eventId/:movieParam/bookTickets" element={<ReservationPage />} />

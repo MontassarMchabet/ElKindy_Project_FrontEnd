@@ -11,6 +11,7 @@ export default function Settings() {
   
     const [selectedClass, setSelectedClass] = useState('');
     const [examData, setExamData] = useState([]);
+    const [examId, setExamId] = useState([]);
     const [quizData, setQuizData] = useState([]);
     useEffect(() => {
         fetchData();
@@ -24,7 +25,11 @@ export default function Settings() {
         }
         try {
           const examResponse = await axios.get(url);
+
           setExamData(examResponse.data);
+          console.log("Exams:", examData);
+          //console.log("Exam ID in Settings:", examData._id);
+
         } catch (error) {
           console.error('Error fetching data:', error);
         }
@@ -111,6 +116,8 @@ const closeEditModalQ = () => {
     setIsEditModalOpenQ(false);
 };
 
+
+
     return (
         <div style={{ overflowX: 'hidden'}}>
         <Box width="2300px" pt={{ base: "130px", md: "80px", xl: "80px" }}>
@@ -133,7 +140,8 @@ const closeEditModalQ = () => {
                     isEditModalOpen={isEditModalOpen} 
                     closeEditModal={closeEditModal} 
                     setIsEditModalOpen={setIsEditModalOpen}
-                    setExamData={setExamData} 
+                    setExamData={setExamData}
+                    examId={examData.map(exam => exam._id)}
                 />
                 <h2></h2>
                  <Quizes columnsData={QuizesData} tableData={quizData} isEditModalOpenQ={isEditModalOpenQ} 
