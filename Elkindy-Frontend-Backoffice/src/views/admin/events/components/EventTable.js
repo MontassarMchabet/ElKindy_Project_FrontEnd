@@ -3,7 +3,8 @@ import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, Ale
 import { ViewIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { AddIcon } from '@chakra-ui/icons'
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, ModalFooter, FormControl, FormLabel, Input, Grid, SimpleGrid } from "@chakra-ui/react";
-
+// import ReactTooltip from 'react-tooltip';
+import { Tooltip as ReactTooltip } from 'react-tooltip';
 import api from "services/api";
 import {
     Flex,
@@ -68,78 +69,20 @@ export default function ColumnsTable(props) {
         usePagination
     );
     const [editedEvent, setEditedEvent] = useState({}); // Déclaration et initialisation
-
-    // const [eventId, setEventId] = useState(null);
-
     const [eventInfo, setEventInfo] = useState(null);
     const [image, setImage] = useState("");
 
     const history = useHistory();
     const [errorsEdit, setErrorsEdit] = useState({});
 
-    // const validateEditForm = async () => {
-    //     let errorsEdit = {};
-
-    //     if (parseFloat(formData.price) < 0) {
-    //         errorsEdit.price = 'Price must be greater than or equal to 0';
-    //     }
-    //     else if (new Date(formData.endDate) <= new Date(formData.startDate)) {
-    //         errorsEdit.endDate = 'End date must be after start date';
-    //     }
-    //     else if (parseInt(formData.room_capacity) < 0) {
-    //         errorsEdit.room_capacity = 'Room capacity must be greater than or equal to 0';
-    //     }
-
-    //     setErrorsEdit(errorsEdit);
-    //     return Object.keys(errorsEdit).length === 0;
-    // };
-    // const validateEditForm = async () => {
-    //     let errorsEdit = {};
-
-    //     if (formData.price < 0) {
-    //         errorsEdit.price = 'Price must be greater than or equal to 0';
-    //     } else if (new Date(formData.endDate) <= new Date(formData.startDate)) {
-    //         errorsEdit.endDate = 'End date must be after start date';
-    //     } else if (formData.room_capacity < 0) {
-    //         errorsEdit.room_capacity = 'Room capacity must be greater than or equal to 0';
-    //     }
-
-    //     setErrorsEdit(errorsEdit);
-    //     return Object.keys(errorsEdit).length === 0;
-    // };
-
-    // const validateEditForm = async () => {
-    //     let errorsEdit = {};
-
-    //     if (editedEvent.price < 0 || isNaN(editedEvent.price)) {
-    //         errorsEdit.price = 'Price must be greater than or equal to 0';
-    //     } else if (new Date(editedEvent.endDate) <= new Date(editedEvent.startDate)) {
-    //         errorsEdit.endDate = 'End date must be after start date';
-    //     } else if (parseInt(editedEvent.room_capacity) < 0 || isNaN(editedEvent.room_capacity)) {
-    //         errorsEdit.room_capacity = 'Room capacity must be greater than or equal to 0';
-    //     }
-    //     else if (parseInt(editedEvent.seat) < 0) {
-    //         errorsEdit.seat = 'Seats distribution must be greater than 0';
-    //     }else {
-    //         const seriesString = editedEvent.series.toString();
-    //         const seriesArray = seriesString.split('-').map(item => item.trim());
-    //         if (seriesArray.some(item => !isNaN(item) || item === '')) {
-    //             errorsEdit.series = 'Series must be alphanumeric and separated by "-"';
-    //         }
-    //     }
-
-    //     setErrorsEdit(errorsEdit);
-    //     return Object.keys(errorsEdit).length === 0;
-    // };
     const validateEditForm = async () => {
         let errorsEdit = {};
 
         if (editedEvent.price < 0 || isNaN(editedEvent.price)) {
             errorsEdit.price = 'Price must be greater than or equal to 0';
         }
-        else if (editedEvent.price.toString().length > 3) {
-            errorsEdit.price = 'Price must contain maximum 3 digits';
-        } else if (new Date(editedEvent.endDate) <= new Date(editedEvent.startDate)) {
+
+        else if (new Date(editedEvent.endDate) <= new Date(editedEvent.startDate)) {
             errorsEdit.endDate = 'End date must be after start date';
         } else if (parseInt(editedEvent.room_capacity) < 0 || isNaN(editedEvent.room_capacity)) {
             errorsEdit.room_capacity = 'Room capacity must be greater than or equal to 0';
@@ -148,9 +91,6 @@ export default function ColumnsTable(props) {
         }
         else if (editedEvent.seat.toString().length > 3) {
             errorsEdit.seat = 'Seats distribution must contain maximum 3 digits';
-
-            // } else if (!/^[a-zA-Z]+(-[a-zA-Z]+)*$/.test(editedEvent.series.trim())) {
-            //     errorsEdit.series = 'Series must be like "a-b-c" and contain only letters separated by "-"';
         } else {
             console.log(editedEvent.series)
             const seriesString = editedEvent.series.toString();
@@ -165,69 +105,7 @@ export default function ColumnsTable(props) {
         return Object.keys(errorsEdit).length === 0;
     };
 
-    ////////////////////////
-    // Fonction pour sauvegarder les modifications d'1 event
-    // const handleSaveEdit = async () => {
-    //     try {
-    //         if (image) {
-    //             const formDataToSend = new FormData();
-    //             formDataToSend.append("image", image);
 
-    //             const uploadResponse = await api.post(
-    //                 "http://localhost:9090/api/image/uploadimage",
-    //                 formDataToSend,
-    //                 {
-    //                     headers: {
-    //                         "Content-Type": "multipart/form-data",
-    //                     },
-    //                 }
-    //             );
-    //             editedEvent.imageUrl = uploadResponse.data.downloadURL[0];
-    //         }
-    //         // Effectuer la requête API pour mettre à jour le cours avec les nouvelles données
-    //         await axios.put(`http://localhost:9090/event/update/${editedEvent._id}`, editedEvent);
-    //         //console.log (editedEvent._id,"aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-    //         console.log("Event updated successfully");
-    //         setIsEditModalOpen(false); // Fermer la modal d'édition après la sauvegarde
-    //         fetchData(); // Rafraîchir les données des cours
-    //     } catch (error) {
-    //         console.error("Error updating Event:", error);
-    //     }
-    // };
-
-    // const handleSaveEdit = async () => {
-    //     const isValid = await validateEditForm();
-    //     console.log("Submitting form");
-    //     if (isValid) {
-    //         try {
-    //             if (image) {
-    //                 const formDataToSend = new FormData();
-    //                 formDataToSend.append("image", image);
-
-    //                 const uploadResponse = await api.post(
-    //                     "http://localhost:9090/api/image/uploadimage",
-    //                     formDataToSend,
-    //                     {
-    //                         headers: {
-    //                             "Content-Type": "multipart/form-data",
-    //                         },
-    //                     }
-    //                 );
-    //                 editedEvent.imageUrl = uploadResponse.data.downloadURL[0];
-    //             }
-    //             // Effectuer la requête API pour mettre à jour le cours avec les nouvelles données
-    //             await axios.put(`http://localhost:9090/event/update/${editedEvent._id}`, editedEvent);
-    //             console.log("Event updated successfully");
-    //             setIsEditModalOpen(false); // Fermer la modal d'édition après la sauvegarde
-    //             fetchData(); // Rafraîchir les données des cours
-    //         } catch (error) {
-    //             console.error("Error updating Event:", error);
-    //         }
-    //     } else {
-    //         console.log("Form validation failed");
-    //         // Gérer l'échec de la validation ici, par exemple, en mettant à jour l'état pour afficher des messages d'erreur à l'utilisateur
-    //     }
-    // };
     const handleSaveEdit = async () => {
         const isValid = await validateEditForm();
         console.log("Submitting form");
@@ -283,8 +161,6 @@ export default function ColumnsTable(props) {
             // Gérer l'échec de la validation ici, par exemple, en mettant à jour l'état pour afficher des messages d'erreur à l'utilisateur
         }
     };
-
-    // const handleEdit = (event) => {
     //     setEditedEvent(event); // Charger les données du cours à éditer dans editedEvent
     //     openEditModal(); // Ouvrir le formulaire d'édition
     // };
@@ -294,70 +170,16 @@ export default function ColumnsTable(props) {
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
-    const handleSeriesChange = (e) => {
-        const { name, value } = e.target;
-        if (name === 'series') {
-            // Divisez la valeur par '-' pour obtenir un tableau
-            const seriesArray = value.split('-').map(item => item.trim());
-            setFormData({
-                ...formData,
-                [name]: seriesArray,
-            });
-        } else {
-            setFormData({
-                ...formData,
-                [name]: value,
-            });
-        }
-    };
-    // const handleSaveEdit = async () => {
-    //     try {
-    //         if (image) {
-    //             const formDataToSend = new FormData();
-    //             formDataToSend.append("image", image);
-
-    //             const uploadResponse = await api.post(
-    //                 "http://localhost:9090/api/image/uploadimage",
-    //                 formDataToSend,
-    //                 {
-    //                     headers: {
-    //                         "Content-Type": "multipart/form-data",
-    //                     },
-    //                 }
-    //             );
-    //             // Utilisation de setEditedEvent pour mettre à jour l'URL de l'image dans editedEvent
-    //             setEditedEvent(prevEditedEvent => ({
-    //                 ...prevEditedEvent,
-    //                 imageUrl: uploadResponse.data.downloadURL[0]
-    //             }));
-    //         }
-    //         // Effectuer la requête API pour mettre à jour l'événement avec les nouvelles données
-    //         await axios.put(`http://localhost:9090/event/update/${editedEvent._id}`, editedEvent);
-    //         console.log("Event updated successfully");
-    //         setIsEditModalOpen(false); // Fermer la modal d'édition après la sauvegarde
-    //         fetchData(); // Rafraîchir les données des événements
-    //     } catch (error) {
-    //         console.error("Error updating event:", error);
-    //     }
-    // };
     const handleEdit = (event) => {
         setEditedEvent(event); // Charger les données du cours à éditer dans editedEvent
         openEditModal(); // Ouvrir le formulaire d'édition
     };
-    // const formatDateForInput = (date) => {
-    //     // Assurez-vous que la date est au format ISO 8601
-    //     return format(new Date(date), "yyyy-MM-dd'T'HH:mm");
-    // };
-
-
-
-
 
     // La fonction pour ouvrir le formulaire d'édition
     const openEditModal = () => {
         setIsEditModalOpen(true);
     };
-    ///////////////////////
+
 
     const {
         getTableProps,
@@ -426,82 +248,14 @@ export default function ColumnsTable(props) {
 
     const [errors, setErrors] = useState({});
 
+    const [showHelp, setShowHelp] = useState(false);
+    const handleSeriesFocus = () => {
+        setShowHelp(true);
+    };
 
-    // const validateForm = async () => {
-    //     let errors = {};
-
-    //     if (!formData.name.trim()) {
-    //         errors.name = 'Nameis required'
-    //     } else if (!formData.description.trim()) {
-    //         errors.description = 'Description required'
-    //     } else if (!formData.location.trim()) {
-    //         errors.location = 'location required'
-    //     } else if (!formData.price.trim()) {
-    //         errors.price = 'price required'
-    //         // } else if (!formData.imageUrl.trim()) {
-    //         //     errors.imageUrl = 'image required'
-    //     } else if (!formData.startDate.trim()) {
-    //         errors.startDate = 'startDate required'
-    //     } else if (!formData.room_name.trim()) {
-    //     } else if (!formData.endDate.trim()) {
-    //         errors.endDate = 'endDate required'
-    //     } else if (!formData.room_name.trim()) {
-    //         errors.room_name = 'room required'
-    //     } else if (!formData.room_capacity.trim()) {
-    //         errors.room_capacity = 'room capacity required'
-    //     } else if (!formData.room_shape.trim()) {
-    //         errors.room_shape = 'room shape required'
-
-    //     } else if (!formData.room_distributionSeats.trim()) {
-    //         errors.room_distributionSeats = 'Seats required'
-    //     }
-    //     setErrors(errors);
-    //     return Object.keys(errors).length === 0;
-    // };
-
-    // version avec test sur positivity
-    // const validateForm = async () => {
-    //     let errors = {};
-
-    //     if (!formData.name.trim()) {
-    //         errors.name = 'Name is required';
-    //     } 
-    //     if (!formData.description.trim()) {
-    //         errors.description = 'Description is required';
-    //     } 
-    //     if (!formData.location.trim()) {
-    //         errors.location = 'Location is required';
-    //     } 
-    //     if (!formData.price.trim()) {
-    //         errors.price = 'Price is required';
-    //     } else if (parseFloat(formData.price) < 0) {
-    //         errors.price = 'Price must be greater than or equal to 0';
-    //     }
-    //     if (!formData.startDate.trim()) {
-    //         errors.startDate = 'Start date is required';
-    //     } 
-    //     if (!formData.endDate.trim()) {
-    //         errors.endDate = 'End date is required';
-    //     } 
-    //     if (!formData.room_name.trim()) {
-    //         errors.room_name = 'Room name is required';
-    //     } 
-    //     if (!formData.room_capacity.trim()) {
-    //         errors.room_capacity = 'Room capacity is required';
-    //     } else if (parseInt(formData.room_capacity) < 0) {
-    //         errors.room_capacity = 'Room capacity must be greater than or equal to 0';
-    //     }
-    //     if (!formData.room_shape.trim()) {
-    //         errors.room_shape = 'Room shape is required';
-    //     } 
-    //     if (!formData.room_distributionSeats.trim()) {
-    //         errors.room_distributionSeats = 'Seats distribution is required';
-    //     }
-
-    //     setErrors(errors);
-    //     return Object.keys(errors).length === 0;
-    // };
-
+    const handleSeriesBlur = () => {
+        setShowHelp(false);
+    };
     const validateForm = async () => {
         let errors = {};
 
@@ -517,9 +271,8 @@ export default function ColumnsTable(props) {
         else if (!formData.price.trim()) {
             errors.price = 'Price is required';
         }
-        else if (formData.price.toString().length > 3) {
-            errors.price = 'Price must contain maximum 3 digits';
-        } else if (parseFloat(formData.price) < 0) {
+
+        else if (parseFloat(formData.price) < 0) {
             errors.price = 'Price must be greater than or equal to 0';
         }
         else if (!formData.startDate.trim()) {
@@ -551,11 +304,6 @@ export default function ColumnsTable(props) {
         } else if (formData.seat.toString().length > 2) {
             errors.seat = 'Seats distribution must contain maximum 3 digits';
 
-            // } else if (!formData.series || typeof formData.series !== 'string' || !formData.series.trim()) {
-            //     errors.series = 'Series are required';
-            // } else if (!/^[a-zA-Z]+(-[a-zA-Z]+)*$/.test(formData.series.trim())) {
-            //     errors.series = 'Series must be in the format "a-b-c" and contain only letters separated by "-"';
-            // }
 
         } else if (!formData.series || typeof formData.series !== 'string' || !formData.series.trim()) {
             errors.series = 'Series are required';
@@ -577,130 +325,6 @@ export default function ColumnsTable(props) {
         setErrors(errors);
         return Object.keys(errors).length === 0;
     };
-
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     const isValid = await validateForm();
-    //     console.log("Submitting form");
-    //     if (isValid) {
-    //         try {
-    //             const response = await axios.post(
-    //                 "http://localhost:9090/event/add",
-    //                 formData
-    //             );
-    //             fetchData()
-    //             closeModalA()
-    //             console.log(response.data);
-    //         } catch (error) {
-    //             console.error("Error adding event:", error);
-    //         }
-    //     }
-    // };
-
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     const isValid = await validateForm();
-    //     console.log("Submitting form");
-    //     if (isValid) {
-    //         try {
-    //             if (image) {
-    //                 // Télécharger l'image
-    //                 const formDataToSend = new FormData();
-    //                 formDataToSend.append("image", image);
-
-    //                 const uploadResponse = await api.post(
-    //                     "http://localhost:9090/api/image/uploadimage",
-    //                     formDataToSend,
-    //                     {
-    //                         headers: {
-    //                             "Content-Type": "multipart/form-data",
-    //                         },
-    //                     }
-    //                 );
-    //                 // Ajouter l'URL de l'image téléchargée à formData
-    //                 formData.imageUrl = uploadResponse.data.downloadURL[0];
-    //             }
-    //             // Traitement spécial pour la série
-    //             // const seriesArray = formData.series.split('-').filter(char => char !== '');
-    //             // Traitement spécial pour la série
-    //         const seriesArray = formData.series.split('-').map(item => item.trim());
-
-    //         // Mettre à jour le formData avec la série traitée
-    //         setFormData({ ...formData, series: seriesArray });
-    //             // Ajouter l'événement avec les données et l'URL de l'image
-    //             const response = await axios.post(
-    //                 "http://localhost:9090/event/add",
-    //                 formData
-    //             );
-    //             console.log("Event added successfully:", response.data);
-    //             fetchData();
-    //             closeModalA();
-    //         } catch (error) {
-    //             console.error("Error adding event:", error);
-    //             // Gérer l'erreur ici, par exemple, en mettant à jour l'état pour afficher un message d'erreur à l'utilisateur
-    //         }
-    //     } else {
-    //         console.log("Form validation failed");
-    //         // Gérer l'échec de la validation ici, par exemple, en mettant à jour l'état pour afficher des messages d'erreur à l'utilisateur
-    //     }
-    // };
-
-
-
-
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     const isValid = await validateForm();
-    //     console.log("Submitting form");
-    //     if (isValid) {
-    //         try {
-    //             if (image) {
-    //                 // Télécharger l'image
-    //                 const formDataToSend = new FormData();
-    //                 formDataToSend.append("image", image);
-
-    //                 const uploadResponse = await api.post(
-    //                     "http://localhost:9090/api/image/uploadimage",
-    //                     formDataToSend,
-    //                     {
-    //                         headers: {
-    //                             "Content-Type": "multipart/form-data",
-    //                         },
-    //                     }
-    //                 );
-    //                 // Ajouter l'URL de l'image téléchargée à formData
-    //                 formData.imageUrl = uploadResponse.data.downloadURL[0];
-    //             }
-    //             // Traitement spécial pour la série
-    //             let seriesArray = [];
-    //             if (formData.series && typeof formData.series === 'string') {
-    //                 // Si formData.series est une chaîne de caractères, la diviser en tableau
-    //                 seriesArray = formData.series.split('-').map(item => item.trim());
-    //             } else if (Array.isArray(formData.series)) {
-    //                 // Si formData.series est déjà un tableau, l'utiliser tel quel
-    //                 seriesArray = formData.series;
-    //             }
-
-    //             // Mettre à jour le formData avec la série traitée
-    //             setFormData({ ...formData, series: seriesArray });
-    //             // Ajouter l'événement avec les données et l'URL de l'image
-    //             const response = await axios.post(
-    //                 "http://localhost:9090/event/add",
-    //                 formData
-    //             );
-    //             console.log("Event added successfully:", response.data);
-    //             fetchData();
-    //             closeModalA();
-    //         } catch (error) {
-    //             console.error("Error adding event:", error);
-    //             // Gérer l'erreur ici, par exemple, en mettant à jour l'état pour afficher un message d'erreur à l'utilisateur
-    //         }
-    //     } else {
-    //         console.log("Form validation failed");
-    //         // Gérer l'échec de la validation ici, par exemple, en mettant à jour l'état pour afficher des messages d'erreur à l'utilisateur
-    //     }
-    // };
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -742,11 +366,6 @@ export default function ColumnsTable(props) {
                 // Mettre à jour le formData avec la série traitée et la capacité calculée
                 setFormData({ ...formData, series: seriesArray, room_capacity: capacity });
 
-                // Ajouter l'événement avec les données et l'URL de l'image
-                // const response = await axios.post(
-                //     "http://localhost:9090/event/add",
-                //     formData
-                // );
                 const dataToSend = {
                     name: formData.name,
                     description: formData.description,
@@ -783,40 +402,6 @@ export default function ColumnsTable(props) {
         setImage(e.target.files[0]);
     };
 
-    //   const [eventId, setEventId] = useState({});
-
-    //   const handleTicketsClick = async () => {
-    //     try {
-    //         const response = await fetch(`http://localhost:9090/event/${eventId._id}/tickets`);
-    //         //const response = await axios.(`http://localhost:9090/event/${eventId}/tickets`);
-    //         if (!response.ok) {
-    //             throw new Error('Erreur lors de la récupération des tickets');
-    //         }
-    //         // Gérez la réponse pour afficher la page de tickets
-    //     } catch (error) {
-    //         console.error(error);
-    //         // Gérez les erreurs
-    //     }
-    // };
-
-
-
-
-    //     const [tickets, setTickets] = useState([]);
-    // const [eventId, setEventId] = useState({});
-    //     const handleTicketsClick = async () => {
-    //         try {
-    //             const response = await axios.get(`http://localhost:9090/event/${eventId._id}/tickets`);
-    //             if (!response.ok) {
-    //                 throw new Error('Erreur lors de la récupération des tickets');
-    //             }
-    //             const data = await response.json();
-    //             setTickets(data);
-    //         } catch (error) {
-    //             console.error(error);
-    //             // Gérez les erreurs
-    //         }
-    //     }
     return (
         <Card direction='column' w='100%' px='0px' overflowX={{ sm: "scroll", lg: "hidden" }}>
             <Flex px='25px' justify='space-between' mb='20px' align='center'>
@@ -863,40 +448,53 @@ export default function ColumnsTable(props) {
                                         <FormLabel>Shape</FormLabel>
                                         <Select name="room_shape" value={formData.room_shape} onChange={handleChange}>
                                             <option value="Rectangular">Rectangular</option>
-                                            {/* <option value="Triangular">Triangular</option>
-                                            <option value="Circle">Circle</option>
-                                            <option value="Square">Square</option> */}
+
                                         </Select>
                                     </FormControl>
-                                    {/* <FormControl>
-                                        <FormLabel>Capacity</FormLabel>
-                                        <Input type="number" name="room_capacity" value={formData.room_capacity} onChange={handleChange} />
-                                    </FormControl> */}
-                                    {/* <FormControl id="lines">
-                                        <FormLabel>Lines</FormLabel>
-                                        <Input type="text" value={editedEvent.series ? editedEvent.series.join(',') : ''} onChange={(e) => setEditedEvent({ ...editedEvent, series: e.target.value.split(',') })} placeholder="Enter comma-separated series" />
-                                    </FormControl> */}
-                                    <FormControl>
-                                        <FormLabel>Lines</FormLabel>
-                                        {/* <Input
-                                            type="text" name="series"
-                                            value={editedEvent.series ? editedEvent.series.join('-') : ''}
-                                            onChange={(e) => setEditedEvent({ ...editedEvent, series: e.target.value.split('-').map(item => item.trim()) })}
-                                            placeholder="Enter hyphen-separated series"
-                                        /> */}
-                                        {/* <Input type="text" name="series" value={formData.series ? formData.series.join('-') : ''} onChange={handleSeriesChange} placeholder="Enter hyphen-separated series" /> */}
-                                        <Input type="text" name="series" value={formData.series} onChange={handleChange} placeholder="Enter hyphen-separated series" />
 
+                                    <FormControl>
+                                        {/* <FormLabel>Lines</FormLabel>
+                                        <Input type="text" name="series" value={formData.series} onChange={handleChange} placeholder="Enter hyphen-separated series" /> */}
+                                        {/* 
+                                        <FormLabel>Lines</FormLabel>
+                                        <Input
+                                            type="text"
+                                            name="series"
+                                            value={formData.series}
+                                            onChange={handleChange}
+                                            placeholder="Enter hyphen-separated series"
+                                            data-tip="Enter hyphen-separated series like 'a-b-c'"
+                                            data-for="seriesTooltip"
+                                        />
+
+                                        <Tooltip id="seriesTooltip" /> */}
+                                        <FormLabel>Lines</FormLabel>
+                                        <Input
+                                            data-tooltip-id="seriesTooltip"
+                                            type="text"
+                                            name="series"
+                                            value={formData.series}
+                                            onChange={handleChange}
+                                            placeholder="A-B-C"
+                                            data-tooltip-content="The lines will be the names of the lines in your event room. For example, if you have 3 lines with the names a, b, and c, you will enter them as a-b-c."
+                                            
+                                        />
+                                        <ReactTooltip id="seriesTooltip" />
+                                        
                                     </FormControl>
 
                                     <FormControl>
                                         <FormLabel>Seats Per Line</FormLabel>
-                                        <Input type="number" name="seat" value={formData.seat} onChange={handleChange} />
+                                        <Input type="number" name="seat" value={formData.seat} onChange={handleChange} data-tooltip-id="my-tooltip" data-tooltip-content="For example, if you have 20 seats per lines, you will enter 20." />
+                                        
+                                        <ReactTooltip id="my-tooltip" />
+                                        {/* {showHelp && (
+                                            <Text fontSize="sm" color="gray.500">
+                                                For example, if you have 20 seats per lines, you will enter 20.
+                                            </Text>
+                                        )} */}
                                     </FormControl>
-                                    {/* <FormControl>
-                                        <FormLabel>Seats</FormLabel>
-                                        <Input type="text" name="room_distributionSeats" value={formData.room_distributionSeats} onChange={handleChange} />
-                                    </FormControl> */}
+
                                 </Grid>
                                 <FormControl mt={4}>
                                     <FormLabel>Start Date</FormLabel>
@@ -961,6 +559,7 @@ export default function ColumnsTable(props) {
                             <FormControl id="price">
                                 <FormLabel>Price</FormLabel>
                                 <Input type="number" value={editedEvent.price} onChange={(e) => setEditedEvent({ ...editedEvent, price: parseFloat(e.target.value) })} />
+                                {/* <Input type="number" value={editedEvent.price} onChange={(e) => setEditedEvent({ ...editedEvent, price: parseFloat(e.target.value) })} /> */}
                             </FormControl>
                             <FormControl id="startDate">
                                 <FormLabel>Start Date</FormLabel>
@@ -982,53 +581,12 @@ export default function ColumnsTable(props) {
                                 <FormLabel>Seats Per Line</FormLabel>
                                 <Input type="number" value={editedEvent.seat} onChange={(e) => setEditedEvent({ ...editedEvent, seat: parseInt(e.target.value) })} />
                             </FormControl>
-
-
-
-
-                            {/* <FormControl id="room_shape">
-                                                                <FormLabel>Shape</FormLabel>
-                                                                <Input type="text" value={editedEvent.room_shape} onChange={(e) => setEditedEvent({ ...editedEvent, room_shape: parseInt(e.target.value) })} />
-                                                            
-                                                            </FormControl> */}
-                            {/* <FormControl id="room_shape">
-                                                                    <FormLabel>Shape</FormLabel>
-                                                                    <Select value={editedEvent.room_shape} onChange={(e) => setEditedEvent({ ...editedEvent, room_shape: e.target.value })}>
-                                                                        <option value="Rectangular">Rectangular</option>
-                                                                        <option value="Triangular">Triangular</option>
-                                                                        <option value="Circle">Circle</option>
-                                                                        <option value="Square">Square</option>
-                                                                    </Select>
-                                                                </FormControl> */}
-
-                            {/* Select name="room_shape" value={formData.room_shape} onChange={handleChange}>
-                                                                    <option value="Rectangular">Rectangular</option>
-                                                                    <option value="Triangular">Triangular</option>
-                                                                    <option value="Circle">Circle</option>
-                                                                    <option value="Square">Square</option>
-                                                                </Select> */}
-                            {/* <FormControl id="room_capacity">
-                                                                    <FormLabel>Capacity</FormLabel>
-                                                                    <Input type="number" value={editedEvent.room_capacity} onChange={(e) => setEditedEvent({ ...editedEvent, room_capacity: parseInt(e.target.value) })} />
-                                                                </FormControl> */}
-                            {/* <FormControl id="room_distributionSeats">
-                                                                    <FormLabel>Seats</FormLabel>
-                                                                    <Input type="text" value={editedEvent.room_distributionSeats} onChange={(e) => setEditedEvent({ ...editedEvent, room_distributionSeats: e.target.value })} />
-                                                                </FormControl> */}
                             <FormControl id="imageUrl" mt={4}>
                                 {/* <img src={editedEvent.imageUrl} alt="imageUrl" style={{ maxWidth: "250px", maxHeight: "250px", borderRadius: "50%", margin: "auto" }} /> */}
 
                                 <FormLabel>Image</FormLabel>
 
                                 <Input type="file" name="imageUrl" onChange={handleImageChange} />
-
-                                {/* <FormLabel>Image</FormLabel>
-                                                                            {image && (
-                                                                                <img src={URL.createObjectURL(image)} alt="Preview" style={{ maxWidth: "250px", maxHeight: "250px", margin: "auto" }} />
-                                                                            )}
-                                                                            <Input type="file" name="imageUrl" onChange={handleImageChange} />
-                                                                            */}
-
                             </FormControl>
 
                         </ModalBody>
@@ -1172,24 +730,6 @@ export default function ColumnsTable(props) {
                                         <NavLink to={`/event/${eventInfo._id}/comments`}>
                                             <Button colorScheme="orange" >Comments</Button>
                                         </NavLink>
-
-                                        {/* <ModalFooter>
-                                                                                <NavLink to={`/admin/events/${eventInfo.id}/tickets`}>Tickets</NavLink>
-                                                                                
-                                                                                <Button  colorScheme="orange">
-                                                                                comments
-                                                                                </Button>
-                                                                            </ModalFooter> */}
-                                        {/* <ModalFooter>
-                                                                                <NavLink to={`/admin/events/${eventInfo.id}/tickets`}>Tickets</NavLink>
-                                                                                <Button colorScheme="blue" onClick={() => setShowTickets(true)}>
-                                                                                tickets
-                                                                                </Button>
-                                                                                <Button colorScheme="orange" onClick={() => setShowComments(true)}>
-                                                                                comments
-                                                                                </Button>
-                                                                            </ModalFooter> */}
-
                                     </SimpleGrid>
 
                                 </Card>
@@ -1245,17 +785,7 @@ export default function ColumnsTable(props) {
 
                                     } else if (cell.column.Header === "DATE") {
                                         data = (
-                                            // <Text color={textColor} fontSize='sm' fontWeight='700'>
-                                            //     {new Date(cell.value).toLocaleString('tn-TN', {
-                                            //         weekday: 'long',
-                                            //         year: 'numeric',
-                                            //         month: 'long',
-                                            //         day: 'numeric',
-                                            //         hour: 'numeric',
-                                            //         minute: 'numeric'
 
-                                            //     })}
-                                            // </Text>
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
                                                 {new Date(cell.value).toLocaleString('fr-FR', {
                                                     weekday: 'long',

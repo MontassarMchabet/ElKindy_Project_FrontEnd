@@ -14,7 +14,7 @@ import {
     Th,
     Thead,
     Tr,
-    useColorModeValue,Select
+    useColorModeValue, Select
 } from "@chakra-ui/react";
 import {
     InputGroup,
@@ -50,7 +50,7 @@ import Information from "views/admin/profile/components/Information";
 import { MdCheckCircle, MdCancel, MdOutlineError } from "react-icons/md";
 export default function ColumnsTable(props) {
     const { columnsData, tabledata, handledelete, canceldelete, cancelref, confirmDelete, isDeleteDialogOpen,
-        isModalOpenC, openModalC, closeModalC, closeEditModalC, isEditModalOpenC, setIsEditModalOpenC, fetchData , classroomoptions} = props;
+        isModalOpenC, openModalC, closeModalC, closeEditModalC, isEditModalOpenC, setIsEditModalOpenC, fetchData, classroomoptions } = props;
     const [show, setShow] = React.useState(false);
     const handleClick = () => setShow(!show);
     ////////////////////////
@@ -320,6 +320,7 @@ export default function ColumnsTable(props) {
     ////////////////////////////////////////////////////////
     const tableInstance = useTable(
         {
+            initialState: { pageIndex: 0, pageSize: 5 },
             columns,
             data,
         },
@@ -335,9 +336,14 @@ export default function ColumnsTable(props) {
         page,
         prepareRow,
         initialState,
+        state: { pageIndex, pageSize },
+        previousPage,
+        nextPage,
+        canPreviousPage,
+        canNextPage,
     } = tableInstance;
     initialState.pageSize = 99999999999999999;
-/////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////
     const textColor = useColorModeValue("secondaryGray.900", "white");
     const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
     const {
@@ -550,40 +556,6 @@ export default function ColumnsTable(props) {
                                 </FormControl>
                             </Grid>
                             <Grid templateColumns="1fr 1fr" gap={4}>
-                                <FormControl id="password" mt={4}>
-                                    <FormLabel>Password</FormLabel>
-                                    <InputGroup size='md'>
-                                        <Input type={show ? "text" : "password"} onChange={(e) => { setEditedUser({ ...editedUser, password: e.target.value }); validatePassword(e.target.value); }} />
-                                        <InputRightElement display='flex' alignItems='center' mt='1px'>
-                                            <Icon
-                                                color={textColorSecondary}
-                                                _hover={{ cursor: "pointer" }}
-                                                as={show ? RiEyeCloseLine : MdOutlineRemoveRedEye}
-                                                onClick={handleClick}
-                                            />
-                                        </InputRightElement>
-                                    </InputGroup>
-                                </FormControl>
-
-                                <FormControl mt={4}>
-                                    <FormLabel>Password Confirmation</FormLabel>
-                                    <InputGroup size='md'>
-                                        <Input
-                                            type={show ? "text" : "password"}
-                                            onChange={(e) => { setEditedUser({ ...editedUser, confirmPassword: e.target.value }); validateConfirmPassword(e.target.value); }}
-                                        />
-                                        <InputRightElement display='flex' alignItems='center' mt='1px'>
-                                            <Icon
-                                                color={textColorSecondary}
-                                                _hover={{ cursor: "pointer" }}
-                                                as={show ? RiEyeCloseLine : MdOutlineRemoveRedEye}
-                                                onClick={handleClick}
-                                            />
-                                        </InputRightElement>
-                                    </InputGroup>
-                                </FormControl>
-                            </Grid>
-                            <Grid templateColumns="1fr 1fr" gap={4}>
                                 <FormControl id="parentPhoneNumber" mt={4}>
                                     <FormLabel>Parent Phone Number</FormLabel>
                                     <Input type="number" value={editedUser.parentPhoneNumber} onChange={(e) => { setEditedUser({ ...editedUser, parentPhoneNumber: parseInt(e.target.value) }); validatePhoneNumber(e.target.value) }} />
@@ -599,18 +571,18 @@ export default function ColumnsTable(props) {
                                 <Input type="text" value={editedUser.level} onChange={(e) => setEditedUser({ ...editedUser, level: e.target.value })} />
                             </FormControl>
                             <FormControl>
-                            <FormLabel>Classroom</FormLabel>
-                            <Select
-                             name="classroom"
-                            value={editedUser.classroom}
-                            onChange={(e) => setEditedUser({ ...editedUser, classroom: e.target.value })}  >                                             
-                             <option value="">Select Classroom</option>
-                            {classroomoptions.map(classroom => (
-                            <option key={classroom.id} value={classroom._id}>{classroom.name}</option>
-                            ))}
-                            </Select>                                            
-                            </FormControl>                                                                     
-                            
+                                <FormLabel>Classroom</FormLabel>
+                                <Select
+                                    name="classroom"
+                                    value={editedUser.classroom}
+                                    onChange={(e) => setEditedUser({ ...editedUser, classroom: e.target.value })}  >
+                                    <option value="">Select Classroom</option>
+                                    {classroomoptions.map(classroom => (
+                                        <option key={classroom.id} value={classroom._id}>{classroom.name}</option>
+                                    ))}
+                                </Select>
+                            </FormControl>
+
                         </ModalBody>
                     )}
                     {errorsEdit.name && <Text color="red">{errorsEdit.name}</Text>}
@@ -779,11 +751,11 @@ export default function ColumnsTable(props) {
                                     else if (cell.column.Header === "classroom") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
-                                                 {row.original.courseName}
+                                                {row.original.courseName}
                                             </Text>
                                         );
                                     }
-                                     else if (cell.column.Header === "Birth date") {
+                                    else if (cell.column.Header === "Birth date") {
                                         const date = new Date(cell.value);
                                         const formattedDate = date.toISOString().split('T')[0];
                                         data = (
@@ -855,6 +827,17 @@ export default function ColumnsTable(props) {
                     })}
                 </Tbody>
             </Table>
+            <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                <Button onClick={() => previousPage()} disabled={!canPreviousPage}>
+                    Previous
+                </Button>
+                <Button onClick={() => nextPage()} disabled={!canNextPage}>
+                    Next
+                </Button>
+                <span>
+                    Page {pageIndex + 1} of {Math.ceil(data.length / pageSize)}
+                </span>
+            </div>
         </Card>
     );
 }

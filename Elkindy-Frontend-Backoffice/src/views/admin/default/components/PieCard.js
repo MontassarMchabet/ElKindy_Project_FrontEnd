@@ -5,11 +5,36 @@ import Card from "components/card/Card.js";
 import PieChart from "components/charts/PieChart";
 import { pieChartData, pieChartOptions } from "variables/charts";
 import { VSeparator } from "components/separator/Separator";
-import React from "react";
+import React, {useState, useEffect} from "react";
+import api from "services/api";
 
 export default function Conversion(props) {
   const { ...rest } = props;
 
+  const [subscriptionData, setSubscriptionData] = useState({
+    active: 0,
+    inactive: 0,
+  });
+
+  useEffect(() => {
+    fetchSubscriptionStatus();
+  }, []);
+
+  const fetchSubscriptionStatus = async () => {
+    try {
+      const response = await api.get(
+        "http://localhost:9090/api/auth/subscription/status"
+      );
+      const { active, inactive } = response.data.SubscriptionStatus;
+      setSubscriptionData({ active, inactive });
+    } catch (error) {
+      console.error("Error fetching subscription status:", error);
+    }
+  };
+
+  // Dynamically update pie chart data based on subscription status
+  const pieChartData = [subscriptionData.active, subscriptionData.inactive];
+  
   // Chakra Color Mode
   const textColor = useColorModeValue("secondaryGray.900", "white");
   const cardColor = useColorModeValue("white", "navy.700");
@@ -43,7 +68,7 @@ export default function Conversion(props) {
       <PieChart
         h='100%'
         w='100%'
-        chartData={pieChartData}
+        chartData={[subscriptionData.active, subscriptionData.inactive]}
         chartOptions={pieChartOptions}
       />
       <Card
@@ -63,11 +88,11 @@ export default function Conversion(props) {
               color='secondaryGray.600'
               fontWeight='700'
               mb='5px'>
-              Your files
+              Active
             </Text>
           </Flex>
           <Text fontSize='lg' color={textColor} fontWeight='700'>
-            63%
+            {subscriptionData.active}
           </Text>
         </Flex>
         <VSeparator mx={{ base: "60px", xl: "60px", "2xl": "60px" }} />
@@ -79,11 +104,11 @@ export default function Conversion(props) {
               color='secondaryGray.600'
               fontWeight='700'
               mb='5px'>
-              System
+              inactive
             </Text>
           </Flex>
           <Text fontSize='lg' color={textColor} fontWeight='700'>
-            25%
+            {subscriptionData.inactive}
           </Text>
         </Flex>
       </Card>

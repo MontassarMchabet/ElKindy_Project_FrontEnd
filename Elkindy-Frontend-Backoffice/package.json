@@ -56,9 +56,11 @@
     "react-scripts": "5.0.0",
     "react-table": "^7.7.0",
     "socket.io-client": "^4.7.5",
+    "react-tooltip": "^5.26.4",
     "stream-browserify": "^3.0.0",
     "stylis": "^4.1.1",
     "stylis-plugin-rtl": "2.0.2",
+    "sweetalert2": "^11.10.8",
     "util": "^0.12.5",
     "warning": "^4.0.3",
     "web-vitals": "^1.1.2"

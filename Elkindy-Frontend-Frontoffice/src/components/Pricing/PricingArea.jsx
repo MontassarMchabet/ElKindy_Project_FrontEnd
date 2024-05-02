@@ -33,39 +33,6 @@ const PricingArea = () => {
             </div>
 
             <div className="pricing-item-wrap">
-              <div className="pricing-tab">
-                <ul className="nav nav-tabs" id="myTab" role="tablist">
-                  <li className="nav-item" role="presentation">
-                    <button
-                      className="nav-link active"
-                      id="month-tab"
-                      data-bs-toggle="tab"
-                      data-bs-target="#month"
-                      type="button"
-                      role="tab"
-                      aria-controls="month"
-                      aria-selected="true"
-                    >
-                      Monthly
-                    </button>
-                  </li>
-                  <li className="nav-item" role="presentation">
-                    <button
-                      className="nav-link"
-                      id="year-tab"
-                      data-bs-toggle="tab"
-                      data-bs-target="#year"
-                      type="button"
-                      role="tab"
-                      aria-controls="year"
-                      aria-selected="false"
-                    >
-                      Yearly
-                    </button>
-                  </li>
-                </ul>
-              </div>
-
               <div className="tab-content" id="myTabContent">
                 <div
                   className="tab-pane show active"
@@ -80,88 +47,11 @@ const PricingArea = () => {
                           <img src="/img/icon/pricing_icon01.png" alt="" />
                         </div>
                         <div className="pricing-top">
-                          <h2 className="title">Basic</h2>
+                          <h2 className="title">Monthly</h2>
                         </div>
                         <div className="pricing-price">
                           <h2 className="price">
-                            <span>$</span>49<strong>/mo</strong>
-                          </h2>
-                        </div>
-                        <div className="pricing-list">
-                          <h4 className="title">Everything in Starter</h4>
-                          <ul className="list-wrap">
-                            <li>
-                              <i className="far fa-check"></i>Access to view and participate in upcoming events hosted by the conservatory.
-                            </li>
-                            <li>
-                              <i className="far fa-check"></i>Access to view and participate in upcoming events.
-                            </li>
-                            <li>
-                              <i className="far fa-check"></i>Access to basic planning tools for managing schedules, assignments, and deadlines.
-                            </li>
-                            <li>
-                              <i className="far fa-check"></i>Ability to access past exam papers, study materials, and participate in mock exams.
-                            </li>
-
-                          </ul>
-                        </div>
-                        <div className="pricing-btn">
-                          <button onClick={() => handleSelectPlan(49)} className="btn">
-                            Select This Plan
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="col-lg-4 col-md-6">
-                      <div className="pricing-item active">
-                        <div className="pricing-icon">
-                          <img src="/img/icon/pricing_icon02.png" alt="" />
-                        </div>
-                        <div className="pricing-top">
-                          <h2 className="title">Standard</h2>
-                        </div>
-                        <div className="pricing-price">
-                          <h2 className="price">
-                            <span>$</span>69<strong>/mo</strong>
-                          </h2>
-                        </div>
-                        <div className="pricing-list">
-                          <h4 className="title">Everything in Starter</h4>
-                          <ul className="list-wrap">
-                            <li>
-                              <i className="far fa-check"></i>Full access to all events, including premium events and workshops.
-                            </li>
-                            <li>
-                              <i className="far fa-check"></i>Full access to the shop with a larger discount on purchases for subscribers.
-                            </li>
-                            <li>
-                              <i className="far fa-check"></i> Access to advanced planning tools for managing schedules, assignments, and deadlines effectively.
-                            </li>
-                            <li>
-                              <i className="far fa-check"></i>Ability to access past exam papers, study materials, and participate in mock exams.
-                            </li>
-                          </ul>
-                        </div>
-                        <div className="pricing-btn">
-                          <button onClick={() => handleSelectPlan(69)} className="btn">
-                            Select This Plan
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="col-lg-4 col-md-6">
-                      <div className="pricing-item">
-                        <div className="pricing-icon">
-                          <img src="/img/icon/pricing_icon03.png" alt="" />
-                        </div>
-                        <div className="pricing-top">
-                          <h2 className="title">Premium</h2>
-                        </div>
-                        <div className="pricing-price">
-                          <h2 className="price">
-                            <span>$</span>89<strong>/mo</strong>
+                            <span>TND</span>50<strong>/mo</strong>
                           </h2>
                         </div>
                         <div className="pricing-list">
@@ -182,7 +72,83 @@ const PricingArea = () => {
                           </ul>
                         </div>
                         <div className="pricing-btn">
-                          <button onClick={() => handleSelectPlan(89)} className="btn">
+                          <button onClick={() => handleSelectPlan(50)} className="btn">
+                            Select This Plan
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="col-lg-4 col-md-6">
+                      <div className="pricing-item active">
+                        <div className="pricing-icon">
+                          <img src="/img/icon/pricing_icon02.png" alt="" />
+                        </div>
+                        <div className="pricing-top">
+                          <h2 className="title">Yearly</h2>
+                        </div>
+                        <div className="pricing-price">
+                          <h2 className="price">
+                            <span>TND</span>600<strong>/yr</strong>
+                          </h2>
+                        </div>
+                        <div className="pricing-list">
+                          <h4 className="title">Everything in Starter</h4>
+                          <ul className="list-wrap">
+                            <li>
+                              <i className="far fa-check"></i>Priority access to all events with reserved seating.
+                            </li>
+                            <li>
+                              <i className="far fa-check"></i>Special discounts and offers.
+                            </li>
+                            <li>
+                              <i className="far fa-check"></i> Personalized scheduling assistance and reminders, along with priority support for any planning-related queries.
+                            </li>
+                            <li>
+                              <i className="far fa-check"></i>Full access to exam resources, personalized study plans, and direct support from tutors for exam preparation.
+                            </li>
+                          </ul>
+                        </div>
+                        <div className="pricing-btn">
+                          <button onClick={() => handleSelectPlan(600)} className="btn">
+                            Select This Plan
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="col-lg-4 col-md-6">
+                      <div className="pricing-item">
+                        <div className="pricing-icon">
+                          <img src="/img/icon/pricing_icon03.png" alt="" />
+                        </div>
+                        <div className="pricing-top">
+                          <h2 className="title">6 Months</h2>
+                        </div>
+                        <div className="pricing-price">
+                          <h2 className="price">
+                            <span>TND</span>300<strong>/mo</strong>
+                          </h2>
+                        </div>
+                        <div className="pricing-list">
+                          <h4 className="title">Everything in Starter</h4>
+                          <ul className="list-wrap">
+                            <li>
+                              <i className="far fa-check"></i>Priority access to all events with reserved seating.
+                            </li>
+                            <li>
+                              <i className="far fa-check"></i>Special discounts and offers.
+                            </li>
+                            <li>
+                              <i className="far fa-check"></i> Personalized scheduling assistance and reminders, along with priority support for any planning-related queries.
+                            </li>
+                            <li>
+                              <i className="far fa-check"></i>Full access to exam resources, personalized study plans, and direct support from tutors for exam preparation.
+                            </li>
+                          </ul>
+                        </div>
+                        <div className="pricing-btn">
+                          <button onClick={() => handleSelectPlan(300)} className="btn">
                             Select This Plan
                           </button>
                         </div>
@@ -191,7 +157,7 @@ const PricingArea = () => {
                   </div>
                 </div>
 
-                <div
+                {/* <div
                   className="tab-pane"
                   id="year"
                   role="tabpanel"
@@ -312,7 +278,8 @@ const PricingArea = () => {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
+
               </div>
             </div>
           </>

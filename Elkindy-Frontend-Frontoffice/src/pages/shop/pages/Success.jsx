@@ -1,6 +1,7 @@
 import axios from 'axios'
+import { Button } from 'bootstrap'
 import React, { useEffect } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 
 function Success() {
 
@@ -9,7 +10,6 @@ function Success() {
         axios
         .post(`http://localhost:9090/api/order/payement/${searchParams.get("payement_id")}`)
         .then(res=>{
-             console.log(res.data)
          })
          .catch(err=>{
               console.log(err)
@@ -65,6 +65,9 @@ function Success() {
           </div>
           <h1>Success</h1> 
           <p>Payement done with Success<br/> see you soon!</p>
+          <Link to="/">
+          <button style={{backgroundColor:'green', color:"white", borderRadius:"20px", padding:"5px"}}>Back to Home</button>{' '}
+          </Link>
         </div>
       </body>
     </html>

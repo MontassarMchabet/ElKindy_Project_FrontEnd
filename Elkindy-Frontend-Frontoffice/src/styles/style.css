@@ -6225,6 +6225,17 @@ label {
   flex: 0 0 78px;
   margin-right: 25px;
 }
+.comments-avatar-1 {
+  width: 78px;
+  flex: 0 0 78px;
+  margin-right: 25px;
+}
+.comments-avatar-1 img {
+  border-radius: 20px;
+  width: 100%; /* L'image occupera 100% de la largeur de son conteneur */
+  height: auto; /* Pour que l'image conserve son ratio hauteur/largeur */
+  max-width: 100%; /* Assurez-vous que l'image ne dépasse pas la largeur de son conteneur */
+}
 
 .comments-avatar img {
   border-radius: 20px;
@@ -6325,7 +6336,15 @@ label {
   min-height: 180px;
   max-height: 180px;
 }
-
+.comment-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px; /* Ajoutez un espacement entre les boutons */
+}
 .comment-form .btn {
   background: var(--tg-primary-color);
   margin-top: 22px;
@@ -6334,7 +6353,19 @@ label {
 .comment-form .btn span {
   background: var(--tg-secondary-color);
 }
+.comment-save-button {
+  background-color: #28a745; /* Couleur verte */
+}
 
+/* Style spécifique pour le bouton "Edit" */
+.comment-edit-button {
+  background-color: #ffc107; /* Couleur jaune */
+}
+
+/* Style spécifique pour le bouton "Delete" */
+.comment-delete-button {
+  background-color: #dc3545; /* Couleur rouge */
+}
 /*=============================
 	27. Pagination
 ===============================*/
@@ -7115,3 +7146,21 @@ label {
     height: 35px;
 
 }
+.inner-comment-form-wrap {
+  border: 1px solid var(--tg-border-color);
+  box-shadow: 0px 35px 54px rgba(61, 90, 125, 0.03);
+  border-radius: 20px;
+  width: 610px;
+  padding: 45px 40px;
+  position: absolute;
+  /* right: 0; */
+  top: 10;
+  background: var(--tg-white);
+}
+
+.inner-comment-form-wrap .form-grp {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+

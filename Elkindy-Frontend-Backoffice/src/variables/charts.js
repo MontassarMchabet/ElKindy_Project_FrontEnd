@@ -207,9 +207,8 @@ export const barChartOptionsConsumption = {
     },
   },
 };
-
 export const pieChartOptions = {
-  labels: ["Your files", "System", "Empty"],
+  labels: ["Active", "Inactive"],
   colors: ["#4318FF", "#6AD2FF", "#EFF4FB"],
   chart: {
     width: "50px",
@@ -253,12 +252,16 @@ export const pieChartData = [63, 25, 12];
 
 export const lineChartDataTotalSpent = [
   {
-    name: "Revenue",
-    data: [50, 64, 48, 66, 49, 68],
+    name: "Monthly",
+    data: [50, 64, 48, 66, 49, 68, 70, 75, 72, 80, 85, 90],
   },
   {
-    name: "Profit",
-    data: [30, 40, 24, 46, 20, 46],
+    name: "Yearly",
+    data: [30, 40, 24, 46, 20, 46, 48, 50, 52, 55, 60, 65],
+  },
+  {
+    name: "6 months",
+    data: [20, 30, 25, 35, 28, 40, 42, 45, 38, 50, 55, 60],
   },
 ];
 
@@ -275,6 +278,7 @@ export const lineChartOptionsTotalSpent = {
       opacity: 0.1,
       color: "#4318FF",
     },
+    width: "100%"
   },
   colors: ["#4318FF", "#39B8FF"],
   markers: {
@@ -304,7 +308,7 @@ export const lineChartOptionsTotalSpent = {
   },
   xaxis: {
     type: "numeric",
-    categories: ["SEP", "OCT", "NOV", "DEC", "JAN", "FEB"],
+    categories: ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
     labels: {
       style: {
         colors: "#A3AED0",
@@ -333,4 +337,5 @@ export const lineChartOptionsTotalSpent = {
     },
   },
   color: ["#7551FF", "#39B8FF"],
+  colors: ["#4318FF", "#39B8FF", "#FF5733"],
 };
