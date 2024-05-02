@@ -7,7 +7,6 @@ import Container from "../components/Container";
 import Header from "../components/Header";
 import Layout from "../../../layouts/Layout";
 import cross from "../public/images/cross.svg";
-import watch from "../public/images/watch.jpg";
 import { useDispatch, useSelector } from "react-redux";
 import { addToWishlist, getUserProductWishlist } from "../features/productSlice";
 

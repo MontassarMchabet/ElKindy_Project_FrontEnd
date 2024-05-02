@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { BsSearch } from "react-icons/bs";
 import compare from "../public/images/compare.svg";
 import wishlist from "../public/images/wishlist.svg";
 import cart from "../public/images/cart.svg";
 import { useDispatch, useSelector } from "react-redux";
-import { array } from "yup";
 const Header = () => {
 
   const dispatch = useDispatch();
@@ -18,7 +17,6 @@ const Header = () => {
       sum = sum + (Number(cartState[index].quantity) * Number(cartState[index].price))
     }
     setTotal(sum);
-    console.log(sum);
   },[cartState])
 
   return (

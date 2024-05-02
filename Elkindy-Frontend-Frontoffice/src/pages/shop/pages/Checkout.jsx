@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi";
-import watch from "../public/images/watch.jpg";
 import Container from "../components/Container";
 import Header from "../components/Header";
 import Layout from "../../../layouts/Layout";
@@ -32,19 +31,30 @@ const Checkout = () => {
     const [totalAmount, setTotalAmount] = useState(null)
     const [shippingInfo, setShippingInfo] = useState(null)
     const [cartProductState, setCartProductState] = useState([])
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+          try {
+            const storedToken = Cookies.get('token');
+            const storedRefreshToken = Cookies.get('refreshToken');
+            const decodedToken = jwtDecode(storedToken);
+            const { userId, role } = decodedToken;
+    
+            const response = await axios.get(`http://localhost:9090/api/auth/user/${userId}`);
+            setUser(response.data);
+          } catch (error) {
+            console.error('Error fetching user data:', error);
+          }
+        };
+        fetchUserData();
+      }, []);
     
     const sendMail = async () => {
         try {
-            const storedToken = Cookies.get('token');
-            const decodedToken = jwtDecode(storedToken);
-            console.log(decodedToken);
-            const email = decodedToken.email;
-            console.log(email);
-            const username = decodedToken.username;
-            console.log(username);
             const response = await axios.post("http://localhost:9090/api/order/orderMail", {
-                email: email,
-                username: username
+                email: user.email,
+                username: user.username
             });
             if (response.data) {
                 return response.data;
@@ -93,17 +103,16 @@ const Checkout = () => {
         setCartProductState(items)
     },[])
 
-    console.log(shippingInfo);
-    console.log(cartProductState);
+
     const checkOutHandler = async () => {
-        /*await axios
+        await axios
             .post("http://localhost:9090/api/order/payement", { amount: totalAmount+7 })
             .then((res) => {
                 const { result } = res.data
                 window.location.href = result.link;
-                console.log(res.data);
+
             })
-            .catch((err) => console.error(err));*/
+            .catch((err) => console.error(err));
         
         dispatch(createAnOrder({totalPrice:totalAmount,totalPriceAfterDiscount:totalAmount,orderItems:cartProductState,shippingInfo:shippingInfo}))
         sendMail()

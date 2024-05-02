@@ -1,5 +1,4 @@
 import axios from "axios";
-import api from "services/api";
 import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button, Select, Textarea } from "@chakra-ui/react";
 import { ViewIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { AddIcon } from '@chakra-ui/icons'
@@ -7,8 +6,6 @@ import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseBu
 import {
     Flex,
     Table,
-    Progress,
-    Icon,
     Tbody,
     Td,
     Text,
@@ -20,14 +17,8 @@ import {
 import {
     Menu,
     MenuButton,
-    MenuItem,
-    MenuList,
     useDisclosure,
-    InputGroup,
-    InputRightElement,
 } from "@chakra-ui/react";
-import { MdOutlineRemoveRedEye } from "react-icons/md";
-import { RiEyeCloseLine } from "react-icons/ri";
 import React, { useMemo, useState } from "react";
 import {
     useGlobalFilter,
@@ -36,8 +27,6 @@ import {
     useTable,
 } from "react-table";
 import Card from "components/card/Card";
-//import Menu from "components/menu/MainMenu";
-import { MdCheckCircle, MdCancel, MdOutlineError } from "react-icons/md";
 import Information from "views/admin/profile/components/Information";
 
 
@@ -52,7 +41,6 @@ export default function ColumnsTable(props) {
     );
     const columns = useMemo(() => columnsData, [columnsData]);
     const data = useMemo(() => tableData, [tableData]);
-    const textColorSecondary = "gray.400";
     const { ...rest } = props;
     const iconColor = useColorModeValue("brand.500", "white");
     /////////////////////////////////////////////////
@@ -83,14 +71,9 @@ export default function ColumnsTable(props) {
     const borderColor = useColorModeValue("gray.200", "whiteAlpha.100");
     const {
         isOpen: isOpen1,
-        onOpen: onOpen1,
         onClose: onClose1,
     } = useDisclosure();
-    const bgList = useColorModeValue("white", "whiteAlpha.100");
-    const bgShadow = useColorModeValue(
-        "14px 17px 40px 4px rgba(112, 144, 176, 0.08)",
-        "unset"
-    );
+
     const bgButton = useColorModeValue("secondaryGray.300", "whiteAlpha.100");
     const bgHover = useColorModeValue(
         { bg: "secondaryGray.400" },
@@ -100,8 +83,7 @@ export default function ColumnsTable(props) {
         { bg: "secondaryGray.300" },
         { bg: "whiteAlpha.100" }
     );
-    const [show, setShow] = React.useState(false);
-    const handleClick = () => setShow(!show);
+
 
     const [isModalViewOpen, setIsModalViewOpen] = useState(false);
     const [productInfo, setProductInfo] = useState(null);
@@ -111,9 +93,7 @@ export default function ColumnsTable(props) {
         setProductInfo(productData);
         setIsModalViewOpen(true);
     };
-    const closeModalViewPro = () => {
-        setIsModalViewOpen(false);
-    };
+
 
     const closeModalViewA = () => {
         setIsModalViewOpen(false);
@@ -189,7 +169,6 @@ export default function ColumnsTable(props) {
                 );
                 fetchData()
                 closeModalPro()
-                console.log(response.data);
             } catch (error) {
                 console.error("Error registering product:", error);
             }

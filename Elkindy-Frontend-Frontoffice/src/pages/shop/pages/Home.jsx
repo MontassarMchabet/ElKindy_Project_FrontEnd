@@ -1,26 +1,29 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import "../App.css";
 import Header from '../components/Header'
 import { Link } from "react-router-dom";
-import ProductCard from "../components/ProductCard";
 import mainbanner1 from "../public/images/aaa1.jpg";
 import catbanner1 from "../public/images/aaa2.jpeg";
 import catbanner2 from "../public/images/aaa3.jpeg";
 import catbanner3 from "../public/images/aaa4.jpg";
 import catbanner4 from "../public/images/aaa6.jpg";
-import camera from "../public/images/camera.jpg";
-import tv from "../public/images/tv.jpg";
-import headphone from "../public/images/headphone.jpg";
-import famous1 from "../public/images/famous-1.webp";
-import famous2 from "../public/images/famous-2.webp";
-import famous3 from "../public/images/famous-3.webp";
-import famous4 from "../public/images/famous-4.webp";
 import SpecialProduct from "../components/SpecialProduct";
 import Container from "../components/Container";
 import Layout from '../../../layouts/Layout';
-//import { services } from "../utils/Data";
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllProducts } from '../features/productSlice';
 
 function Home() {
+
+  const [grid, setGrid] = useState(4);
+    const productState=useSelector((state) => state?.product?.product);
+    const dispatch = useDispatch();
+    useEffect(() => {
+        getProducts();
+    }, []);
+    const getProducts = () => {
+        dispatch(getAllProducts());
+    };
   return (
     <>
       <Layout header={4} footer={3} className="" mainClassName="">
@@ -88,12 +91,11 @@ function Home() {
         <Container class1="special-wrapper py-5 home-wrapper-2">
         <div className="row">
           <div className="col-12">
-            <h3 className="section-heading">Special Products</h3>
+            <h3 className="section-heading">Top Products</h3>
           </div>
         </div>
         <div className="row">
-          <SpecialProduct />
-          <SpecialProduct />
+          <SpecialProduct data={productState} grid={grid} />
         </div>
       </Container>
       </Layout>

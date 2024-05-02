@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "../App.css";
+import Sentiment from 'sentiment';
 import BreadCrumb from "../components/BreadCrumb";
 import Meta from "../components/Meta";
 import ProductCard from "../components/ProductCard";
 import ReactImageZoom from "react-image-zoom"
-import wish from "../public/images/wish.svg";
-import Color from "../components/Color";
 import { FcLikePlaceholder } from "react-icons/fc";
 import { FcLike } from "react-icons/fc";
-// import { TbGitCompare } from "react-icons/tb";
-import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import watch from "../public/images/watch.jpg";
+import { useLocation, useNavigate } from "react-router-dom";
 import Container from "../components/Container";
 import Header from "../components/Header";
 import Layout from "../../../layouts/Layout";
@@ -30,7 +26,6 @@ const SingleProduct = () => {
     const dispatch = useDispatch();
     const productState = useSelector(state => state.product.product)
     const cartState = useSelector(state => state.product.cartProducts)
-    console.log(productState);
 
     useEffect(() => {
         dispatch(getAProduct(getProductId))
@@ -39,15 +34,14 @@ const SingleProduct = () => {
 
     const addToWish = (prodId) => {
         if (prodId) {
-          dispatch(addToWishlist(prodId));
-          setAlreadyAddedToWish(true)
+            dispatch(addToWishlist(prodId));
+            setAlreadyAddedToWish(true)
         } else {
-          console.error("Product ID is undefined");
+            console.error("Product ID is undefined");
         }
-      }
+    }
 
     useEffect(() => {
-        // Check if cartState exists before trying to iterate over it
         if (cartState) {
             for (let index = 0; index < cartState.length; index++) {
                 if (getProductId === cartState[index].productId._id) {
@@ -71,7 +65,6 @@ const SingleProduct = () => {
 
     const [orderedProduct, setorderedProduct] = useState(true);
     const copyToClipboard = (text) => {
-        console.log("text", text);
         var textField = document.createElement("textarea");
         textField.innerText = text;
         document.body.appendChild(textField);
@@ -82,6 +75,15 @@ const SingleProduct = () => {
 
     const [star, setStar] = useState(null)
     const [comment, setComment] = useState(null)
+    const sentiment = new Sentiment();
+    const [inputText, setInputText] = useState("");
+    const [result, setResult] = useState();
+
+    useEffect(() => {
+        const tempResult = sentiment.analyze(inputText);
+        setResult(tempResult)
+    }, [inputText])
+
     const addRatingToProduct = () => {
         if (star === null) {
             Swal.fire({
@@ -102,7 +104,7 @@ const SingleProduct = () => {
             });
             return false;
         } else {
-            dispatch(addRating({ star: star, comment: comment, prodId: getProductId }))
+            dispatch(addRating({ star: star, comment: comment, prodId: getProductId, score: result?.score }))
         }
         return false;
     };
@@ -187,22 +189,14 @@ const SingleProduct = () => {
                                         <div className={alreadyAdded ? "ms-0" : "ms-5" + 'd-flex align-items-center gap-30 ms-5'}>
                                             <button
                                                 className="button border-0"
-                                                /*data-bs-toggle="modal"
-                                                data-bs-target="#staticBackdrop"*/
                                                 type="button"
                                                 onClick={() => { alreadyAdded ? navigate('/shop/cart') : uploadCart() }}
                                             >
                                                 {alreadyAdded ? "Go To Cart" : "Add to Cart"}
                                             </button>
-                                            {/*<button className="button signup">Buy It Now</button>*/}
                                         </div>
                                     </div>
                                     <div className="d-flex align-items-center gap-15">
-                                        <div>
-                                            <a href="">
-                                                {/* <TbGitCompare className="fs-5 me-2" /> Add to Compare */}
-                                            </a>
-                                        </div>
                                         {alreadyAddedToWish ? <div>
                                             <a onClick={(e) => { addToWish(productState._id); setAlreadyAddedToWish(false) }}>
                                                 <FcLike className="fs-5 me-2" /> Already in the Wishlist
@@ -212,7 +206,7 @@ const SingleProduct = () => {
                                                 <FcLikePlaceholder className="fs-5 me-2" /> Add to Wishlist
                                             </a>
                                         </div>}
-                                        
+
                                     </div>
                                     <div className="d-flex gap-10 flex-column  my-3">
                                         <h3 className="product-heading">Description :</h3>
@@ -296,9 +290,11 @@ const SingleProduct = () => {
                                             className="w-100 form-control"
                                             cols="30"
                                             rows="4"
+                                            value={inputText}
                                             placeholder="Comments"
                                             onChange={(e) => {
-                                                setComment(e.target.value)
+                                                setComment(e.target.value);
+                                                setInputText(e.target.value);
                                             }}
                                         ></textarea>
                                     </div>

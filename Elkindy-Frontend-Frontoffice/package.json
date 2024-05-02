@@ -42,6 +42,7 @@
     "react-slick": "^0.29.0",
     "react-stars": "^2.2.5",
     "reactjs-popup": "^2.0.6",
+    "sentiment": "^5.0.2",
     "slick-carousel": "^1.8.1",
     "socket.io-client": "^4.7.5",
     "stream-browserify": "^3.0.0",
