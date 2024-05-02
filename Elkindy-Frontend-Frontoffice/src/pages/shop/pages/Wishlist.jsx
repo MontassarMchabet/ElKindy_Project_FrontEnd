@@ -7,7 +7,6 @@ import Container from "../components/Container";
 import Header from "../components/Header";
 import Layout from "../../../layouts/Layout";
 import cross from "../public/images/cross.svg";
-import watch from "../public/images/watch.jpg";
 import { useDispatch, useSelector } from "react-redux";
 import { addToWishlist, getUserProductWishlist } from "../features/productSlice";
 
@@ -59,6 +58,7 @@ const Wishlist = () => {
                         src={item.images}
                         className="img-fluid w-100"
                         alt="watch"
+                        style={{borderRadius: 30}}
                       />
                     </div>
                     <div className="py-3 px-3">

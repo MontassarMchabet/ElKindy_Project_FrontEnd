@@ -1,31 +1,27 @@
 import React from "react";
 import ReactStars from "react-rating-stars-component";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import prodcompare from "../public/images/prodcompare.svg";
 import wish from "../public/images/wish.svg";
-import wishlist from "../public/images/wishlist.svg";
-import watch from "../public/images/watch.jpg";
-import watch2 from "../public/images/watch-1.avif";
 import addcart from "../public/images/add-cart.svg";
 import view from "../public/images/view.svg";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { addToWishlist } from "../features/productSlice";
 
 const ProductCard = (props) => {
   const { grid, data } = props;
-  console.log(data);
   let location = useLocation();
   const dispatch = useDispatch();
 
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const addToWish = (prodId) => {
-    if (prodId) { 
-        dispatch(addToWishlist(prodId));
+    if (prodId) {
+      dispatch(addToWishlist(prodId));
     } else {
-        console.error("Product ID is undefined");
+      console.error("Product ID is undefined");
     }
-}
+  }
 
   return (
     <>
@@ -36,18 +32,14 @@ const navigate = useNavigate();
             className={` ${location.pathname == "/shop/products" ? `gr-${grid}` : "col-3"
               } `}
           >
-            <div
-              //to="/shop/products/:id"
-              className="product-card position-relative"
-            >
+            <div className="product-card position-relative">
               <div className="wishlist-icon position-absolute">
-                <button className="border-0 bg-transparent" onClick={(e)=>{addToWish(item._id)}}>
+                <button className="border-0 bg-transparent" onClick={(e) => { addToWish(item._id) }}>
                   <img src={wish} alt="wishlist" />
                 </button>
               </div>
               <div  >
-                <img src={item.images} className="img-fluid mx-auto" alt="product image"style={{height:250}} />
-                {/*<img src={watch2} className="img-fluid mx-auto" alt="product image" />*/}
+                <img src={item.images} className="img-fluid mx-auto" alt="product image" style={{ height: 250 }} />
               </div>
               <div className="product-details">
                 <h6 className="brand">{item.title}</h6>
@@ -72,7 +64,7 @@ const navigate = useNavigate();
                     <img src={prodcompare} alt="compare" />
                   </button>
                   <button className="border-0 bg-transparent">
-                    <img onClick={()=>navigate("/shop/products/"+item._id)} src={view} alt="view" />
+                    <img onClick={() => navigate("/shop/products/" + item._id)} src={view} alt="view" />
                   </button>
                   <button className="border-0 bg-transparent">
                     <img src={addcart} alt="addcart" />
