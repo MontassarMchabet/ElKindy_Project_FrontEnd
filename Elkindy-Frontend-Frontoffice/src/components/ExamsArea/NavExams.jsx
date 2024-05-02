@@ -154,6 +154,9 @@ const NavExams = () => {
                                                 <li className={cn(isActiveClassName("/exams"))}>
                                                     <Link to="/exams">Exams</Link>
                                                 </li>
+                                                <li className={cn(isActiveClassName("/classes"))}>
+                                                <Link to="/classes">Class</Link>
+                                                </li>
 
                                             </ul>
                                         </div>

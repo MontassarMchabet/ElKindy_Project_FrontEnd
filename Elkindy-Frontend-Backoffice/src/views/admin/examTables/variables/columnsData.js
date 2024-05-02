@@ -12,6 +12,9 @@ export const ExamData = [
     accessor: "createdAt",
   },
   {
+    Header: "Progress",
+  },
+  {
     Header: "Type",
     accessor: "type",
   },

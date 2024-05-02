@@ -60,7 +60,7 @@ import Information from "views/admin/profile/components/Information";
 
 export default function ColumnsTable(props) {
     const { columnsData, tableData, handleDelete, cancelDelete, cancelRef, confirmDelete, isDeleteDialogOpen,
-        isModalOpenA, openModalA, closeModalA, fetchData , isEditModalOpen, closeEditModal,setIsEditModalOpen,setExamData,pageCount,handlePageClick} = props;
+        isModalOpenA, examId ,openModalA, closeModalA, fetchData , isEditModalOpen, closeEditModal,setIsEditModalOpen,setExamData,pageCount,handlePageClick} = props;
 
     const textColorPrimary = useColorModeValue("secondaryGray.900", "white");
     const cardShadow = useColorModeValue(
@@ -342,14 +342,46 @@ const handleSubmitB = async (e) => {
     const handleClick = () => setShow(!show);
 
 
-
+    const [numberOfAnswers, setNumberOfAnswers] = useState(0);
     const [isModalViewOpen, setIsModalViewOpen] = useState(false);
     const [examInfo, setExamInfo] = useState(null);
     const [answersData, setAnswersData] = useState([]);
+    
+    const [answersCounts, setAnswersCounts] = useState({});
+
+    const fetchAnswersForEachExam = async (ids) => {
+        try {
+            const counts = [];
+            // Iterate through each exam ID
+            for (const id of ids) {
+                // Fetch number of answers for the current exam ID
+                const response = await fetch(`http://localhost:9090/api/answer/answers/${id}`);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch answers for exam ID: ${id}`);
+                }
+                const answers = await response.json();
+                const numberOfAnswers = answers.length;
+                counts.push(numberOfAnswers); // Push the number of answers to the array
+            
+            }
+            // Update state with the array of numbers
+            setAnswersCounts(counts);
+            console.log(answersCounts)
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    
+
+    
+    // Use the function inside useEffect
+    useEffect(() => {
+        fetchAnswersForEachExam(examId);
+    }, [examId]);
     const handleView = async (examData) => {
         try {
-            // Fetch answers data before opening the modal
-            const answersData = await fetchAnswersData(examData._id); // Assuming examData has an 'id' property
+            
+            const answersData = await fetchAnswersData(examData._id); 
             setExamInfo({ ...examData, answersData });
             setAnswersData(answersData)
             console.log(examData._id)
@@ -586,8 +618,22 @@ if (!question.point.trim()) {
                     "http://localhost:9090/api/exam/",
                     formDataToSendWithoutDateTime
                 );
-                fetchData();
-                closeModalA();
+                // Get the users of a specific level
+                const level = formData.level; 
+                const usersResponse = await axios.get(`http://localhost:9090/api/auth/users/${level}`);
+                const users = usersResponse.data;
+    console.log(users);
+                // Get the emails of the users
+                const emails = users.map(user => user.email);
+    console.log(emails)
+                // Call the sendVerificationCode method with the emails and users
+                const verificationCodeResponse = await axios.post(
+                    "http://localhost:9090/api/exam/verificationCode",
+                    { email: emails, username: users.map(user => user.username) }
+                );
+console.log("erorrrr",verificationCodeResponse)
+            fetchData();
+            closeModalA();
             } catch (error) {
                 console.error("Error adding Exam:", error);
             }
@@ -968,10 +1014,10 @@ if (!question.point.trim()) {
 
 
                 <Tbody {...getTableBodyProps()}>
-                    {page.map((row, index) => {
+                    {page.map((row, rowIndex) => {
                         prepareRow(row);
                         return (
-                            <Tr {...row.getRowProps()} key={index}>
+                            <Tr {...row.getRowProps()} key={rowIndex}>
                                 {row.cells.map((cell, index) => {
                                     let data = "";
                                     if (cell.column.Header === "Title") {
@@ -994,7 +1040,23 @@ if (!question.point.trim()) {
                                                 {formattedDate}
                                             </Text>
                                         );
-                                    } else if (cell.column.Header === "Type") {
+                                    } else if (cell.column.Header === "Progress") {
+                                        const progressValue = answersCounts[rowIndex] || 0;
+                                        console.log("valuee",index)
+                                        data = (
+                                          <Flex align='center'>
+                                             
+                <Progress
+                    variant='table'
+                    colorScheme='brandScheme'
+                    h='8px'
+                    w='108px'
+                    value={progressValue*10} 
+                />
+            
+                                          </Flex>
+                                        );
+                                      }else if (cell.column.Header === "Type") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
                                                 {cell.value}

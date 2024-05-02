@@ -140,6 +140,19 @@ const HeaderBar = () => {
             args.items.push(exportItem);
         }
     };
+    const customEditTemplate = (props) => {
+      return (
+        <div>
+          {/* Custom edit template content */}
+          <h3>Edit Event</h3>
+          <form>
+            <label>Title:</label>
+            <input type="text" value={props.Subject} onChange={props.OnChange} name="Subject" />
+            {/* Add other fields and input elements for customization */}
+          </form>
+        </div>
+      );
+    };
     const onExportClick = () => {
         const exportFields = [
             { name: 'Id', text: 'Id' },
@@ -155,7 +168,7 @@ const HeaderBar = () => {
     <div className='col-lg-12 control-section'>
       <div className='control-wrapper'>
       
-        <ScheduleComponent style={{marginLeft:50,marginRight:50,marginBottom:50}} height='650px'    ref={scheduleObj} selectedDate={new Date()}  startHour='09:00' endHour='24:00' eventSettings={{ dataSource: data,allowEditing: false ,allowAdding:false,allowDeleting:false }}   actionBegin={onActionBegin}>
+        <ScheduleComponent style={{marginLeft:50,marginRight:50,marginBottom:50}} height='650px'    ref={scheduleObj} selectedDate={new Date()}  startHour='09:00' endHour='24:00' eventSettings={{ dataSource: data,allowEditing: true ,allowAdding:false,allowDeleting:false  }}   actionBegin={onActionBegin}>
           <Inject services={[Day, Week, Month, Agenda, Resize, DragAndDrop,ExcelExport]}/>
         </ScheduleComponent>
       </div>
