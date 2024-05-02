@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 import { jwtDecode } from 'jwt-decode';
 import Cookies from 'js-cookie';
 import Swal from 'sweetalert2'
-import { createAnOrder } from '../../pages/shop/features/productSlice';
+
 import axios from "axios";
 
 
@@ -22,8 +22,26 @@ const RightPanel = () => {
     const [movieData, setMovieData] = useState([]);
     const [eventTickets, setEventTickets] = useState(0);
     const [userId, setUserId] = useState(null);
+    
   
+    const [user, setUser] = useState(null);
 
+    useEffect(() => {
+        const fetchUserData = async () => {
+          try {
+            const storedToken = Cookies.get('token');
+            const storedRefreshToken = Cookies.get('refreshToken');
+            const decodedToken = jwtDecode(storedToken);
+            const { userId, role } = decodedToken;
+    
+            const response = await axios.get(`http://localhost:9090/api/auth/user/${userId}`);
+            setUser(response.data);
+          } catch (error) {
+            console.error('Error fetching user data:', error);
+          }
+        };
+        fetchUserData();
+      }, []);
     const swalWithBootstrapButtons = Swal.mixin({
         customClass: {
             confirmButton: "btn btn-success",
@@ -39,6 +57,7 @@ const RightPanel = () => {
                 const decodedToken = jwtDecode(storedToken);
                 const userId = decodedToken.userId;
                 setUserId(userId);
+                
             }
         };
 
@@ -206,7 +225,20 @@ const RightPanel = () => {
         document.getElementById('chair').innerHTML = ''; // Ajoutez cette ligne pour vider les sièges existants
 
     };
-
+    const sendMail = async () => {
+        try {
+            const response = await axios.post("http://localhost:9090/tickets/sendMail", {
+                email: user.email,
+                username: user.username
+            });
+            if (response.data) {
+                return response.data;
+            }
+        } catch (error) {
+            console.error('Error sending mail:', error);
+            throw error;
+        }
+    };
   
     const handleConfirmReservation = async () => {
         try {
@@ -243,13 +275,13 @@ const RightPanel = () => {
                         selectedSeats: selectedSeats, // Les sièges sélectionnés
                         date: currentDate // Date actuelle
                     });
-
+                    sendMail()
                     // Si la réservation des billets est réussie, procéder au paiement
                     console.log('Billets ajoutés:', ticketResponse);
                     console.log('Utilisateur:', userId);
 
                     // Effectuer le paiement via une requête POST axios
-                    await axios.post("http://localhost:9090/tickets/payement", { amount: totalPrice })
+                    await axios.post("http://localhost:9090/tickets/payement", { amount: totalPrice*1000 })
                         .then((res) => {
                             const { result } = res.data;
                             window.location.href = result.link;
@@ -290,6 +322,8 @@ const RightPanel = () => {
                         selectedSeats: selectedSeats,
                         date: currentDate
                     });
+                    sendMail()
+                    window.location.href = `/events/${eventDetails._id}/${eventDetails.movieParam}/bookTickets`;
 
                     // Si la réservation des billets est réussie
                     console.log('Billets ajoutés:', ticketResponse);
@@ -316,6 +350,7 @@ const RightPanel = () => {
             });
         }
     };
+  
 
     const addSeats = (arr) => {
         arr.forEach((el) => {

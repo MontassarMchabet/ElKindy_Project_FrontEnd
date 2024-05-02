@@ -477,31 +477,10 @@ export default function ColumnsTable(props) {
                                             onChange={handleChange}
                                             placeholder="A-B-C"
                                             data-tooltip-content="The lines will be the names of the lines in your event room. For example, if you have 3 lines with the names a, b, and c, you will enter them as a-b-c."
-                                            // data-for="seriesTooltip"
-                                            // onFocus={handleSeriesFocus}
-                                            // onBlur={handleSeriesBlur}
+                                            
                                         />
                                         <ReactTooltip id="seriesTooltip" />
-                                        {/* {showHelp && (
-                                            <Text fontSize="sm" color="gray.500">
-                                                Enter hyphen-separated series like "a-b-c"
-                                            </Text>
-                                        )} */}
-                                        {/* <FormLabel>Lines</FormLabel>
-                                        <Input
-                                            type="text"
-                                            name="series"
-                                            value={formData.series}
-                                            onChange={handleChange}
-                                            placeholder="Enter hyphen-separated series"
-                                            onFocus={handleSeriesFocus}
-                                            onBlur={handleSeriesBlur}
-                                        /> */}
-                                        {/* {showHelp && (
-                                            <Text fontSize="sm" color="gray.500">
-                                                The lines will be the names of the lines in your event room. For example, if you have 3 lines with the names a, b, and c, you will enter them as a-b-c.
-                                            </Text>
-                                        )} */}
+                                        
                                     </FormControl>
 
                                     <FormControl>
