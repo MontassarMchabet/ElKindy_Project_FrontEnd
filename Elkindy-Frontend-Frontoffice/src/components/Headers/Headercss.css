@@ -1,0 +1,11 @@
+.logo-img {
+    max-width: 100%; /* Ensure the image doesn't exceed its container's width */
+    height: auto; /* Maintain aspect ratio */
+}
+
+@media (max-width: 600px) { /* Adjust the breakpoint as needed */
+    .logo-img {
+        /* Define smaller size for smaller screens */
+        display: none; /* Adjust this value as needed */
+    }
+}

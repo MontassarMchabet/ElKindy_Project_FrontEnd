@@ -5,7 +5,17 @@ import cn from "classnames";
 import { jwtDecode } from 'jwt-decode';
 import api from '../../services/api';
 import Cookies from 'js-cookie';
+import { IoNotificationsOutline } from "react-icons/io5";
+import { Socket, io } from "socket.io-client";
+import './Headercss.css';
+import axios from "axios";
+import { FcApproval } from "react-icons/fc";
+
 const imageCancel = require('../../img/imageCancel.jpg');
+
+
+
+
 
 const HeaderOne = () => {
     useEffect(() => {
@@ -108,6 +118,7 @@ const HeaderOne = () => {
         window.location.href = "/";
     };
 
+
     const [showConfirmation, setShowConfirmation] = useState(false);
 
     const handleCancelSubscription = () => {
@@ -158,6 +169,71 @@ const HeaderOne = () => {
         border: 'none',
         borderRadius: '5px',
         cursor: 'pointer',
+    }
+    const [notifications, setNotifications] = useState([]);
+    const [open, setOpen] = useState(false);
+    const [socket, setSocket] = useState(null);
+
+
+
+    useEffect(() => {
+        const newSocket = io("http://localhost:8089");
+        setSocket(newSocket);
+    }, []);
+
+
+    const fetchData = async () => {
+        try {
+            const notifsResponse = await axios.get('http://localhost:9090/api/order/notifs');
+            setNotifications(notifsResponse.data);
+            
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+    const unreadNotifications = notifications.filter(notification => !notification.read);
+    
+    useEffect(() => {
+        if (!socket) return;
+        console.log("socket");
+        console.log(socket);
+        fetchData();
+        const handleNotification = (data) => {
+
+            setNotifications(prev => [...prev, fetchData]);
+        };
+        
+        socket.on("getNotification", handleNotification);
+
+    }, [socket]);
+    console.log("notification");
+    console.log(notifications);
+
+    const displayNotification = ({ senderName, orderStatus }) => {
+        return (
+            <>
+                <span className="notification"><FcApproval size={30}/>{`  ${senderName} changed you order status to ${orderStatus}.`}</span>
+                <hr style={{
+                    width: "100%", // Adjust width as needed
+                    height: "1px", // Adjust height as needed
+                    backgroundColor: "black", // Adjust color as needed
+                    border: "none",
+                    borderColor:"black", // Adjust border color"
+                    margin: "5px 0", // Adjust margin as needed
+                }} />
+            </>
+        );
+    };
+
+    const handleRead = () => {
+        
+        const response = axios.put('http://localhost:9090/api/order/notifs', {read:"true"});
+        if (response.data) {
+            return response.data;
+        }
+        setNotifications([]);
+        setOpen(false);
+
     };
 
 
@@ -177,7 +253,7 @@ const HeaderOne = () => {
                                     <nav className="menu-nav">
                                         <div className="logo">
                                             <Link to="/">
-                                                <img src="/img/logo/logokindy.png" alt="Logo"
+                                                <img src="/img/logo/logokindy.png" alt="Logo" className="logo-img"
                                                 />
                                             </Link>
                                         </div>
@@ -219,6 +295,7 @@ const HeaderOne = () => {
 
 
 
+
                                                 {isLoggedIn && (
                                                     <>
                                                         {(user?.role === 'admin' || user?.role === 'prof' || (user?.role === 'client' && user.isSubscribed)) && (
@@ -231,6 +308,7 @@ const HeaderOne = () => {
                                                                 </li>
                                                             </>
                                                         )}
+
                                                     </>
                                                 )}
 
@@ -246,6 +324,7 @@ const HeaderOne = () => {
                                             <ul className="navigation">
                                                 {isLoggedIn ? (
                                                     <>
+
                                                         <li
                                                             className={cn(
                                                                 "menu-item-has-children",
@@ -263,7 +342,7 @@ const HeaderOne = () => {
                                                                     style={{ width: "40px", height: "40px", borderRadius: "50%", marginLeft: "10px", marginBottom: "15px" }}
                                                                 />
                                                             </a>
-                                                            <ul className="sub-menu">
+                                                            <ul className="sub-menu" style={{ marginTop: "-40px" }}>
                                                                 <li className={cn(isActiveClassName("/account"))}>
                                                                     <Link to="/account">Account</Link>
                                                                 </li>
@@ -282,6 +361,59 @@ const HeaderOne = () => {
                                                                 )}
                                                             </ul>
 
+                                                        </li>
+                                                        <li style={{ paddingTop: 42 }}>
+                                                            <IoNotificationsOutline size={30} onClick={() => setOpen(!open)} />
+                                                            {
+                                                                unreadNotifications.length > 0 &&
+                                                                <div style={{
+                                                                    width: "15px",
+                                                                    color: "white",
+                                                                    backgroundColor: "#FF0000",
+                                                                    borderRadius: "50%", /* Corrected: backgroundColor */
+                                                                    marginTop: "35px",
+                                                                    fontSize: "12px", /* Corrected: fontSize */
+                                                                    display: "flex",
+                                                                    justifyContent: "center", /* Corrected: justifyContent */
+                                                                    position: "absolute",
+                                                                    top: "-5px",
+                                                                    right: "-5px"
+                                                                }}>{unreadNotifications.length}</div>}
+                                                            {open && (
+                                                                <div style={{
+                                                                    position: "absolute",
+                                                                    top: "50px",
+                                                                    width: "300px",
+                                                                    right: "0",
+                                                                    borderRadius: "5%",
+                                                                    backgroundColor: "#EEEEEE",
+                                                                    color: "black",
+                                                                    fontWeight: 300,
+                                                                    display: "flex",
+                                                                    flexDirection: "column",
+                                                                    padding: "10px",
+                                                                    marginTop: "55px"
+                                                                }}>
+                                                                    {notifications.length > 0 && notifications.map((n) => displayNotification(n))}
+
+                                                                    <button
+                                                                        className="btn btn-sm"
+                                                                        style={{
+                                                                            width: "50%",
+                                                                            backgroundColor: "orange",
+                                                                            padding: "5px",
+                                                                            marginLeft: "65px",
+                                                                            textAlign: "center",
+                                                                            transition: "background-color 0.3s ease", // Smooth transition for color change
+                                                                        }}
+                                                                        onClick={handleRead}
+                                                                        onMouseOver={(e) => { e.target.style.backgroundColor = "blue"; }} // Change background color on hover
+                                                                        onMouseOut={(e) => { e.target.style.backgroundColor = "orange"; }} // Revert to original color when not hovered
+                                                                    >
+                                                                        Mark as read
+                                                                    </button>
+                                                                </div>
+                                                            )}
                                                         </li>
                                                     </>
                                                 ) : (
@@ -315,6 +447,7 @@ const HeaderOne = () => {
 
                                             </ul>
                                         </div>
+
                                     </nav>
                                 </div>
 
@@ -385,7 +518,7 @@ const HeaderOne = () => {
                                         </div>
                                         <div className="nav-logo">
                                             <Link to="/">
-                                                <img src="/img/logo/logo.png" alt="Logo" />
+                                                <img src="/img/logo/logokindy.png" alt="Logo" />
                                             </Link>
                                         </div>
                                         <div className="menu-outer">
@@ -549,8 +682,8 @@ const HeaderOne = () => {
                     </div>
                     <div className="body-contact-overlay"></div>
                     {/* <!-- header-contact-end --> */}
-                </div>
-            </header>
+                </div >
+            </header >
         </>
     );
 };

@@ -6,12 +6,15 @@ import Container from '../components/Container'
 import { useDispatch, useSelector } from 'react-redux'
 import { getOrders } from '../features/productSlice'
 
+
 function Orders() {
     const dispatch = useDispatch();
     const orderState = useSelector(state => state?.product?.getuserorders?.orders);
     useEffect(() => {
         dispatch(getOrders())
     }, [])
+
+
     return (
         <>
             <Layout header={4} footer={3} className="" mainClassName="">
@@ -48,7 +51,7 @@ function Orders() {
                                             <p>{item?._id}</p>
                                         </div>
                                         <div className="col-3">
-                                            <p>{item?.totalPrice}</p>
+                                            <p>{item?.totalPrice + 7}</p>
                                         </div>
                                         <div className="col-3">
                                             <p>{item?.totalPriceAfterDiscount}</p>

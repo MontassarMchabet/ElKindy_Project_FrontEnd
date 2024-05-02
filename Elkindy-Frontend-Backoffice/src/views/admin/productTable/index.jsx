@@ -15,7 +15,6 @@ export default function Settings() {
         try {
             const productResponse = await axios.get('http://localhost:9090/api/product');
             setProductData(productResponse.data);
-            console.log(productResponse);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
@@ -37,7 +36,6 @@ export default function Settings() {
         setIsDeleteDialogOpen(false);
         try {
             await axios.delete(`http://localhost:9090/api/product/${deletingId}`);
-            console.log("User deleted successfully");
             fetchData();
         } catch (error) {
             console.error("Error deleting user:", error);

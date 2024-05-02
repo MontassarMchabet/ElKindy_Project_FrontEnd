@@ -18,6 +18,7 @@ import {
   MdOutlineMusicNote,
   MdOutlineMusicVideo,
   MdOutlineEvent,
+  MdOutlineShoppingBag,
 
 } from "react-icons/md";
 
@@ -148,6 +149,50 @@ const routes = [
     ),
     component: Events,
     secondary: true,
+  },
+  {
+    name: "Products Table",
+    layout: "/admin",
+    icon: (
+      <Icon
+        as={MdOutlineShoppingCart}
+        width='20px'
+        height='20px'
+        color='inherit'
+      />
+    ),
+    path: "/products",
+    component: productTable,
+
+  },
+  {
+    name: "Orders Table",
+    layout: "/admin",
+    icon: (
+      <Icon
+        as={MdOutlineShoppingBag}
+        width='20px'
+        height='20px'
+        color='inherit'
+      />
+    ),
+    path: "/orders",
+    component: ordersTable,
+
+  },
+  {
+    name: "Data Tables",
+    layout: "/admin",
+    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+    path: "/data-tables",
+    component: DataTables,
+  },
+  {
+    name: "Users Tables",
+    layout: "/admin",
+    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+    path: "/users",
+    component: UserTables,
   },
   {
     name: "Room & Classroom",
