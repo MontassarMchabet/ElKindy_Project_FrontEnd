@@ -3,14 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@syncfusion/ej2-react-schedule": "^25.1.35",
+    "@jitsi/react-sdk": "^1.4.0",
     "@reduxjs/toolkit": "^2.2.1",
+    "@syncfusion/ej2-react-schedule": "^25.1.35",
     "assert": "^2.1.0",
     "axios": "^1.6.7",
-
     "bootstrap": "^5.2.3",
     "bootstrap-icons": "^1.11.3",
-
     "browserify-zlib": "^0.2.0",
     "classnames": "^2.3.2",
     "customize-cra": "^1.0.0",
@@ -41,11 +40,12 @@
     "react-router-dom": "^6.8.1",
     "react-scripts": "^5.0.1",
     "react-scroll-parallax": "^3.3.2",
+    "react-select": "^5.8.0",
     "react-slick": "^0.29.0",
-    "reactjs-popup": "^2.0.6",
     "react-stars": "^2.2.5",
-
+    "reactjs-popup": "^2.0.6",
     "slick-carousel": "^1.8.1",
+    "socket.io-client": "^4.7.5",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
     "sweetalert2": "^11.10.7",

@@ -25,110 +25,118 @@ const HeaderBar = () => {
     const [user, setUser] = useState(null);
     const [data, setData] = useState([]);
     
-    useEffect(() => {
-      const fetchUserData = async () => {
-        try {
-          const storedToken = Cookies.get('token');
-          const storedRefreshToken = Cookies.get('refreshToken');
-          const decodedToken = jwtDecode(storedToken);
-          const { userId, role } = decodedToken;
-  
-          const response = await axios.get(`http://localhost:9090/api/auth/user/${userId}`);
-          setUser(response.data);
-          if(response.data.role==="client"){
-            const response = await axios.get('http://localhost:9090/api/plannings/getall');
-    
-          const formattedData = await Promise.all(response.data.map(async planning => {
-            if (planning.type === "instrument") {
-              //const studentResponse = await axios.get(`http://localhost:9090/api/auth/user/${planning.studentIds}`);
-              const RoomResponse = await axios.get(`http://localhost:9090/api/Room/getById/${planning.roomId}`);
-              return {
-                ...planning,
-                StartTime: moment(planning.date).set({
-                  hour: moment(planning.startDate, 'HH:mm').hour(),
-                  minute: moment(planning.startDate, 'HH:mm').minute(),
-                }).toDate(),
-                EndTime: moment(planning.date).set({
-                  hour: moment(planning.endDate, 'HH:mm').hour(),
-                  minute: moment(planning.endDate, 'HH:mm').minute(),
-                }).toDate(),
-                Subject: "seance instrument",
-                Location: RoomResponse.data.room_number
-              };
-            } else {
-              const studentResponse = await axios.get(`http://localhost:9090/api/classroom/getById/${planning.classroomId}`);
-              const RoomResponse = await axios.get(`http://localhost:9090/api/Room/getById/${planning.roomId}`);
-              return {
-                ...planning,
-                StartTime: moment(planning.date).set({
-                  hour: moment(planning.startDate, 'HH:mm').hour(),
-                  minute: moment(planning.startDate, 'HH:mm').minute(),
-                }).toDate(),
-                EndTime: moment(planning.date).set({
-                  hour: moment(planning.endDate, 'HH:mm').hour(),
-                  minute: moment(planning.endDate, 'HH:mm').minute(),
-                }).toDate(),
-                Subject: studentResponse.data.name,
-                Location: RoomResponse.data.room_number
-              };
-            }
-          }));
-    
-          // Filtrer les éléments null de formattedData
-          const filteredData = formattedData.filter(item => item !== null);
-    
-          setData(filteredData);
+   useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const storedToken = Cookies.get('token');
+        const storedRefreshToken = Cookies.get('refreshToken');
+        const decodedToken = jwtDecode(storedToken);
+        const { userId, role } = decodedToken;
+
+        const response = await axios.get(`http://localhost:9090/api/auth/user/${userId}`);
+        setUser(response.data);
+        console.log("User data:", response.data);
+
+        if (response.data.role === "client") {
+          const response2 = await axios.get(`http://localhost:9090/api/plannings/GetStudentsWithClassroomAndId/${userId}`);
+          if (!Array.isArray(response2.data.existingPlanningForStudents)) {
+            throw new Error("Data is not in the expected format");
           }
-          if(response.data.role==="prof"){
-            const response = await axios.get(`http://localhost:9090/api/plannings/getByTeacherId/${userId}`);
-    
-          const formattedData = await Promise.all(response.data.map(async planning => {
-            if (planning.type === "instrument") {
-              const studentResponse = await axios.get(`http://localhost:9090/api/auth/user/${planning.studentIds}`);
-              const RoomResponse = await axios.get(`http://localhost:9090/api/Room/getById/${planning.roomId}`);
-              return {
-                ...planning,
-                StartTime: moment(planning.date).set({
-                  hour: moment(planning.startDate, 'HH:mm').hour(),
-                  minute: moment(planning.startDate, 'HH:mm').minute(),
-                }).toDate(),
-                EndTime: moment(planning.date).set({
-                  hour: moment(planning.endDate, 'HH:mm').hour(),
-                  minute: moment(planning.endDate, 'HH:mm').minute(),
-                }).toDate(),
-                Subject: `${studentResponse.data.name} ${studentResponse.data.lastname}`,
-                Location: RoomResponse.data.room_number
-              };
-            } else {
-              const ClassroomResponse = await axios.get(`http://localhost:9090/api/classroom/getById/${planning.classroomId}`);
-              const RoomResponse = await axios.get(`http://localhost:9090/api/Room/getById/${planning.roomId}`);
-              return {
-                ...planning,
-                StartTime: moment(planning.date).set({
-                  hour: moment(planning.startDate, 'HH:mm').hour(),
-                  minute: moment(planning.startDate, 'HH:mm').minute(),
-                }).toDate(),
-                EndTime: moment(planning.date).set({
-                  hour: moment(planning.endDate, 'HH:mm').hour(),
-                  minute: moment(planning.endDate, 'HH:mm').minute(),
-                }).toDate(),
-                Subject: ClassroomResponse.data.name,
-                Location: RoomResponse.data.room_number
-              };
-            }
-          }));
-    
-          // Filtrer les éléments null de formattedData
-          const filteredData = formattedData.filter(item => item !== null);
-    
-          setData(filteredData);
-          }
-        } catch (error) {
-          console.error('Error fetching user data:', error);
+          console.log("Plannings data:", response2.data);
+            const formattedData = await Promise.all(
+              response2.data.existingPlanningForStudents.map(async (planning) => {
+                
+                if (planning.type === "instrument") {
+                  const roomResponse = await axios.get(`http://localhost:9090/api/Room/getById/${planning.roomId}`);
+                  return {
+                    ...planning,
+                    StartTime: moment(planning.date).set({
+                      hour: moment(planning.startDate, 'HH:mm').hour(),
+                      minute: moment(planning.startDate, 'HH:mm').minute(),
+                    }).toDate(),
+                    EndTime: moment(planning.date).set({
+                      hour: moment(planning.endDate, 'HH:mm').hour(),
+                      minute: moment(planning.endDate, 'HH:mm').minute(),
+                    }).toDate(),
+                    Subject: "Séance instrument",
+                    Location: roomResponse.data.room_number,
+                  };
+                } else {
+                  const classroomResponse = await axios.get(`http://localhost:9090/api/classroom/getById/${planning.classroomId}`);
+                  const roomResponse = await axios.get(`http://localhost:9090/api/Room/getById/${planning.roomId}`);
+                  return {
+                    ...planning,
+                    StartTime: moment(planning.date).set({
+                      hour: moment(planning.startDate, 'HH:mm').hour(),
+                      minute: moment(planning.startDate, 'HH:mm').minute(),
+                    }).toDate(),
+                    EndTime: moment(planning.date).set({
+                      hour: moment(planning.endDate, 'HH:mm').hour(),
+                      minute: moment(planning.endDate, 'HH:mm').minute(),
+                    }).toDate(),
+                    Subject: classroomResponse.data.name,
+                    Location: roomResponse.data.room_number,
+                  };
+                }
+              })
+            );
+
+            
+            setData(formattedData);
+            console.log("formattedData:", formattedData);
+          
         }
-      };
-      fetchUserData();
-    }, []);
+
+        if (response.data.role === "prof") {
+          const response3 = await axios.get(`http://localhost:9090/api/plannings/getByTeacherId/${userId}`);
+          const formattedData = await Promise.all(
+            response3.data.map(async (planning) => {
+              if (planning.type === "instrument") {
+                const studentResponse = await axios.get(`http://localhost:9090/api/auth/user/${planning.studentIds}`);
+                const roomResponse = await axios.get(`http://localhost:9090/api/Room/getById/${planning.roomId}`);
+                return {
+                  ...planning,
+                  StartTime: moment(planning.date).set({
+                    hour: moment(planning.startDate, 'HH:mm').hour(),
+                    minute: moment(planning.startDate, 'HH:mm').minute(),
+                  }).toDate(),
+                  EndTime: moment(planning.date).set({
+                    hour: moment(planning.endDate, 'HH:mm').hour(),
+                    minute: moment(planning.endDate, 'HH:mm').minute(),
+                  }).toDate(),
+                  Subject: `${studentResponse.data.name} ${studentResponse.data.lastname}`,
+                  Location: roomResponse.data.room_number,
+                };
+              } else {
+                const classroomResponse = await axios.get(`http://localhost:9090/api/classroom/getById/${planning.classroomId}`);
+                const roomResponse = await axios.get(`http://localhost:9090/api/Room/getById/${planning.roomId}`);
+                return {
+                  ...planning,
+                  StartTime: moment(planning.date).set({
+                    hour: moment(planning.startDate, 'HH:mm').hour(),
+                    minute: moment(planning.startDate, 'HH:mm').minute(),
+                  }).toDate(),
+                  EndTime: moment(planning.date).set({
+                    hour: moment(planning.endDate, 'HH:mm').hour(),
+                    minute: moment(planning.endDate, 'HH:mm').minute(),
+                  }).toDate(),
+                  Subject: classroomResponse.data.name,
+                  Location: roomResponse.data.room_number,
+                };
+              }
+            })
+          );
+
+          const filteredData = formattedData.filter(item => item !== null);
+          setData(filteredData);
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
  
 
     const onActionBegin = (args) => {

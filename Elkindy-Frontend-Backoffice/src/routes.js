@@ -165,7 +165,7 @@ const routes = [
     component:Planning ,
   },
   {
-    name: "Sdudent Calendar",
+    name: "Instrument Session",
     layout: "/admin",
     icon: <Icon as={MdOutlineCalendarMonth } width='20px' height='20px' color='inherit' />,
     path: "/schedule",

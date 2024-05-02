@@ -163,12 +163,50 @@ const HeaderOne = () => {
                                                 <li className={cn(isActiveClassName("/events"))}>
                                                     <Link to="/events">Events</Link>
                                                 </li>
+                                                <li className={cn(
+                                                    "menu-item-has-children",
+                                                    [
+                                                        "/planning",
+                                                        "/CreateMeeting",
+                                                        "/JoinMeeting",
 
-                                                <li className={cn(isActiveClassName("/planning"))}>
+                                                    ].includes(pathname) && "active"
+                                                )}
+                                                >
+                                                    <a>Planning</a>
+                                                    <ul className="sub-menu">
+                                                    <li className={cn(isActiveClassName("/planning"))}>
+                                                    <Link to="/planning">Calandar</Link>
+                                                </li>
+                                                        {user?.role === 'prof' && (
+                                                                    <li className={cn(isActiveClassName("/CreateMeeting"))}>
+                                                                    <Link to="/CreateMeeting">Meeting</Link>
+                                                                     </li>
+                                                                    
+                                                                )}
+                                                        {user?.role === 'client' && (
+                                                                   
+                                                                   <li className={cn(isActiveClassName("/JoinMeeting"))}>
+                                                                   <Link to="/JoinMeeting">JoinMeeting</Link>
+                                                                    </li>
+                                                        )}
+                                                    </ul>
+                                                </li>
+                                                {/* <li className={cn(isActiveClassName("/planning"))}>
                                                     <Link to="/planning">Planning</Link>
                                                 </li>
-
-                                               
+                                                {user?.role === 'prof' && (
+                                                                    <li className={cn(isActiveClassName("/CreateMeeting"))}>
+                                                                    <Link to="/CreateMeeting">CreateMeeting</Link>
+                                                                     </li>
+                                                                    
+                                                                )}
+                                                {user?.role === 'client' && (
+                                                                   
+                                                                     <li className={cn(isActiveClassName("/JoinMeeting"))}>
+                                                                     <Link to="/JoinMeeting">JoinMeeting</Link>
+                                                                      </li>
+                                                                )} */}
                                                 {isLoggedIn ? (
                                                             <>
                                                                <li className={cn(isActiveClassName("/exams"))}>

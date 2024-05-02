@@ -2,7 +2,6 @@ import axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
 import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button,  } from "@chakra-ui/react";
 import { ViewIcon, DeleteIcon, EditIcon,Icon } from "@chakra-ui/icons";
-
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, ModalFooter, FormControl, FormLabel, Input, Grid, SimpleGrid,ButtonProps } from "@chakra-ui/react";
 import { AddIcon } from '@chakra-ui/icons'
 import {
@@ -514,9 +513,17 @@ const calculateTotalStudyHours  = async (classroomId,date,startTime, endTime) =>
             console.error("Error registering prof:", error);
         }
     };   
+    const handleRowClick = (planning) => {
+        console.log('Clicked planning:', planning);
+      };
+
+      const handleChange2 = (index, field, value) => {
+        const updatedPlannings = [...plannings];
+        updatedPlannings[index][field] = value;
+        setPlannings(updatedPlannings);
+      }; 
     return (
         <>
-   
         <Card
             direction='column'
             w='70%'
@@ -525,7 +532,7 @@ const calculateTotalStudyHours  = async (classroomId,date,startTime, endTime) =>
              <Stack spacing={4} direction="column" align="center">
 
 <Button colorScheme="blue" onClick={handleButtonPreModal}>
-  Show Plannings
+weekly Planning
 </Button>
 <Modal isOpen={showPreModal} onClose={handleClosePreModal}>
 <ModalOverlay />
@@ -536,7 +543,7 @@ const calculateTotalStudyHours  = async (classroomId,date,startTime, endTime) =>
       <ModalCloseButton />
       <ModalBody>
           <FormControl>
-              <FormLabel>Start of week</FormLabel>
+              <FormLabel>Start Date</FormLabel>
            
                <Input type="date"
                                   name="Startweek"
@@ -546,7 +553,7 @@ const calculateTotalStudyHours  = async (classroomId,date,startTime, endTime) =>
               {errors.date && <Text color="red">{errors.date}</Text>}
           </FormControl>
           <FormControl>
-              <FormLabel>last of week</FormLabel>
+              <FormLabel>End Date</FormLabel>
            
                <Input type="date"
                                   name="Lastweek"
@@ -591,64 +598,130 @@ const calculateTotalStudyHours  = async (classroomId,date,startTime, endTime) =>
 </Modal>
 
 <Modal isOpen={show} onClose={handleClose} size="lg">
-  <ModalOverlay />
-  <ModalContent marginLeft={"150"} maxW={'970px'} maxH={'600'}>
-    <ModalHeader>
-      <Heading as="h2" size="lg">
-        Planning Table
-      </Heading>
-    </ModalHeader>
-    <ModalCloseButton />
-    <ModalBody style={{overflowX:'auto'}}>
-      {isLoading ? (
-        <Stack align="center" justify="center" height="200px">
-          <Spinner size="xl" />
-          <span>Loading...</span>
-        </Stack>
-      ) : (
-        <Table variant="simple" colorScheme="gray">
-          <Thead>
-            <Tr>
-              <Th>Date</Th>
-              <Th>StartTime</Th>
-              <Th>EndTime</Th>
-              <Th>Student</Th>
-              <Th>Classroom</Th>
-              <Th>Room</Th>
-              <Th>Teacher</Th>
-              <Th>Type</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {plannings.map((planning, index) => (
-              <Tr key={index}>
-                <Td>{planning.date}</Td>
-                <Td>{planning.startDate}</Td>
-                <Td>{planning.endDate || planning.solfegeEndTime}</Td>
-                <Td>{planning.studentName }</Td>
-                <Td>{planning.courseName}</Td>
-                <Td>{planning.RoomName}</Td>
-                <Td>{planning.TeacherName}</Td>
-                <Td>{planning.type}</Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      )}
-    </ModalBody>
-    <ModalFooter>
-  {/*   <Button colorScheme="blue" mr={3} onClick={handleButtonClick}>
-            Refresh
-    </Button>    */}
-      <Button colorScheme="red" mr={3} onClick={handleClose}>
-        Close
-      </Button>
-      <Button colorScheme="green"  onClick={handleSaveButtonClick} >
-        Save
-      </Button>
-    </ModalFooter>
-  </ModalContent>
-</Modal>
+      <ModalOverlay />
+      <ModalContent marginLeft={180} maxW="1270px" maxH="600px">
+        <ModalHeader>
+          <Heading as="h2" size="lg">
+            Planning Table
+          </Heading>
+        </ModalHeader>
+        <ModalCloseButton />
+        <ModalBody style={{ overflowX: 'auto' }}>
+          {isLoading ? (
+            <Stack align="center" justify="center" height="200px">
+              <Spinner size="xl" />
+              <span>Loading...</span>
+            </Stack>
+          ) : (
+            <Table variant="simple" colorScheme="gray">
+              <Thead>
+                <Tr>
+                  <Th>Date</Th>
+                  <Th>Start Time</Th>
+                  <Th>End Time</Th>
+                  <Th>Student</Th>
+                  <Th>Classroom</Th>
+                  <Th>Room</Th>
+                  <Th>Teacher</Th>
+                  <Th>Type</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {plannings.map((planning, index) => (
+                  <Tr key={index} onClick={() => handleRowClick(planning)}  style={{
+                    cursor: 'pointer',
+                    transition: 'background-color 0.3s ease',
+                    backgroundColor: 'white',
+                    '&:hover': { backgroundColor: '#f0f0f0' },
+                  }}>
+                    <Td>
+                      <Input
+                        type="date"
+                        
+                        value={planning.date}
+                        onChange={(e) => handleChange2(index, 'date', e.target.value)}
+                      />
+                    </Td>
+                    <Td>
+                      <Input
+                        type="time"
+                        value={planning.startDate}
+                        onChange={(e) => handleChange2(index, 'startDate', e.target.value)}
+                      />
+                    </Td>
+                    <Td>
+                      <Input
+                        type="time"
+                        value={planning.endDate || planning.solfegeEndTime}
+                        onChange={(e) => handleChange2(index, 'endDate', e.target.value)}
+                      />
+                    </Td>
+                    <Td>
+                      <Input
+                        type="text"
+                        style={{width:120}}
+                        value={planning.studentName}
+                        onChange={(e) => handleChange2(index, 'studentName', e.target.value)}
+                      />
+                    </Td>
+                    <Td>
+                      <Input
+                        type="text"
+                        value={planning.courseName}
+                        onChange={(e) => handleChange2(index, 'courseName', e.target.value)}
+                      />
+                    </Td>
+                    <Td>
+                    <Select
+                    value={planning.RoomName}
+                    style={{ width: 90 }}
+                    onChange={(e) => handleChange2(index, 'RoomName', e.target.value)}
+                    >
+                    {roomOptions.map((room) => (
+                        <option key={room.id} value={room.room_number}>
+                        {room.room_number}
+                        </option>
+                    ))}
+                    </Select>
+                   </Td>
+                    <Td>
+                      <Select
+                        
+                        style={{width:120}}
+                        value={planning.teacherId}
+                        onChange={(e) => handleChange2(index, 'teacherId', e.target.value)}
+                      >
+                       {teacherOptions.map(teacher => (
+                      <option key={teacher.id} value={teacher._id}>{teacher.name}</option>
+                        ))}
+                     </Select>   
+                    </Td>
+                    <Td>
+                      <Select
+                        value={planning.type}
+                        style={{width:100}}
+                        onChange={(e) => handleChange2(index, 'type', e.target.value)}
+                      >
+                        <option value="instrument">Instrument</option>
+                        <option value="solfège">solfège</option>
+                      </Select>
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          )}
+        </ModalBody>
+        <ModalFooter>
+          <Button colorScheme="red" mr={3} onClick={handleClose}>
+            Close
+          </Button>
+          <Button colorScheme="green" onClick={handleSaveButtonClick}>
+            Save
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
 
 </Stack>   
             <Flex px='25px' justify='space-between' mb='20px' align='center'>
@@ -1331,8 +1404,10 @@ const calculateTotalStudyHours  = async (classroomId,date,startTime, endTime) =>
           <Next bg="gray.300">Next</Next>
         </PageContainer>
       </Paginator>
+
     
     </Card>
+  
     </>
     );
 

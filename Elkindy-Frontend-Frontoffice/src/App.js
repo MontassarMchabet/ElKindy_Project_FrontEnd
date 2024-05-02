@@ -33,14 +33,15 @@ import AccountComponent from "./pages/Account";
 import ExamsComponent from "./pages/Exams";
 
 import PlanningComponent from "./pages/Planning";
- 
-
-
+import TeacherCreateMeetings from"./pages/TeacherCreateMeeting/index.jsx";
+import JoinMeetingss from"./pages/TeacherCreateMeeting/JoinMeeting.jsx";
+import MeetingPage from './components/TeacherCreateMeeting/JitsiMeet.jsx';
 import Cart from "./pages/shop/pages/Cart.jsx";
 import Checkout from "./pages/shop/pages/Checkout.jsx";
 import Success from "./pages/shop/pages/Success.jsx";
 import Fail from "./pages/shop/pages/Fail.jsx";
 import Orders from "./pages/shop/pages/Orders.jsx";
+
 
 
 import Piano from "./pages/Virtualinstrument/Piano";
@@ -131,6 +132,9 @@ function App() {
         <Route path="/subscribe" element={<SubscribePage />} />
         <Route path="/piano" element={<Piano />} />
         <Route path="/drums" element={<Drums />} />
+        <Route path="/CreateMeeting" element={<TeacherCreateMeetings />} />
+        <Route path="/JoinMeeting" element={<JoinMeetingss />} />
+        <Route path="/meeting/:roomName" element={<MeetingPage />} />
 
 
       </Routes>
