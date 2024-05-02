@@ -262,8 +262,8 @@ export default function Banner(props) {
       phoneNumber: user.phoneNumber,
       cinNumber: user.cinNumber,
       profilePicture: user.profilePicture,
-      password: "", // You may choose to exclude the password from here
-      confirmPassword: "", // You may choose to exclude the confirmPassword from here
+      password: "",
+      confirmPassword: "",
     });
     setOriginalPhoneNumber(user.phoneNumber);
     setOriginalCIN(user.cinNumber);
