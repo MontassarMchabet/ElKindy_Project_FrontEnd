@@ -12,6 +12,16 @@ class LineChart extends React.Component {
   }
 
   componentDidMount() {
+    this.updateChartData();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.chartData !== this.props.chartData || prevProps.chartOptions !== this.props.chartOptions) {
+      this.updateChartData();
+    }
+  }
+
+  updateChartData() {
     this.setState({
       chartData: this.props.chartData,
       chartOptions: this.props.chartOptions,

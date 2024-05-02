@@ -262,8 +262,8 @@ export default function Banner(props) {
       phoneNumber: user.phoneNumber,
       cinNumber: user.cinNumber,
       profilePicture: user.profilePicture,
-      password: "", // You may choose to exclude the password from here
-      confirmPassword: "", // You may choose to exclude the confirmPassword from here
+      password: "",
+      confirmPassword: "",
     });
     setOriginalPhoneNumber(user.phoneNumber);
     setOriginalCIN(user.cinNumber);
@@ -343,40 +343,6 @@ export default function Banner(props) {
                 <FormControl id="username" mt={4}>
                   <FormLabel>Username</FormLabel>
                   <Input type="text" value={editedUser.username} onChange={(e) => { setEditedUser({ ...editedUser, username: e.target.value }); validateUsername(e.target.value); }} />
-                </FormControl>
-              </Grid>
-              <Grid templateColumns="1fr 1fr" gap={4}>
-                <FormControl id="password" mt={4}>
-                  <FormLabel>Password</FormLabel>
-                  <InputGroup size='md'>
-                    <Input type={show ? "text" : "password"} onChange={(e) => { setEditedUser({ ...editedUser, password: e.target.value }); validatePassword(e.target.value); }} />
-                    <InputRightElement display='flex' alignItems='center' mt='1px'>
-                      <Icon
-                        color={textColorSecondary}
-                        _hover={{ cursor: "pointer" }}
-                        as={show ? RiEyeCloseLine : MdOutlineRemoveRedEye}
-                        onClick={handleClick}
-                      />
-                    </InputRightElement>
-                  </InputGroup>
-                </FormControl>
-
-                <FormControl mt={4}>
-                  <FormLabel>Password Confirmation</FormLabel>
-                  <InputGroup size='md'>
-                    <Input
-                      type={show ? "text" : "password"}
-                      onChange={(e) => { setEditedUser({ ...editedUser, confirmPassword: e.target.value }); validateConfirmPassword(e.target.value); }}
-                    />
-                    <InputRightElement display='flex' alignItems='center' mt='1px'>
-                      <Icon
-                        color={textColorSecondary}
-                        _hover={{ cursor: "pointer" }}
-                        as={show ? RiEyeCloseLine : MdOutlineRemoveRedEye}
-                        onClick={handleClick}
-                      />
-                    </InputRightElement>
-                  </InputGroup>
                 </FormControl>
               </Grid>
 
