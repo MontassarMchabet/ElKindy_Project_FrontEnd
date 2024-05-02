@@ -106,7 +106,7 @@ const Checkout = () => {
 
     const checkOutHandler = async () => {
         await axios
-            .post("http://localhost:9090/api/order/payement", { amount: totalAmount+7 })
+            .post("http://localhost:9090/api/order/payement", { amount: (totalAmount+7)*1000 })
             .then((res) => {
                 const { result } = res.data
                 window.location.href = result.link;
