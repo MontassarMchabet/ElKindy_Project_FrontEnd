@@ -2,7 +2,6 @@ import axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
 import { AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay, Button,  } from "@chakra-ui/react";
 import { ViewIcon, DeleteIcon, EditIcon,Icon } from "@chakra-ui/icons";
-
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, ModalFooter, FormControl, FormLabel, Input, Grid, SimpleGrid,ButtonProps } from "@chakra-ui/react";
 import { AddIcon } from '@chakra-ui/icons'
 import {
@@ -14,7 +13,10 @@ import {
     Th,
     Thead,
     Tr,
-    useColorModeValue,Select ,Checkbox
+    useColorModeValue,Select ,Checkbox, Box,
+    Stack,
+    Heading,
+    Spinner
 } from "@chakra-ui/react";
 import {
     Paginator,
@@ -44,7 +46,109 @@ export default function ColumnsTable(props) {
         handlePageClick,currentPage} = props;
     const textColorPrimary = useColorModeValue("secondaryGray.900", "white");
     const [editedRoom, seteditedRoom] = useState({}); 
- 
+    const [show, setShow] = useState(false); // Contrôle l'état du modal
+    const [plannings, setPlannings] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [showPreModal, setShowPreModal] = useState(false);
+
+   /*  const handleClose = () => setShow(false); // Ferme le modal */
+    const handleClose = () => {
+        setShow(false);
+        setPlannings([]); // Réinitialiser la liste des plannings lors de la fermeture
+    };
+    const handleClosePreModal = () => {
+        setShowPreModal(false);
+        setAutoPlanningform({
+       
+            Startweek: "",
+            Lastweek: "",
+            startDate: "",
+            endDate:"",
+        });
+        
+    };
+    const handleShow = () => setShow(true); // Ouvre le modal
+
+    const fetchPlannings = async (e) => {
+        console.log(e.Lastweek)
+        setIsLoading(true);
+        try {
+            const response = await axios.post(`http://localhost:9090/api/plannings/autoplanning/${e.Startweek}/${e.Lastweek}/${e.startDate}/${e.endDate}`);
+            console.log(response.data.createdPlannings)
+            const updatedPlannings = await Promise.all(response.data.createdPlannings.map(async (planning) => {
+                // Récupérez le nom du cours pour ce planning
+                //const courseResponse = await axios.get(`http://localhost:9090/api/classroom/getById/${planning.classroomId}`);
+                let ClassroomName = "";
+                if (planning.classroomId === undefined) {
+                    ClassroomName = "--";
+                } else {
+                    const studentResponse = await axios.get(`http://localhost:9090/api/classroom/getById/${planning.classroomId}`);
+                    ClassroomName = studentResponse.data.name;
+                }
+                // Ajoutez le nom du cours au planning
+                const RoomResponse = await axios.get(`http://localhost:9090/api/Room/getById/${planning.roomId}`);
+                const teacherResponse = await axios.get(`http://localhost:9090/api/auth/user/${planning.teacherId}`);
+                let studentName = "";
+                if (planning.studentIds === undefined) {
+                    studentName = "--";
+                } else {
+                    const studentResponse = await axios.get(`http://localhost:9090/api/auth/user/${planning.studentIds}`);
+                    studentName = studentResponse.data.name;
+                }
+                return {
+                    ...planning,
+                     courseName: ClassroomName, 
+                    RoomName: RoomResponse.data.room_number,
+                    TeacherName: teacherResponse.data.name,
+                    studentName: studentName,
+                };
+            }));
+            setPlannings(updatedPlannings); // Stocke les données reçues
+        } catch (error) {
+            console.error('Error fetching plannings:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    const savePlanningsToDatabase = async (plannings) => {
+        try {
+            console.log(plannings);
+            const response = await axios.post('http://localhost:9090/api/plannings/SaveMoreplannnings', { plannings });
+    
+            if (response.status === 200) {
+                console.log("Plannings saved successfully");
+                // Ajoutez une logique supplémentaire si nécessaire (comme un message de confirmation)
+            } else {
+                console.error("Failed to save plannings");
+                // Gérez l'erreur, par exemple en affichant un message d'erreur
+            }
+        } catch (error) {
+            console.error("Error saving plannings:", error);
+            // Gérez les erreurs ici
+        }
+    };
+    const handleSaveButtonClick = async () => {
+        await savePlanningsToDatabase(plannings); // Appeler la fonction de sauvegarde avec la liste des plannings
+        handleClose(); // Fermer le modal après avoir enregistré
+
+    };    
+    const handleButtonClick = async (e) => {
+        e.preventDefault();
+        fetchPlannings(AutoPlanningform); // Appelle la fonction de fetch
+        handleShow(); // Ouvre le modal
+        handleClosePreModal();
+        setAutoPlanningform({
+       
+            Startweek: "",
+            Lastweek: "",
+            startDate: "",
+            endDate:"",
+        });
+    };
+    const handleButtonPreModal = () => {
+        setShowPreModal(true)// Ouvre le modal
+    };
+
     const handleSaveEdit = async () => {
         const isCorrectDuration = await checkDurationOfCourse(editedRoom.startDate, editedRoom.endDate,editedRoom.type);
         if (!isCorrectDuration) {
@@ -287,6 +391,16 @@ const calculateTotalStudyHours  = async (classroomId,date,startTime, endTime) =>
 
        
     });
+    const [AutoPlanningform, setAutoPlanningform] = useState({
+       
+        Startweek: "",
+        Lastweek: "",
+        startDate: "",
+        endDate:"",
+    });
+    const handleChangeAutoplanning = (e) => {
+        setAutoPlanningform({ ...AutoPlanningform, [e.target.name]: e.target.value });
+    };
     const [errors, setErrors] = useState({});
     const handleChange = (e) => {
         const { name, value,checked } = e.target;
@@ -398,13 +512,218 @@ const calculateTotalStudyHours  = async (classroomId,date,startTime, endTime) =>
         } catch (error) {
             console.error("Error registering prof:", error);
         }
-    };
+    };   
+    const handleRowClick = (planning) => {
+        console.log('Clicked planning:', planning);
+      };
+
+      const handleChange2 = (index, field, value) => {
+        const updatedPlannings = [...plannings];
+        updatedPlannings[index][field] = value;
+        setPlannings(updatedPlannings);
+      }; 
     return (
+        <>
         <Card
             direction='column'
             w='70%'
             px='0px'
             overflowX={{ sm: "scroll", lg: "hidden" }}>
+             <Stack spacing={4} direction="column" align="center">
+
+<Button colorScheme="blue" onClick={handleButtonPreModal}>
+weekly Planning
+</Button>
+<Modal isOpen={showPreModal} onClose={handleClosePreModal}>
+<ModalOverlay />
+
+<ModalContent>
+  <form  onSubmit={handleButtonClick}  noValidate>
+      <ModalHeader>Create weekly Planning</ModalHeader>
+      <ModalCloseButton />
+      <ModalBody>
+          <FormControl>
+              <FormLabel>Start Date</FormLabel>
+           
+               <Input type="date"
+                                  name="Startweek"
+                                  value={AutoPlanningform.Startweek}
+                                  onChange={handleChangeAutoplanning}
+                              />
+              {errors.date && <Text color="red">{errors.date}</Text>}
+          </FormControl>
+          <FormControl>
+              <FormLabel>End Date</FormLabel>
+           
+               <Input type="date"
+                                  name="Lastweek"
+                                  value={AutoPlanningform.Lastweek}
+                                  onChange={handleChangeAutoplanning}
+                              />
+              {/* {errors.date && <Text color="red">{errors.date}</Text>} */}
+          </FormControl>
+          <Grid templateColumns="1fr 1fr" gap={4}>
+          <FormControl>
+              <FormLabel>StartTime</FormLabel>
+              <Input
+                  type="time"
+                  name="startDate"
+                  value={AutoPlanningform.startDate}
+                  onChange={handleChangeAutoplanning}
+              />
+              {/* {errors.startDate && <Text color="red">{errors.startDate}</Text>} */}
+          </FormControl>
+          <FormControl>
+              <FormLabel>EndTime</FormLabel>
+              <Input
+                  type="time"
+                  name="endDate"
+                  value={AutoPlanningform.endDate}
+                  onChange={handleChangeAutoplanning}
+              />
+              {/* {errors.endDate && <Text color="red">{errors.endDate}</Text>} */}
+          </FormControl>
+          </Grid>
+      </ModalBody>
+      <ModalFooter>
+          <Button colorScheme="blue" mr={3} onClick={handleClosePreModal}>
+              Close
+          </Button>
+          <Button type="submit" colorScheme="green">
+              Start
+          </Button>
+      </ModalFooter>
+  </form>
+</ModalContent>
+</Modal>
+
+<Modal isOpen={show} onClose={handleClose} size="lg">
+      <ModalOverlay />
+      <ModalContent marginLeft={180} maxW="1270px" maxH="600px">
+        <ModalHeader>
+          <Heading as="h2" size="lg">
+            Planning Table
+          </Heading>
+        </ModalHeader>
+        <ModalCloseButton />
+        <ModalBody style={{ overflowX: 'auto' }}>
+          {isLoading ? (
+            <Stack align="center" justify="center" height="200px">
+              <Spinner size="xl" />
+              <span>Loading...</span>
+            </Stack>
+          ) : (
+            <Table variant="simple" colorScheme="gray">
+              <Thead>
+                <Tr>
+                  <Th>Date</Th>
+                  <Th>Start Time</Th>
+                  <Th>End Time</Th>
+                  <Th>Student</Th>
+                  <Th>Classroom</Th>
+                  <Th>Room</Th>
+                  <Th>Teacher</Th>
+                  <Th>Type</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {plannings.map((planning, index) => (
+                  <Tr key={index} onClick={() => handleRowClick(planning)}  style={{
+                    cursor: 'pointer',
+                    transition: 'background-color 0.3s ease',
+                    backgroundColor: 'white',
+                    '&:hover': { backgroundColor: '#f0f0f0' },
+                  }}>
+                    <Td>
+                      <Input
+                        type="date"
+                        
+                        value={planning.date}
+                        onChange={(e) => handleChange2(index, 'date', e.target.value)}
+                      />
+                    </Td>
+                    <Td>
+                      <Input
+                        type="time"
+                        value={planning.startDate}
+                        onChange={(e) => handleChange2(index, 'startDate', e.target.value)}
+                      />
+                    </Td>
+                    <Td>
+                      <Input
+                        type="time"
+                        value={planning.endDate || planning.solfegeEndTime}
+                        onChange={(e) => handleChange2(index, 'endDate', e.target.value)}
+                      />
+                    </Td>
+                    <Td>
+                      <Input
+                        type="text"
+                        style={{width:120}}
+                        value={planning.studentName}
+                        onChange={(e) => handleChange2(index, 'studentName', e.target.value)}
+                      />
+                    </Td>
+                    <Td>
+                      <Input
+                        type="text"
+                        value={planning.courseName}
+                        onChange={(e) => handleChange2(index, 'courseName', e.target.value)}
+                      />
+                    </Td>
+                    <Td>
+                    <Select
+                    value={planning.RoomName}
+                    style={{ width: 90 }}
+                    onChange={(e) => handleChange2(index, 'RoomName', e.target.value)}
+                    >
+                    {roomOptions.map((room) => (
+                        <option key={room.id} value={room.room_number}>
+                        {room.room_number}
+                        </option>
+                    ))}
+                    </Select>
+                   </Td>
+                    <Td>
+                      <Select
+                        
+                        style={{width:120}}
+                        value={planning.teacherId}
+                        onChange={(e) => handleChange2(index, 'teacherId', e.target.value)}
+                      >
+                       {teacherOptions.map(teacher => (
+                      <option key={teacher.id} value={teacher._id}>{teacher.name}</option>
+                        ))}
+                     </Select>   
+                    </Td>
+                    <Td>
+                      <Select
+                        value={planning.type}
+                        style={{width:100}}
+                        onChange={(e) => handleChange2(index, 'type', e.target.value)}
+                      >
+                        <option value="instrument">Instrument</option>
+                        <option value="solfège">solfège</option>
+                      </Select>
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          )}
+        </ModalBody>
+        <ModalFooter>
+          <Button colorScheme="red" mr={3} onClick={handleClose}>
+            Close
+          </Button>
+          <Button colorScheme="green" onClick={handleSaveButtonClick}>
+            Save
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+
+</Stack>   
             <Flex px='25px' justify='space-between' mb='20px' align='center'>
                 <Text
                     color={textColor}
@@ -413,6 +732,7 @@ const calculateTotalStudyHours  = async (classroomId,date,startTime, endTime) =>
                     lineHeight='100%'>
                     Planning Table
                 </Text>
+               
                 <Menu isOpen={isOpen1} onClose={onClose1}>
                     <MenuButton
                         align='center'
@@ -1084,7 +1404,12 @@ const calculateTotalStudyHours  = async (classroomId,date,startTime, endTime) =>
           <Next bg="gray.300">Next</Next>
         </PageContainer>
       </Paginator>
+
     
     </Card>
+  
+    </>
     );
+
+
 }

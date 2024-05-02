@@ -32,6 +32,11 @@ import PlansPage from "./pages/Exams/planpages.jsx";
 import AccountComponent from "./pages/Account";
 import ExamsComponent from "./pages/Exams";
 import PlanningComponent from "./pages/Planning";
+
+import TeacherCreateMeetings from"./pages/TeacherCreateMeeting/index.jsx";
+import JoinMeetingss from"./pages/TeacherCreateMeeting/JoinMeeting.jsx";
+import MeetingPage from './components/TeacherCreateMeeting/JitsiMeet.jsx';
+
 import Cart from "./pages/shop/pages/Cart.jsx";
 import Checkout from "./pages/shop/pages/Checkout.jsx";
 import Success from "./pages/shop/pages/Success.jsx";
@@ -117,7 +122,13 @@ function App() {
         <Route path="/fail" element={<Fail />} />
         <Route path="/piano" element={<Piano />} />
         <Route path="/drums" element={<Drums />} />
+
+        <Route path="/CreateMeeting" element={<TeacherCreateMeetings />} />
+        <Route path="/JoinMeeting" element={<JoinMeetingss />} />
+        <Route path="/meeting/:roomName" element={<MeetingPage />} />
+
         <Route path="/fillInfos" element={<FillInformations />} />
+
 
         <Route
           path="/subscribe"

@@ -1,0 +1,28 @@
+.floor-plan {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  
+  .room {
+    padding: 20px;
+    text-align: center;
+    border: 2px solid black;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .room.available {
+    background-color: green;
+    color: white;
+  }
+  
+  .room.occupied {
+    background-color: red;
+    color: white;
+  }
+  
+  .room:hover {
+    opacity: 0.8;
+  }
+  
