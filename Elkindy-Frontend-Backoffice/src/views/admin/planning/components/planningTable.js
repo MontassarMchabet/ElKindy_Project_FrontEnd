@@ -117,19 +117,19 @@ export default function ColumnsTable(props) {
     
             if (response.status === 200) {
                 console.log("Plannings saved successfully");
-                // Ajoutez une logique supplémentaire si nécessaire (comme un message de confirmation)
+                
             } else {
                 console.error("Failed to save plannings");
-                // Gérez l'erreur, par exemple en affichant un message d'erreur
+                
             }
         } catch (error) {
             console.error("Error saving plannings:", error);
-            // Gérez les erreurs ici
+            
         }
     };
     const handleSaveButtonClick = async () => {
-        await savePlanningsToDatabase(plannings); // Appeler la fonction de sauvegarde avec la liste des plannings
-        handleClose(); // Fermer le modal après avoir enregistré
+        await savePlanningsToDatabase(plannings); 
+        handleClose(); 
 
     };    
     const handleButtonClick = async (e) => {
@@ -661,7 +661,7 @@ weekly Planning
                         type="text"
                         style={{width:120}}
                         value={planning.studentName}
-                        onChange={(e) => handleChange2(index, 'studentName', e.target.value)}
+                        /* onChange={(e) => handleChange2(index, 'studentName', e.target.value)} */
                       />
                     </Td>
                     <Td>
