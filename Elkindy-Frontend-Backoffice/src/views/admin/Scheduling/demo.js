@@ -16,6 +16,8 @@ import { Browser, extend } from '@syncfusion/ej2-base';
 import { tz } from 'moment-timezone';
 import moment from 'moment';
 import axios from 'axios';
+import { border } from '@chakra-ui/system';
+import "./CustomSchedule.css";
 
 
 if (Browser.isIE) {
@@ -78,17 +80,25 @@ const TimeZone = () => {
       const exportValues = { fieldsInfo: exportFields };
       scheduleObj.current.exportToExcel(exportValues);
   };
-    return (<div className='schedule-control-section'>
-      <div className='col-lg-12 control-section'>
-        <div className='control-wrapper'>
-          <table id='property' title='Properties' className='property-panel-table' style={{ width: '100%', marginBottom: '18px' }}>
-
-          </table>
-          <ScheduleComponent style={{marginTop:120}} width='100%' height='650px' ref={scheduleObj} selectedDate={new Date()} startHour='09:00'  eventSettings={{ dataSource: data,allowEditing: false ,allowAdding:false,allowDeleting:false }}   actionBegin={onActionBegin}>
-            <Inject services={[Day, Week, Month, Agenda, Resize, DragAndDrop,ExcelExport]}/>
+  return (
+    <div className="schedule-control-section custom-schedule">
+      <div className="col-lg-12 control-section">
+        <div className="control-wrapper">
+          <ScheduleComponent
+            width="100%"
+            height="650px"
+            ref={scheduleObj}
+            style={{marginTop:120}} 
+            startHour='09:00'
+            selectedDate={new Date()}
+            eventSettings={{ dataSource: data, allowEditing: false, allowAdding: false, allowDeleting: false }}
+            actionBegin={onActionBegin}
+          >
+            <Inject services={[Day, Week, Month, Agenda, Resize, DragAndDrop, ExcelExport]} />
           </ScheduleComponent>
         </div>
       </div>
-    </div>);
+    </div>
+  );
 };
 export default TimeZone;

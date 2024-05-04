@@ -46,7 +46,8 @@ export default function Settings() {
     }, []);
 
     return (
-        <Box width="3150px" pt={{ base: "130px", md: "80px", xl: "80px" }}>
+        
+        <Box width="2350px" style={{marginTop:"80px"}}>
             <SimpleGrid
                 mb='20px'
                 columns={{ sm: 1, md: 2 }}

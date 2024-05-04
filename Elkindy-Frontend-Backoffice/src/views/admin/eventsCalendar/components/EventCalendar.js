@@ -94,7 +94,7 @@ const handleEventClick = (event) => {
                     events={events}
                     endAccessor={"end"}
                     style={{
-                      height: "1000px",
+                      height: "600px",
                     }}
                     eventPropGetter={(event) => {
                       return {

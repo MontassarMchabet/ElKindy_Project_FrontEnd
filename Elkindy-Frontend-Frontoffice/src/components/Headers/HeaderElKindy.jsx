@@ -292,6 +292,7 @@ const HeaderOne = () => {
                                                 <li className={cn(isActiveClassName("/events"))}>
                                                     <Link to="/events">Events</Link>
                                                 </li>
+                                                
                                                 <li className={cn(
                                                     "menu-item-has-children",
                                                     [
@@ -308,13 +309,13 @@ const HeaderOne = () => {
                                                     <li className={cn(isActiveClassName("/planning"))}>
                                                     <Link to="/planning">Calandar</Link>
                                                 </li>
-                                                        {user?.role === 'prof' && (
+                                                        {user?.role === 'prof' &&  (
                                                                     <li className={cn(isActiveClassName("/CreateMeeting"))}>
                                                                     <Link to="/CreateMeeting">Meeting</Link>
                                                                      </li>
                                                                     
                                                                 )}
-                                                        {user?.role === 'client' && (
+                                                        {user?.role === 'client' &&  (
                                                                    
                                                                    <li className={cn(isActiveClassName("/JoinMeeting"))}>
                                                                    <Link to="/JoinMeeting">JoinMeeting</Link>
@@ -322,21 +323,7 @@ const HeaderOne = () => {
                                                         )}
                                                     </ul>
                                                 </li>
-                                                {/* <li className={cn(isActiveClassName("/planning"))}>
-                                                    <Link to="/planning">Planning</Link>
-                                                </li>
-                                                {user?.role === 'prof' && (
-                                                                    <li className={cn(isActiveClassName("/CreateMeeting"))}>
-                                                                    <Link to="/CreateMeeting">CreateMeeting</Link>
-                                                                     </li>
-                                                                    
-                                                                )}
-                                                {user?.role === 'client' && (
-                                                                   
-                                                                     <li className={cn(isActiveClassName("/JoinMeeting"))}>
-                                                                     <Link to="/JoinMeeting">JoinMeeting</Link>
-                                                                      </li>
-                                                                )} */}
+                                         
                                                
 
 
@@ -344,9 +331,7 @@ const HeaderOne = () => {
                                                     <>
                                                         {(user?.role === 'admin' || user?.role === 'prof' || (user?.role === 'client' && user.isSubscribed)) && (
                                                             <>
-                                                                <li className={cn(isActiveClassName("/planning"))}>
-                                                                    <Link to="/planning">Planning</Link>
-                                                                </li>
+                                                               
                                                                 <li className={cn(isActiveClassName("/exams"))}>
                                                                     <Link to="/exams">Exams</Link>
                                                                 </li>
@@ -526,9 +511,7 @@ const HeaderOne = () => {
                                                 zIndex: 9999,
                                             }}
                                         >
-
-
-                                            <div style={{ marginLeft: "20px", marginRight: "20px", position:"absolute", marginTop:"-150px" }}>
+                                        <div style={{ marginLeft: "20px", marginRight: "20px", position:"absolute", marginTop:"-150px" }}>
                                                 <img src={imageCancel}
                                                     style={{
                                                         width: "200px",

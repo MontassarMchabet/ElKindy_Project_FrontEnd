@@ -160,7 +160,7 @@ const TeacherMeetingPage = () => {
           </Row>
         </Form.Group>
 
-        <Form.Group className="mb-3">
+        <Form.Group className="mb-3" style={{zIndex:99}}>
           <Form.Label style={{ marginBottom: '5px' }}>Participants</Form.Label>
           <Select
             isMulti
@@ -169,7 +169,7 @@ const TeacherMeetingPage = () => {
           />
         </Form.Group>
 
-        <Button type="submit" variant="primary" className="btn-block btn-lg">
+        <Button type="submit" variant="primary" style={{zIndex:0}} >
           Create Meeting
         </Button>
       </Form>
@@ -188,7 +188,7 @@ const TeacherMeetingPage = () => {
               ) : error ? (
                 <Alert variant="danger">{error}</Alert>
               ) : (
-                <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
                   <Table striped bordered hover>
                     <thead>
                       <tr>
