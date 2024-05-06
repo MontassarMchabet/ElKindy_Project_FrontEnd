@@ -23,13 +23,11 @@ const EventDetails = () => {
 
     fetchEventDetails();
   }, [eventId]);
-  console.log("evenementttttttt", eventId)
   // Fonction pour mettre à jour les commentaires après l'édition ou la suppression et l'ajout
   const updateComments = async () => {
     try {
       const updatedCommentsData = await getEventComments(eventId);
       setComments(updatedCommentsData);
-      console.log("chbiik ma takhdemch", updatedCommentsData)
     } catch (error) {
       console.error("Erreur lors de la mise à jour des commentaires :", error);
     }
@@ -103,7 +101,7 @@ const EventDetails = () => {
                     <h2 className="title">{eventDetails.name}</h2>
                     <p>{eventDetails.description}</p>
                   </div>
-                  
+
                 </div>
               )}
               <EventComments
@@ -122,13 +120,6 @@ const EventDetails = () => {
                   allowFullScreen
                   loading="lazy" />
               </div>
-              {/* <div className="col-xl-10" id="contact-map" style={{ marginTop: 10 }}>
-                <iframe
-                  src={`https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d${eventDetails.mapZoomLevel}!2d${eventDetails.mapLongitude}!3d${eventDetails.mapLatitude}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s${eventDetails.mapPlaceId}!2zMjTCsDI1JzM3LjgiTiA3NsKwNDcnMTAuMCJF!5e0!3m2!1sen!2stn!4v1645745950299!5m2!1sen!2stn`}
-                  allowFullScreen
-                  loading="lazy"
-                />
-              </div> */}
             </div>
           </div>
         </div>

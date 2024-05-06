@@ -23,7 +23,7 @@ const AnswerItemCom = ({ item, className, onEvaluate }) => {
                 const response = await api.get(`http://localhost:9090/api/auth/user/${userId}`);
                 
                 setUser(response.data);
-                console.log(user._id)
+               
             } catch (error) {
                 console.error('Error fetching user data:', error);
                 // If user data cannot be fetched, handle the error accordingly
@@ -45,17 +45,13 @@ const AnswerItemCom = ({ item, className, onEvaluate }) => {
             const score = evaluation; 
     
             
-            console.log("Answer ID:", answerId);
-            console.log("Teacher ID:", teacherId);
-            console.log("Content:", content);
-            console.log("Score:", score);
+    
     
             const response = await axios.post(
                 'http://localhost:9090/api/note/',
                 { answerId, teacherId, content, score }
             );
     
-            console.log("Response:", response.data);
             window.location.reload();
         } catch (error) {
             console.error('Error assigning score:', error);

@@ -136,31 +136,26 @@ const ExamDet = () => {
       const mag1 = magnitude(vector1);
       const mag2 = magnitude(vector2);
       const similarity = dotProd / (mag1 * mag2);
-  console.log(similarity*100)
+  
       return similarity;
   }
 
 
     const handleSubmitAnswer = async () => {
       try {
-          console.log("examDetails:", examDetails);
-  
+          
           const isValid = !!answerFile;
           let maxSimilarity = 0; 
           if (isValid && examDetails && user) {
               const examId = examDetails._id;
               const clientId = user._id;
-              console.log(examId);
-              console.log(clientId);
+              
               
               const pdfAnswersResponse = await axios.get(`http://localhost:9090/api/answer/answers/${examId}`);
         const answerPdfUrls = pdfAnswersResponse.data.map(answer => answer.answerPdf);
-        console.log("answers pdf ", answerPdfUrls);
-
+        
               const text = await pdfToText(answerFile);
-              
-              console.log(text);
-              
+            
               let isCheatingDetected = false;
               for (let i = 0; i < answerPdfUrls.length; i++) {
                
@@ -168,24 +163,17 @@ const ExamDet = () => {
                 try {
 
                   const pdfUrl = answerPdfUrls[i];
-                  console.log("single url " , pdfUrl)
                   const response = await axios.get('http://localhost:9090/api/answer/fetch-pdf', {
                     params: { url: pdfUrl },
                     responseType: 'blob' 
                 });
-                console.log(response)
-                const pdfBlob = response.data;
-                console.log("Blob: ", pdfBlob);
                 
+                const pdfBlob = response.data;
+              
                 const filename = `answer_${i}.pdf`;
                 
-                
                 const pdfFile = new File([pdfBlob], filename, { type: 'application/pdf' });
-                console.log("File new : ", pdfFile);
                   const pdfAnswerText = await pdfToText(pdfFile);
-                  console.log("Text from PDF:", pdfAnswerText);
-
-
                   const similarity = calculateSimilarity(text, pdfAnswerText);
 
                   if (similarity > maxSimilarity) {
@@ -196,7 +184,7 @@ const ExamDet = () => {
                       isCheatingDetected = true;
                       break;
                   }
-                  console.log(`Similarity with answer : ${similarity}`);
+                  
                 } catch (error) {
                   console.error("Error extracting text from PDF:", error);
                 
@@ -211,8 +199,7 @@ const ExamDet = () => {
                      
                       const formDataToSend = new FormData();
                       formDataToSend.append("image", answerFile);
-                      console.log(formDataToSend);
-  
+                     
                       const uploadResponse = await axios.post(
                           "http://localhost:9090/api/image/uploadimage",
                           formDataToSend,
@@ -224,14 +211,11 @@ const ExamDet = () => {
                       );
   
                       const answerPdf = uploadResponse.data.downloadURL[0];
-  
                       const response = await axios.post(
                           "http://localhost:9090/api/answer",
                           { examId, answerPdf, clientId }
                       );
-  
-                      console.log("Answer created:", response.data);
-  
+                      window.location.reload();
                       setShowModal(false);
                   } else {
                       console.log('Submission cancelled.');
@@ -240,8 +224,6 @@ const ExamDet = () => {
                   
                   const formDataToSend = new FormData();
                   formDataToSend.append("image", answerFile);
-                  console.log(formDataToSend);
-  
                   const uploadResponse = await axios.post(
                       "http://localhost:9090/api/image/uploadimage",
                       formDataToSend,
@@ -253,14 +235,11 @@ const ExamDet = () => {
                   );
   
                   const answerPdf = uploadResponse.data.downloadURL[0];
-  
                   const response = await axios.post(
                       "http://localhost:9090/api/answer",
                       { examId, answerPdf, clientId }
                   );
-  
-                  console.log("Answer created:", response.data);
-  
+                  window.location.reload();
                   setShowModal(false);
               }
           } else {
@@ -272,7 +251,6 @@ const ExamDet = () => {
   };
   
     const handleDeleteExam = async (examId) => {
-        // Display a confirmation dialog
         const confirmDelete = window.confirm('Are you sure you want to delete this exam?');
         
         if (confirmDelete) {
@@ -283,7 +261,6 @@ const ExamDet = () => {
                
                 if (response.status === 200) {
                    
-                    console.log('Exam deleted successfully.');
                     navigate(-1);
                 } else {
                  
@@ -305,7 +282,6 @@ const ExamDet = () => {
         if (quizDetailsOrId) {
           setQuizDetailsOrId(quizDetailsOrId);
           setShowSpaceTwo(true);
-          console.log(quizDetailsOrId)
         } else {
           console.error('Quiz details or ID not found.');
         }
@@ -372,13 +348,13 @@ const ExamDet = () => {
                         {user && user.role === 'client' && (
                           <>
                             {examDetails.endAt && new Date(examDetails.endAt) < new Date() ? (
-                              // Show "Exam expired" message if the endAt date and time have passed
+                             
                               <p>Exam ended</p>
                             ) : (
-                              // Render buttons based on exam format
+                              
                               <>
                                 {examDetails.format === 'pdf' && (
-                                  // Render "Add Answer to Exam" button for PDF format
+                                  
                                   <Button
                                     className="btn"
                                     style={{ fontSize: '18px', padding: '10px 20px' }}

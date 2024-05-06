@@ -24,7 +24,7 @@ const ClassesArea = () => {
               // Fetch user data using the userId
               const response = await api.get(`http://localhost:9090/api/auth/user/${userId}`);
               setUser(response.data);
-              console.log(response.data);
+             
           
               let planningResponse;
               if (role === 'prof') {
@@ -34,11 +34,11 @@ const ClassesArea = () => {
                 // Fetch planning data for the client using the userId
                 planningResponse = await api.get(`http://localhost:9090/api/plannings/getallStudent/${userId}`);
               }
-          console.log(planningResponse)
+        
               if (planningResponse) {
                 const formattedData = await Promise.all(
                   planningResponse.data.map(async (planning) => {
-                    console.log(planning);
+                   
                     if (planning.type === 'instrument') {
                       // Fetch student data using the studentIds from the planning
                       const studentResponse = await api.get(`http://localhost:9090/api/auth/user/${planning.studentIds}`);
@@ -55,7 +55,7 @@ const ClassesArea = () => {
                 const filteredData = formattedData.filter((item) => item !== undefined);
                 // Set the formatted data in the component's state
                 setNotes(filteredData);
-                console.log(filteredData);
+                
               }
             } catch (error) {
               console.error('Error fetching user data:', error);

@@ -68,6 +68,7 @@ const routes = [
     component: SubscriptionHistoryTable,
   },
   {
+
     name: "Products Table",
     layout: "/admin",
     icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,

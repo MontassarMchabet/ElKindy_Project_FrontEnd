@@ -1,7 +1,6 @@
 // Chakra imports
 import { Box, SimpleGrid, Select, useColorModeValue } from "@chakra-ui/react";
 import ExamTable from "views/admin/examTables/components/ExamTable";
-import RevisionTable from "views/admin/examTables/components/RevisionTable";
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { ExamData } from "./variables/columnsData";
@@ -27,8 +26,7 @@ export default function Settings() {
           const examResponse = await axios.get(url);
 
           setExamData(examResponse.data);
-          console.log("Exams:", examData);
-          //console.log("Exam ID in Settings:", examData._id);
+         
 
         } catch (error) {
           console.error('Error fetching data:', error);
@@ -41,7 +39,7 @@ export default function Settings() {
         try {
           const quizResponse = await axios.get(url);
           setQuizData(quizResponse.data)
-          console.log(quizResponse.data)// Return the fetched quiz data
+          
         } catch (error) {
           console.error('Error fetching quiz data:', error);
           
@@ -74,8 +72,7 @@ export default function Settings() {
         setIsDeleteDialogOpen(false);
         try {
             await axios.delete(`http://localhost:9090/api/exam/${deletingExamId}`);
-            console.log("Exam deleted successfully");
-            console.log(deletingExamId)
+            
             fetchData();
         } catch (error) {
             console.error("Error deleting exam :", error);
@@ -89,7 +86,7 @@ export default function Settings() {
         }
         try {
             await axios.delete(`http://localhost:9090/api/quiz/delete/${deletingQuizId}`);
-            console.log("Quiz deleted successfully");
+            
             fetchData();
             window.location.reload(); 
         } catch (error) {

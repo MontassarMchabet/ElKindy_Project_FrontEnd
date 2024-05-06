@@ -19,7 +19,7 @@ function Quizes(props) {
       
     const columns = React.useMemo(() => columnsData, [columnsData]);
     const data = React.useMemo(() => tableData, [tableData]);
-    console.log('Quiz data in Quizes component:', tableData);
+   
 
     const tableInstance = useTable(
         {
@@ -58,7 +58,7 @@ function Quizes(props) {
             };
     
             await axios.put(`http://localhost:9090/api/quiz/${editedQuiz._id}`, editedData);
-            console.log("Quiz updated successfully");
+            
             setIsEditModalOpenQ(false);
             fetchData();
             window.location.reload(); 
@@ -155,108 +155,7 @@ function Quizes(props) {
                     Quiz Table
                 </Text>
 
-                
-            
-            <Table {...getTableProps()} variant='simple' color='gray.500' bg="white" mb='24px'>
-
-                
-                <Thead>
-                    {headerGroups.map((headerGroup, index) => (
-                        <Tr {...headerGroup.getHeaderGroupProps()} key={index}>
-                            {headerGroup.headers.map((column, index) => (
-                                <Th
-                                    {...column.getHeaderProps(column.getSortByToggleProps())}
-                                    pe='10px'
-                                    key={index}
-                                    borderColor='transparent'>
-                                    <Flex
-                                        justify='space-between'
-                                        align='center'
-                                        fontSize={{ sm: '10px', lg: '12px' }}
-                                        color='gray.400'>
-                                        {column.render('Header')}
-                                    </Flex>
-                                </Th>
-                            ))}
-                        </Tr>
-                    ))}
-                </Thead>
-
-                <Tbody {...getTableBodyProps()} style={{ minHeight: '200px' }}>
-                {console.log('Table data prop:', tableData)}
-                    {page.map((row, index) => {
-                       
-
-                        
-                        prepareRow(row);
-                        return (
-                            <Tr {...row.getRowProps()} key={index}>
-                                {row.cells.map((cell, index) => {
-                                   
-                                    let data = '';
-                                   // Inside the cell rendering logic
-                                   if (cell.column.Header === 'Title') {
-                                   
-                                    data = (
-                                        <Flex align='center'>
-                                           
-
-                                            <Text color={textColor} fontSize='sm' fontWeight='600'>
-                                                {cell.value}
-                                            </Text>
-                                        </Flex>
-                                    );
-                                }else if (cell.column.Header === 'Nbr of Questions') {
-                                    // Extracting a part of the URL to display
-
-                    
-                                    data = (
-                                        <Flex align='center'>
-                                           
-
-                                            <Text color={textColor} fontSize='sm' fontWeight='600'>
-                                                {cell.value}
-                                            </Text>
-                                        </Flex>
-                                    );
-                                    
-                                }
-                            
-                                else if (cell.column.Header === 'Note') {
-                                    // Check if cell.value.score is undefined or null
-                                    const score = cell.value.score != null ? cell.value.score : '--';
-                                    data = (
-                                        <Text color={textColorSecondary} fontSize='sm' fontWeight='500'>
-                                            {score}/20
-                                        </Text>
-                                    );
-                                }
-                                else if (cell.column.Header === 'Rating') {
-                                        data = (
-                                            <Box>
-                                                <Progress
-                                                    variant='table'
-                                                    colorScheme='brandScheme'
-                                                    value={cell.value}
-                                                />
-                                            </Box>
-                                        );
-                                    }
-                                    else if (cell.column.Header === 'Actions') {
-                                        data = (
-                                            <Flex align="center">
-                                               {/* Edit icon */}
-                                               <EditIcon
-                                                    w='20px'
-                                                    h='20px'
-                                                    me='5px'
-                                                    color={"green.500"}
-                                                    cursor="pointer"
-                                                onClick={() => handleEdit(row.original)}
-                                                />
-
-
-<Modal isOpen={isEditModalOpenQ} onClose={closeEditModalQ}>
+                <Modal isOpen={isEditModalOpenQ} onClose={closeEditModalQ}>
   <ModalOverlay />
   <ModalContent maxW={'800px'}>
     <ModalHeader>Edit Quiz</ModalHeader>
@@ -353,15 +252,6 @@ function Quizes(props) {
     </ModalFooter>
   </ModalContent>
 </Modal>
-
-                                                <DeleteIcon
-                                                    w='20px'
-                                                    h='20px'
-                                                    me='5px'
-                                                    color={"red.500"}
-                                                    cursor="pointer"
-                                                    onClick={() => confirmDeleteQ(row.original._id)}
-                                                />
 <AlertDialog
                                                     isOpen={isDeleteDialogOpenQ}
                                                     leastDestructiveRef={cancelRefQ}
@@ -388,6 +278,111 @@ function Quizes(props) {
                                                         </AlertDialogContent>
                                                     </AlertDialogOverlay>
                                                 </AlertDialog>
+            <Table {...getTableProps()} variant='simple' color='gray.500' bg="white" mb='24px'>
+
+                
+                <Thead>
+                    {headerGroups.map((headerGroup, index) => (
+                        <Tr {...headerGroup.getHeaderGroupProps()} key={index}>
+                            {headerGroup.headers.map((column, index) => (
+                                <Th
+                                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                                    pe='10px'
+                                    key={index}
+                                    borderColor='transparent'>
+                                    <Flex
+                                        justify='space-between'
+                                        align='center'
+                                        fontSize={{ sm: '10px', lg: '12px' }}
+                                        color='gray.400'>
+                                        {column.render('Header')}
+                                    </Flex>
+                                </Th>
+                            ))}
+                        </Tr>
+                    ))}
+                </Thead>
+
+                <Tbody {...getTableBodyProps()} style={{ minHeight: '200px' }}>
+                    {page.map((row, index) => {
+                       
+
+                        
+                        prepareRow(row);
+                        return (
+                            <Tr {...row.getRowProps()} key={index}>
+                                {row.cells.map((cell, index) => {
+                                   
+                                    let data = '';
+                                   // Inside the cell rendering logic
+                                   if (cell.column.Header === 'Title') {
+                                   
+                                    data = (
+                                        <Flex align='center'>
+                                           
+
+                                            <Text color={textColor} fontSize='sm' fontWeight='600'>
+                                                {cell.value}
+                                            </Text>
+                                        </Flex>
+                                    );
+                                }else if (cell.column.Header === 'Nbr of Questions') {
+                                    // Extracting a part of the URL to display
+
+                    
+                                    data = (
+                                        <Flex align='center'>
+                                           
+
+                                            <Text color={textColor} fontSize='sm' fontWeight='600'>
+                                                {cell.value}
+                                            </Text>
+                                        </Flex>
+                                    );
+                                    
+                                }
+                            
+                                else if (cell.column.Header === 'Note') {
+                                    // Check if cell.value.score is undefined or null
+                                    const score = cell.value.score != null ? cell.value.score : '--';
+                                    data = (
+                                        <Text color={textColorSecondary} fontSize='sm' fontWeight='500'>
+                                            {score}/20
+                                        </Text>
+                                    );
+                                }
+                                else if (cell.column.Header === 'Rating') {
+                                        data = (
+                                            <Box>
+                                                <Progress
+                                                    variant='table'
+                                                    colorScheme='brandScheme'
+                                                    value={cell.value}
+                                                />
+                                            </Box>
+                                        );
+                                    }
+                                    else if (cell.column.Header === 'Actions') {
+                                        data = (
+                                            <Flex align="center">
+                                               {/* Edit icon */}
+                                               <EditIcon
+                                                    w='20px'
+                                                    h='20px'
+                                                    me='5px'
+                                                    color={"green.500"}
+                                                    cursor="pointer"
+                                                onClick={() => handleEdit(row.original)}
+                                                />
+
+                                                <DeleteIcon
+                                                    w='20px'
+                                                    h='20px'
+                                                    me='5px'
+                                                    color={"red.500"}
+                                                    cursor="pointer"
+                                                    onClick={() => confirmDeleteQ(row.original._id)}
+                                                />
                                                 </Flex>
                                         );
                                     }

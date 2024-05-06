@@ -122,12 +122,11 @@ const handleAddQuestion = () => {
 
 const handleChangeQuestion = (index, e) => {
     const { name, value } = e.target;
-    console.log("Name:", name); // Check if name is correct
-    console.log("Value:", value); // Check if value is correct
+    
 
     const newQuestions = [...questions];
     newQuestions[index][name] = name === 'correctAnswer' ? (value !== '' ? value.toString() : '0') : value;
-    console.log("New Questions:", newQuestions); // Check if newQuestions has correct values
+   
     setQuestions(newQuestions);
 };
 
@@ -175,7 +174,7 @@ useEffect(() => {
         const response = await api.get(`http://localhost:9090/api/auth/user/${userId}`);
         
         setUser(response.data);
-        console.log(user._id)
+        
     } catch (error) {
         console.error('Error fetching user data:', error);
        
@@ -211,22 +210,21 @@ const handleSubmitB = async (e) => {
                 }))
             };
 
-            // Make a POST request to save the quiz data
+            
             const response = await axios.post('http://localhost:9090/api/quiz/quizzes', dataToSend);
 
-            // Handle successful response
-            console.log('Quiz saved successfully:', response.data);
+            
 
             navigate(-1);
         } catch (error) {
-            // Handle errors
+            
             console.error('Error saving quiz:', error.message);
-            // You can optionally set an error state or display an error message to the user
+           
         }
     } else {
-        // Handle validation errors
+        
         console.log('Form validation errors:', errors2);
-        // You can optionally set an error state or display error messages to the user
+        
     }
 };
 
