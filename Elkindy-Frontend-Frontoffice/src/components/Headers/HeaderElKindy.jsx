@@ -552,6 +552,123 @@ const HeaderOne = () => {
                                         </div>
                                         <div className="social-links">
                                             <ul className="clearfix list-wrap">
+                                                {isLoggedIn ? (
+                                                    <>
+
+                                                        <li className={cn("menu-item-has-children", ["/account"].includes(pathname) && "active")}>
+                                                            <a href="#">
+                                                                <div style={{ display: "flex", alignItems: "center" }}>
+                                                                    <img
+                                                                        src={`${user?.profilePicture}`}
+                                                                        style={{ width: "40px", height: "40px", borderRadius: "50%", marginRight: "10px" }}
+                                                                    />
+                                                                    <span>{`${user?.username}`}</span>
+                                                                </div>
+                                                            </a>
+                                                            <ul className="sub-menu" style={{ marginTop: "-40px" }}>
+                                                                <li className={cn(isActiveClassName("/account"))}>
+                                                                    <Link to="/account">Account</Link>
+                                                                </li>
+                                                                <li>
+                                                                    <a onClick={handleLogout}>Logout</a>
+                                                                </li>
+                                                                {user?.role === 'admin' && (
+                                                                    <li>
+                                                                        <a href="http://localhost:3000/elkindy#/admin/dashboard">Dashboard</a>
+                                                                    </li>
+                                                                )}
+                                                                {user?.isSubscribed && (
+                                                                    <li>
+                                                                        <a style={{ color: 'red' }} onClick={handleCancelSubscription}>Cancel Subscription</a>
+                                                                    </li>
+                                                                )}
+                                                            </ul>
+                                                        </li>
+                                                        <li style={{ paddingTop: 42 }}>
+                                                            <IoNotificationsOutline size={30} onClick={() => setOpen(!open)} />
+                                                            {
+                                                                unreadNotifications.length > 0 &&
+                                                                <div style={{
+                                                                    width: "15px",
+                                                                    color: "white",
+                                                                    backgroundColor: "#FF0000",
+                                                                    borderRadius: "50%", /* Corrected: backgroundColor */
+                                                                    marginTop: "35px",
+                                                                    fontSize: "12px", /* Corrected: fontSize */
+                                                                    display: "flex",
+                                                                    justifyContent: "center", /* Corrected: justifyContent */
+                                                                    position: "absolute",
+                                                                    top: "-5px",
+                                                                    right: "-5px"
+                                                                }}>{unreadNotifications.length}</div>}
+                                                            {open && (
+                                                                <div style={{
+                                                                    position: "absolute",
+                                                                    top: "50px",
+                                                                    width: "300px",
+                                                                    right: "0",
+                                                                    borderRadius: "5%",
+                                                                    backgroundColor: "#EEEEEE",
+                                                                    color: "black",
+                                                                    fontWeight: 300,
+                                                                    display: "flex",
+                                                                    flexDirection: "column",
+                                                                    padding: "10px",
+                                                                    marginTop: "55px"
+                                                                }}>
+                                                                    {notifications.length > 0 && notifications.map((n) => displayNotification(n))}
+
+                                                                    <button
+                                                                        className="btn btn-sm"
+                                                                        style={{
+                                                                            width: "50%",
+                                                                            backgroundColor: "orange",
+                                                                            padding: "5px",
+                                                                            marginLeft: "65px",
+                                                                            textAlign: "center",
+                                                                            transition: "background-color 0.3s ease", // Smooth transition for color change
+                                                                        }}
+                                                                        onClick={handleRead}
+                                                                        onMouseOver={(e) => { e.target.style.backgroundColor = "blue"; }} // Change background color on hover
+                                                                        onMouseOut={(e) => { e.target.style.backgroundColor = "orange"; }} // Revert to original color when not hovered
+                                                                    >
+                                                                        Mark as read
+                                                                    </button>
+                                                                </div>
+                                                            )}
+                                                        </li>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <button style={{
+                                                            borderRadius: "55px",
+                                                            width: "100px",
+                                                            height: "40px",
+                                                            backgroundColor: "transparent",
+                                                            border: "none"
+                                                        }}>
+                                                            <a
+                                                                style={{ color: "#6c757d", textDecoration: "none", display: "inline-block", width: "100%", height: "100%", lineHeight: "40px" }}
+                                                                href="http://localhost:3000/elkindy#/signin"
+                                                            >Sign in</a>
+                                                        </button>
+                                                        <button style={{
+                                                            marginLeft: "10px",
+                                                            borderRadius: "55px",
+                                                            width: "100px",
+                                                            backgroundColor: "transparent",
+                                                            border: "1px solid #6c757d"
+                                                        }}>
+                                                            <a
+                                                                style={{ color: "#6c757d", textDecoration: "none", display: "inline-block", width: "100%", height: "100%", lineHeight: "40px" }}
+                                                                href="http://localhost:3000/elkindy#/signup"
+                                                            >Sign up</a>
+                                                        </button>
+                                                    </>
+                                                )}
+                                                <br />
+                                                <br />
+                                                
                                                 <li>
                                                     <a href="#">
                                                         <i className="fab fa-facebook-f"></i>
