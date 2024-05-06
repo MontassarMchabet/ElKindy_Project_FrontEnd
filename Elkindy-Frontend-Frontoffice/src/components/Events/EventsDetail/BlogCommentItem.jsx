@@ -11,7 +11,6 @@ const BlogCommentItem = ({ comment, className, updateComments, filterBadWords })
   const [isEditing, setIsEditing] = useState(false);
   const [editedComment, setEditedComment] = useState(comment.comment);
   const [userId, setUserId] = useState(null);
-  console.log(typeof updateComments, ' khraaaa');
   useEffect(() => {
     const getUserIdFromToken = () => {
       const storedToken = Cookies.get('token');

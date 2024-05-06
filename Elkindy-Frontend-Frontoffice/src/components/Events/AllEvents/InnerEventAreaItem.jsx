@@ -16,8 +16,6 @@ const InnerEventAreaItem = ({ item }) => {
 
         <div className="inner-project-content">
           <h3 className="title">
-          
-            {/* <Link to={item.eventId}>{item.name}</Link> */}
             <Link to={`/events/${item._id}`}>{item.name}</Link>
           </h3>
           <p>{item.description}</p>
