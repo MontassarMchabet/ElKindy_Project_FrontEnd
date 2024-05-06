@@ -292,39 +292,47 @@ const HeaderOne = () => {
                                                 <li className={cn(isActiveClassName("/events"))}>
                                                     <Link to="/events">Events</Link>
                                                 </li>
-                                                
-                                                <li className={cn(
-                                                    "menu-item-has-children",
-                                                    [
-                                                        "/planning",
-                                                        "/CreateMeeting",
-                                                        "/JoinMeeting",
+                                                {isLoggedIn && (
+                                                    <>
+                                                        {(user?.role === 'admin' || user?.role === 'prof' || (user?.role === 'client' && user.isSubscribed)) && (
+                                                            <>  
+                                                                <li className={cn(
+                                                                    "menu-item-has-children",
+                                                                    [
+                                                                        "/planning",
+                                                                        "/CreateMeeting",
+                                                                        "/JoinMeeting",
 
 
-                                                    ].includes(pathname) && "active"
-                                                )}
-                                                >
-                                                    <a>Planning</a>
-                                                    <ul className="sub-menu">
-                                                    <li className={cn(isActiveClassName("/planning"))}>
-                                                    <Link to="/planning">Calandar</Link>
-                                                </li>
-                                                        {user?.role === 'prof' &&  (
-                                                                    <li className={cn(isActiveClassName("/CreateMeeting"))}>
-                                                                    <Link to="/CreateMeeting">Meeting</Link>
-                                                                     </li>
-                                                                    
+                                                                    ].includes(pathname) && "active"
                                                                 )}
-                                                        {user?.role === 'client' &&  (
-                                                                   
-                                                                   <li className={cn(isActiveClassName("/JoinMeeting"))}>
-                                                                   <Link to="/JoinMeeting">JoinMeeting</Link>
-                                                                    </li>
+                                                                >
+                                                                    <a>Planning</a>
+                                                                    <ul className="sub-menu">
+                                                                    <li className={cn(isActiveClassName("/planning"))}>
+                                                                    <Link to="/planning">Calandar</Link>
+                                                                </li>
+                                                                        {user?.role === 'prof' &&  (
+                                                                                    <li className={cn(isActiveClassName("/CreateMeeting"))}>
+                                                                                    <Link to="/CreateMeeting">Meeting</Link>
+                                                                                    </li>
+                                                                                    
+                                                                                )}
+                                                                        {user?.role === 'client' &&  (
+                                                                                
+                                                                                <li className={cn(isActiveClassName("/JoinMeeting"))}>
+                                                                                <Link to="/JoinMeeting">JoinMeeting</Link>
+                                                                                    </li>
+                                                                        )}
+                                                                    </ul>
+                                                                </li>
+                                                        
+                                                                </>
                                                         )}
-                                                    </ul>
-                                                </li>
-                                         
-                                               
+
+                                                    </>
+                                                )}
+
 
 
                                                 {isLoggedIn && (
@@ -345,6 +353,7 @@ const HeaderOne = () => {
                                                     <Link to="/shop">Shop</Link>
                                                 </li>
                                             </ul>
+                                            
                                         </div>
 
 
@@ -548,6 +557,7 @@ const HeaderOne = () => {
                                             </Link>
                                         </div>
                                         <div className="menu-outer">
+
                                             {isLoggedIn && (
                                                 <>
                                                     {(user?.role === 'admin' || user?.role === 'prof' || (user?.role === 'client' && user.isSubscribed)) && (
@@ -557,6 +567,7 @@ const HeaderOne = () => {
                                                     )}
                                                 </>
                                             )}                                         </div>
+
                                         <div className="social-links">
                                             <ul className="clearfix list-wrap">
                                                 {isLoggedIn ? (
