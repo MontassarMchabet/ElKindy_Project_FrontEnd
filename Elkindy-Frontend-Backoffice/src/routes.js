@@ -69,6 +69,21 @@ const routes = [
   },
   {
 
+    name: "Products Table",
+    layout: "/admin",
+    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+    path: "/products",
+    component: productTable,
+  },
+  {
+    name: "Orders Table",
+    layout: "/admin",
+    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
+    path: "/orders",
+    component: ordersTable,
+  },
+  {
+
     name: "Exams",
     layout: "/admin",
     path: "/exams",
@@ -107,37 +122,6 @@ const routes = [
     component: Events,
     secondary: true,
   },
-  {
-    name: "Products Table",
-    layout: "/admin",
-    icon: (
-      <Icon
-        as={MdOutlineShoppingCart}
-        width='20px'
-        height='20px'
-        color='inherit'
-      />
-    ),
-    path: "/products",
-    component: productTable,
-
-  },
-  {
-    name: "Orders Table",
-    layout: "/admin",
-    icon: (
-      <Icon
-        as={MdOutlineShoppingBag}
-        width='20px'
-        height='20px'
-        color='inherit'
-      />
-    ),
-    path: "/orders",
-    component: ordersTable,
-
-  },
-
   {
     name: "Room & Classroom",
     layout: "/admin",

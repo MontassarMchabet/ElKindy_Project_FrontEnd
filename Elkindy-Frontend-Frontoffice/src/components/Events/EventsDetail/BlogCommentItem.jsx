@@ -89,6 +89,7 @@ const BlogCommentItem = ({ comment, className, updateComments, filterBadWords })
         {/* Vérifiez si l'utilisateur connecté est l'auteur du commentaire */}
         {userId === comment.user?._id && (
           <>
+
             {isEditing ? (
             <Link className="rade-more-btn" style={{ marginLeft: 20 , marginRight: 20 }} onClick={handleSaveButtonClick}>
             Save
@@ -102,6 +103,7 @@ const BlogCommentItem = ({ comment, className, updateComments, filterBadWords })
               Delete
             </Link>
           </>
+
         )}
       </div>
     </div>
@@ -109,4 +111,3 @@ const BlogCommentItem = ({ comment, className, updateComments, filterBadWords })
 };
 
 export default BlogCommentItem;
-

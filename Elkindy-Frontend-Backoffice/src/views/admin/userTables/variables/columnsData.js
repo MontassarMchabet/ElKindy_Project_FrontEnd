@@ -112,14 +112,14 @@ export const profsData = [
 ];
 
 export const clientsData = [
-  {
+  /* {
     Header: "NAME",
     accessor: "name",
   },
   {
     Header: "Lastname",
     accessor: "lastname",
-  },
+  }, */
   {
     Header: "Username",
     accessor: "username",
@@ -135,19 +135,19 @@ export const clientsData = [
   {
     Header: "Parent phone Number",
     accessor: "parentPhoneNumber",
-  },
+  }/* ,
   {
     Header: "Parent cin",
     accessor: "parentCinNumber",
-  },
+  } */,
   {
     Header: "Subscribed",
     accessor: "isSubscribed",
-  },
+  }/* ,
   {
     Header: "Birth date",
     accessor: "dateOfBirth",
-  },
+  } */,
   {
     Header: "Profile picture",
     accessor: "profilePicture",

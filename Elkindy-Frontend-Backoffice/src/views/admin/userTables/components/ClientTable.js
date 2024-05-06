@@ -735,13 +735,13 @@ export default function ColumnsTable(props) {
                                                 {cell.value}
                                             </Text>
                                         );
-                                    } else if (cell.column.Header === "Parent cin") {
+                                    }/*  else if (cell.column.Header === "Parent cin") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
                                                 {cell.value}
                                             </Text>
                                         );
-                                    } else if (cell.column.Header === "level") {
+                                    }  */else if (cell.column.Header === "level") {
                                         data = (
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
                                                 {cell.value}
@@ -754,7 +754,7 @@ export default function ColumnsTable(props) {
                                                 {row.original.courseName}
                                             </Text>
                                         );
-                                    }
+                                    /* }
                                     else if (cell.column.Header === "Birth date") {
                                         const date = new Date(cell.value);
                                         const formattedDate = date.toISOString().split('T')[0];
@@ -762,7 +762,7 @@ export default function ColumnsTable(props) {
                                             <Text color={textColor} fontSize='sm' fontWeight='700'>
                                                 {formattedDate}
                                             </Text>
-                                        );
+                                        ); */
 
                                         /*} else if (cell.column.Header === "PROGRESS") {
                                             data = (
