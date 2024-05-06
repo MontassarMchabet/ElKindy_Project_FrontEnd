@@ -7,11 +7,11 @@ import { jwtDecode } from 'jwt-decode';
 import Cookies from 'js-cookie';
 import { Link } from "react-router-dom";
 
-const BlogCommentItem = ({ comment, className, updateComments,filterBadWords }) => {
+const BlogCommentItem = ({ comment, className, updateComments, filterBadWords }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedComment, setEditedComment] = useState(comment.comment);
   const [userId, setUserId] = useState(null);
-  console.log(typeof updateComments,' khraaaa');
+  console.log(typeof updateComments, ' khraaaa');
   useEffect(() => {
     const getUserIdFromToken = () => {
       const storedToken = Cookies.get('token');
@@ -38,7 +38,7 @@ const BlogCommentItem = ({ comment, className, updateComments,filterBadWords }) 
 
       // Mettez à jour les commentaires après l'édition
       updateComments();
-      
+
     } catch (error) {
       console.error("Error updating comment:", error);
       // Gérer l'erreur
@@ -67,15 +67,15 @@ const BlogCommentItem = ({ comment, className, updateComments,filterBadWords }) 
         <h4 className="title">{comment.user ? comment.user.username : "Unknown"}</h4>
 
         <span>
-           <i className="fal fa-calendar-alt"></i>
-           {new Date(comment.date).toLocaleString('tn-TN', {
-             year: 'numeric',
-             month: 'long',
-             day: 'numeric',
-             hour: 'numeric',
-             minute: 'numeric'
-           })}
-         </span>
+          <i className="fal fa-calendar-alt"></i>
+          {new Date(comment.date).toLocaleString('tn-TN', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric'
+          })}
+        </span>
 
         {isEditing ? (
           <textarea
@@ -89,19 +89,21 @@ const BlogCommentItem = ({ comment, className, updateComments,filterBadWords }) 
         {/* Vérifiez si l'utilisateur connecté est l'auteur du commentaire */}
         {userId === comment.user?._id && (
           <>
-          {isEditing ? (
-          <Link className="rade-more-btn" style={{ marginLeft: 20 , marginRight: 20 }} onClick={handleSaveButtonClick}>
-          Save
-        </Link>
-          ) : (
-            <Link className="rade-more-btn" style={{ marginLeft: 20, marginRight: 20 }} onClick={handleEditButtonClick}>
-              Edit
-            </Link>
-          )}
-          <Link className="rade-more-btn" style={{ marginLeft: 20, marginRight: 20 }} onClick={handleDeleteButtonClick}>
-            Delete
+
+            {isEditing ? (
+            <Link className="rade-more-btn" style={{ marginLeft: 20 , marginRight: 20 }} onClick={handleSaveButtonClick}>
+            Save
           </Link>
-        </>
+            ) : (
+              <Link className="rade-more-btn" style={{ marginLeft: 20, marginRight: 20 }} onClick={handleEditButtonClick}>
+                Edit
+              </Link>
+            )}
+            <Link className="rade-more-btn" style={{ marginLeft: 20, marginRight: 20 }} onClick={handleDeleteButtonClick}>
+              Delete
+            </Link>
+          </>
+
         )}
       </div>
     </div>

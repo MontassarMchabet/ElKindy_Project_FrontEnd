@@ -3,7 +3,7 @@
 export const eventsData = [
   {
     Header: "IMAGE",
-    accessor: "imageUrl", // Utilisation de la même casse pour tous les accesseurs
+    accessor: "imageUrl", 
   },
   {
     Header: "NAME",
@@ -24,14 +24,11 @@ export const eventsData = [
 
   {
     Header: "ROOM",
-    accessor: "room_name", // Supposition qu'il s'agisse de room au lieu de name
+    accessor: "room_name", 
   },
   {
-    Header: "ACTIONS", // Ajout d'une nouvelle colonne pour les actions
+    Header: "ACTIONS", 
   }
 ];
 export default eventsData;
 
-
-
-// Suppression de l'export par défaut inutile

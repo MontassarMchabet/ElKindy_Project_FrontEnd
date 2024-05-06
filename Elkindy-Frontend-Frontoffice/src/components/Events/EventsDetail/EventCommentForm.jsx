@@ -1,33 +1,4 @@
-// import React from "react";
 
-// const EventCommentForm = () => {
-//   return (
-//     <div className="post-comments-form">
-//       <div className="post-comments-title">
-//         <h2 className="title">Leave Your Comment</h2>
-//       </div>
-
-//       <div className="comment-form">
-//         <form action="#">
-          
-
-//           <div className="form-grp">
-//             <textarea
-//               name="message"
-//               placeholder="Write your message here"
-//             ></textarea>
-//           </div>
-
-//           <button type="submit" className="btn">
-//             Send Message <span></span>
-//           </button>
-//         </form>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default EventCommentForm;
 import React, { useState, useEffect } from "react";
 import { addComment } from "../../../services/eventsCommentApi";
 import { useParams } from "react-router-dom";
@@ -52,16 +23,6 @@ const EventCommentForm = ({ updateComments,filterBadWords}) => {
     getUserIdFromToken();
   }, []);
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     await addComment(eventId, { comment: comment, user: userId });
-  //     setComment("");
-  //     updateComments(); // Mettre à jour les commentaires après l'ajout d'un nouveau commentaire
-  //   } catch (error) {
-  //     console.error("Error sending comment :", error);
-  //   }
-  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {

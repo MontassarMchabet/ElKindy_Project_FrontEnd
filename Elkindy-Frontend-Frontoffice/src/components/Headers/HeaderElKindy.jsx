@@ -331,7 +331,6 @@ const HeaderOne = () => {
                                                     <>
                                                         {(user?.role === 'admin' || user?.role === 'prof' || (user?.role === 'client' && user.isSubscribed)) && (
                                                             <>
-                                                               
                                                                 <li className={cn(isActiveClassName("/exams"))}>
                                                                     <Link to="/exams">Exams</Link>
                                                                 </li>
