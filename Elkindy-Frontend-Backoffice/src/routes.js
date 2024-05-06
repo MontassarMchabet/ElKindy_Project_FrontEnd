@@ -54,13 +54,6 @@ const routes = [
     component: MainDashboard,
   },
   {
-    name: "Profile",
-    layout: "/admin",
-    path: "/profile",
-    icon: <Icon as={MdPerson} width='20px' height='20px' color='inherit' />,
-    component: Profile,
-  },
-  {
     name: "Users Tables",
     layout: "/admin",
     icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
@@ -73,42 +66,6 @@ const routes = [
     icon: <Icon as={MdStar} width='20px' height='20px' color='inherit' />,
     path: "/subscriptions",
     component: SubscriptionHistoryTable,
-  },
-  {
-    name: "Products Table",
-    layout: "/admin",
-    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
-    path: "/products",
-    component: productTable,
-  },
-  {
-    name: "Orders Table",
-    layout: "/admin",
-    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
-    path: "/orders",
-    component: ordersTable,
-  },
-  {
-    name: "Data Tables",
-    layout: "/admin",
-    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
-    path: "/data-tables",
-    component: DataTables,
-  },
-  {
-    name: "Marketplace",
-    layout: "/admin",
-    path: "/marketplace",
-    icon: (
-      <Icon
-        as={MdOutlineShoppingCart}
-        width='20px'
-        height='20px'
-        color='inherit'
-      />
-    ),
-    component: NFTMarketplace,
-    secondary: true,
   },
   {
 
@@ -180,20 +137,7 @@ const routes = [
     component: ordersTable,
 
   },
-  {
-    name: "Data Tables",
-    layout: "/admin",
-    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
-    path: "/data-tables",
-    component: DataTables,
-  },
-  {
-    name: "Users Tables",
-    layout: "/admin",
-    icon: <Icon as={MdBarChart} width='20px' height='20px' color='inherit' />,
-    path: "/users",
-    component: UserTables,
-  },
+
   {
     name: "Room & Classroom",
     layout: "/admin",
@@ -221,11 +165,6 @@ const routes = [
     icon: <Icon as={MdOutlineCalendarMonth} width='20px' height='20px' color='inherit' />,
     path: "/teachercalender",
     component: TeacherScheduling,
-  },
-  {
-    layout: "/admin",
-    path: "/:eventId/tickets",
-    component: Tickets,
   }
 ];
 
