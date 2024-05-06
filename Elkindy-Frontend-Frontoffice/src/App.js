@@ -45,7 +45,7 @@ import Orders from "./pages/shop/pages/Orders.jsx";
 import Piano from "./pages/Virtualinstrument/Piano";
 import Drums from "./pages/Virtualinstrument/Drums";
 import SubscribePage from "./pages/Subscribe";
-import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
+
 import FillInformations from "./components/FillInformations/FillInformations.jsx";
 
 function App() {

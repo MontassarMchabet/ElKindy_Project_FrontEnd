@@ -103,7 +103,7 @@ const NavExams = () => {
 
     return (
         <>
-             <header style={{ position: "fixed", top: 160, width: "100%", zIndex: 999 }}>
+             <header style={{ position: "absolute", top: 160, width: "100%", zIndex: 999 }}>
                 <div id="sticky-header" className="menu-area transparent-header" >
                     <div className="container">
                         <div className="row">
