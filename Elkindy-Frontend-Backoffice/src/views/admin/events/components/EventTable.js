@@ -92,7 +92,6 @@ export default function ColumnsTable(props) {
         else if (editedEvent.seat.toString().length > 3) {
             errorsEdit.seat = 'Seats distribution must contain maximum 3 digits';
         } else {
-            console.log(editedEvent.series)
             const seriesString = editedEvent.series.toString();
             const seriesArray = seriesString.split('-').map(item => item.trim());
             const uniqueLetters = new Set(seriesArray.join('').split(''));
@@ -161,12 +160,6 @@ export default function ColumnsTable(props) {
             // Gérer l'échec de la validation ici, par exemple, en mettant à jour l'état pour afficher des messages d'erreur à l'utilisateur
         }
     };
-    //     setEditedEvent(event); // Charger les données du cours à éditer dans editedEvent
-    //     openEditModal(); // Ouvrir le formulaire d'édition
-    // };
-    // const handleImageChange = (e) => {
-    //     setImage(e.target.files[0]);
-    //   };
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
@@ -329,7 +322,7 @@ export default function ColumnsTable(props) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const isValid = await validateForm();
-        console.log("Submitting form");
+        
         if (isValid) {
             try {
                 if (image) {
@@ -362,7 +355,7 @@ export default function ColumnsTable(props) {
                 // Calcul de la capacité
                 const seriesLength = seriesArray.reduce((acc, cur) => acc + cur.replace(/-/g, '').length, 0);
                 const capacity = formData.seat * seriesLength;
-                console.log(capacity, 'heeeyCapacity')
+                
                 // Mettre à jour le formData avec la série traitée et la capacité calculée
                 setFormData({ ...formData, series: seriesArray, room_capacity: capacity });
 
@@ -385,7 +378,7 @@ export default function ColumnsTable(props) {
                 };
 
                 const response = await axios.post("http://localhost:9090/event/add", dataToSend);
-                console.log("Event added successfully:", response.data);
+                
                 fetchData();
                 closeModalA();
             } catch (error) {
@@ -453,21 +446,7 @@ export default function ColumnsTable(props) {
                                     </FormControl>
 
                                     <FormControl>
-                                        {/* <FormLabel>Lines</FormLabel>
-                                        <Input type="text" name="series" value={formData.series} onChange={handleChange} placeholder="Enter hyphen-separated series" /> */}
-                                        {/* 
-                                        <FormLabel>Lines</FormLabel>
-                                        <Input
-                                            type="text"
-                                            name="series"
-                                            value={formData.series}
-                                            onChange={handleChange}
-                                            placeholder="Enter hyphen-separated series"
-                                            data-tip="Enter hyphen-separated series like 'a-b-c'"
-                                            data-for="seriesTooltip"
-                                        />
-
-                                        <Tooltip id="seriesTooltip" /> */}
+                                        
                                         <FormLabel>Lines</FormLabel>
                                         <Input
                                             data-tooltip-id="seriesTooltip"

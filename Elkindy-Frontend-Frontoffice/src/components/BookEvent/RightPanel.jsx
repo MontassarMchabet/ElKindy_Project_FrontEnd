@@ -85,9 +85,6 @@ const RightPanel = () => {
             setMovieData(filteredData);
         }
     }, [eventDetails]);
-    console.log(movieData, 'movieData')
-
-
     useEffect(() => {
         async function fetchTickets() {
             try {
@@ -110,9 +107,6 @@ const RightPanel = () => {
             const seatSr = el.getAttribute('sr');
             // const seatPrice = el.innerText;
             const seatPrice = eventDetails.price;
-            console.log('seatPrice', seatPrice);
-            console.log('seatSr', seatSr);
-
             // Vérifiez si eventDetails est défini
             if (eventDetails) {
                 // Copiez l'objet pour éviter de modifier les données originales
@@ -420,7 +414,6 @@ const RightPanel = () => {
             </div>
             <div className="chair" id="chair">
                 {/* Afficher les sièges ici */}
-                {/* {addSeats(movieData)} */}
                 {addSeats(movieData)}
             </div>
             <div className="ticket" id="ticket">

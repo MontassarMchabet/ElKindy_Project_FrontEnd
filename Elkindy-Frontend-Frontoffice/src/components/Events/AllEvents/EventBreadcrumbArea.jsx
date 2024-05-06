@@ -12,25 +12,6 @@ const EventBlogBreadcrumbArea = () => {
   return (
     <section className="breadcrumb-area breadcrumb-area-three parallax pt-0">
       <div>
-        {/* <div className="row">
-          <div className="col-12">
-            <div className="breadcrumb-content">
-              <h2 className="title">Events</h2>
-              <nav aria-label="breadcrumb">
-                <ol className="breadcrumb">
-                  <li className="breadcrumb-item">
-                    <Link to="/">Home</Link>
-                  </li>
-
-                  <li className="breadcrumb-item active" aria-current="page">
-                    Events
-                  </li>
-                </ol>
-              </nav>
-            </div>
-          </div>
-        </div> */}
-      
         <div className="row justify-content-center">
           <div className="col-lg-8">
             <div className="breadcrumb-search">
