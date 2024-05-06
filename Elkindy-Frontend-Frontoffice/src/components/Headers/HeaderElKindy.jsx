@@ -548,8 +548,15 @@ const HeaderOne = () => {
                                             </Link>
                                         </div>
                                         <div className="menu-outer">
-                                            {/* <!--Here Menu Will Come Automatically Via Javascript / Same Menu as in Header--> */}
-                                        </div>
+                                            {isLoggedIn && (
+                                                <>
+                                                    {(user?.role === 'admin' || user?.role === 'prof' || (user?.role === 'client' && user.isSubscribed)) && (
+                                                        <li className={cn(isActiveClassName("/exams"))}>
+                                                            <Link to="/exams">Exams</Link>
+                                                        </li>
+                                                    )}
+                                                </>
+                                            )}                                         </div>
                                         <div className="social-links">
                                             <ul className="clearfix list-wrap">
                                                 {isLoggedIn ? (
