@@ -12,7 +12,7 @@ import Swal from 'sweetalert2'
 import axios from "axios";
 
 
-
+//rightpanel
 
 const RightPanel = () => {
     const [eventDetails, setEventDetails] = useState(null);
