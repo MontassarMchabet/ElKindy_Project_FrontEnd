@@ -70,7 +70,7 @@ function Answers(props) {
                 </Thead>
 
                 <Tbody {...getTableBodyProps()} style={{ minHeight: '200px' }}>
-                {console.log('Table data prop:', tableData)}
+                
                     {page.map((row, index) => {
                        
 

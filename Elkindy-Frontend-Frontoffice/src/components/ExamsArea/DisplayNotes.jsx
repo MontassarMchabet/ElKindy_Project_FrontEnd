@@ -23,7 +23,7 @@ const NotesArea = () => {
                 
                     const notesResponse = await api.get(`http://localhost:9090/api/note/byclient/${userId}`);
                     setNotes(notesResponse.data);
-                    console.log(notesResponse.data)
+                    
                 
             } catch (error) {
                 console.error('Error fetching user data:', error);

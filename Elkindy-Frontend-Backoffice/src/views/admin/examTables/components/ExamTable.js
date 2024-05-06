@@ -221,14 +221,14 @@ const handleSubmitB = async (e) => {
             closeModalB();
             window.location.reload();
         } catch (error) {
-            // Handle errors
+            
             console.error('Error saving quiz:', error.message);
-            // You can optionally set an error state or display an error message to the user
+            
         }
     } else {
-        // Handle validation errors
+        
         console.log('Form validation errors:', errors);
-        // You can optionally set an error state or display error messages to the user
+        
     }
 };
 
@@ -263,12 +263,11 @@ const handleSubmitB = async (e) => {
     
     const handleChangeQuestion = (index, e) => {
         const { name, value } = e.target;
-        console.log("Name:", name); // Check if name is correct
-        console.log("Value:", value); // Check if value is correct
+       
     
         const newQuestions = [...questions];
         newQuestions[index][name] = name === 'correctAnswer' ? (value !== '' ? value.toString() : '0') : value;
-        console.log("New Questions:", newQuestions); // Check if newQuestions has correct values
+        
         setQuestions(newQuestions);
     };
     
@@ -366,7 +365,7 @@ const handleSubmitB = async (e) => {
             }
             // Update state with the array of numbers
             setAnswersCounts(counts);
-            console.log(answersCounts)
+            
         } catch (error) {
             console.error(error);
         }
@@ -384,8 +383,7 @@ const handleSubmitB = async (e) => {
             const answersData = await fetchAnswersData(examData._id); 
             setExamInfo({ ...examData, answersData });
             setAnswersData(answersData)
-            console.log(examData._id)
-            console.log(answersData)
+            
             setIsModalViewOpen(true);
         } catch (error) {
             console.error('Error while handling view:', error);
@@ -437,7 +435,7 @@ const handleSubmitB = async (e) => {
                 // Extract text from PDF file
                 try {
                     const text = await pdfToText(file);
-                    console.log('Extracted text from PDF:', text);
+                    
     
                   
                     const openaiApiKey = 'test';
@@ -456,7 +454,7 @@ const handleSubmitB = async (e) => {
                         }
                     });
     
-                    console.log('Generated long text:', response.data.choices[0].text);
+                    
                     // Handle the generated long text response here
                 } catch (error) {
                     console.error('Failed to extract text from PDF or generate long text:', error);
@@ -581,7 +579,7 @@ if (!question.point.trim()) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const isValid = await validateForm();
-        console.log("Submitting form");
+        
         if (isValid) {
             try {
                 const combinedDateTime = new Date(`${formData.endAtDate}T${formData.endAtTime}`);
@@ -622,16 +620,16 @@ if (!question.point.trim()) {
                 const level = formData.level; 
                 const usersResponse = await axios.get(`http://localhost:9090/api/auth/users/${level}`);
                 const users = usersResponse.data;
-    console.log(users);
+   
                 // Get the emails of the users
                 const emails = users.map(user => user.email);
-    console.log(emails)
+   
                 // Call the sendVerificationCode method with the emails and users
                 const verificationCodeResponse = await axios.post(
                     "http://localhost:9090/api/exam/verificationCode",
                     { email: emails, username: users.map(user => user.username) }
                 );
-console.log("erorrrr",verificationCodeResponse)
+
             fetchData();
             closeModalA();
             } catch (error) {
@@ -979,7 +977,104 @@ console.log("erorrrr",verificationCodeResponse)
 
 
 
+            <Modal isOpen={isEditModalOpen} onClose={closeEditModal}>
+                                            <ModalOverlay />
+                                                <ModalContent maxW={'800px'}>
+                                                    <ModalHeader>Edit Exam</ModalHeader>
+                                                    <ModalCloseButton />
+                                                    {editedExam && ( // Vérifiez si editedExam est disponible
+                                                        <ModalBody>
+                                                            {/* Formulaire pour l'édition du exam */}
+                                                            <FormControl id="title">
+                                                                <FormLabel>Title</FormLabel>
+                                                                <Input type="text" value={editedExam.title} onChange={(e) => setEditedExam({ ...editedExam, title: e.target.value })} />
+                                                            </FormControl>
+                                                            <FormControl id="description">
+                                                                <FormLabel>Description</FormLabel>
+                                                                <Input type="text" value={editedExam.description} onChange={(e) => setEditedExam({ ...editedExam, description: e.target.value })} />
+                                                            </FormControl>
+                                                            <FormControl id="format">
+                                                                <FormLabel>Format</FormLabel>
+                                                                <Input type="text" value={editedExam.format} onChange={(e) => setEditedExam({ ...editedExam, format: parseInt(e.target.value) })} />
+                                                            </FormControl>
+                                                            {editedExam.format === 'pdf' && (
+       <FormControl mt={4}>
+           <div>
+                {editedExam.pdfFile && (
+                    
+                    <span>Current File:   <a href={editedExam.pdfFile} target="_blank" rel="noopener noreferrer">
+                    {getFileNameFromURL(editedExam.pdfFile)}
+                </a></span>
+                )}
+            </div>
+   </FormControl>
+   
+     
+                                                            )}
+                                                        </ModalBody>
+                                                    )}
+                                                    <ModalFooter>
+                                                        <Button colorScheme="blue" mr={3} onClick={handleSaveEdit}>Save</Button>
+                                                        <Button onClick={closeEditModal}>Cancel</Button>
+                                                    </ModalFooter>
+                                                </ModalContent>
+                                            </Modal>
+                                            <Modal isOpen={isModalViewOpen} onClose={closeModalViewA}>
+                                                    <ModalOverlay />
+                                                    <ModalContent maxW={'800px'} overflowY='auto'>
+                                                        <ModalHeader>Exam Information</ModalHeader>
+                                                        <ModalCloseButton />
+                                                        <ModalBody>
+                                                            {examInfo && (
+                                                                <>
+                                                                    <Text
+                                        color={textColorPrimary}
+                                        fontWeight='bold'
+                                        fontSize='2xl'
+                                        mt='10px'
+                                        mb='4px'
+                                        style={{ margin: "auto" }}>
+                                        {examInfo.title} {examInfo.description}
+                                    </Text>
+                                                                    <object data={examInfo.pdfFile} type="application/pdf" width="100%" height="500px">
+                                                                <p>PDF cannot be displayed. <a href={examInfo.pdfFile}>Download PDF</a> instead.</p>
+                                                            </object>
+                                                            {examInfo.format === 'pdf' && (
+  <Answers columnsData={AnswersData} tableData={answersData} />
+)}
 
+                                                                </>
+                                                            )}
+                                                        </ModalBody>
+                                                    </ModalContent>
+                                                </Modal>
+
+                                                <AlertDialog
+                                                    isOpen={isDeleteDialogOpen}
+                                                    leastDestructiveRef={cancelRef}
+                                                    onClose={cancelDelete}
+                                                >
+                                                    <AlertDialogOverlay>
+                                                        <AlertDialogContent>
+                                                            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                                                                Delete Exam
+                                                            </AlertDialogHeader>
+
+                                                            <AlertDialogBody>
+                                                                Are you sure you want to delete this exam?
+                                                            </AlertDialogBody>
+
+                                                            <AlertDialogFooter>
+                                                                <Button ref={cancelRef} onClick={cancelDelete}>
+                                                                    Cancel
+                                                                </Button>
+                                                                <Button colorScheme="red" onClick={handleDelete} ml={3}>
+                                                                    Delete
+                                                                </Button>
+                                                            </AlertDialogFooter>
+                                                        </AlertDialogContent>
+                                                    </AlertDialogOverlay>
+                                                </AlertDialog>
             </Flex>
 
 
@@ -1042,7 +1137,7 @@ console.log("erorrrr",verificationCodeResponse)
                                         );
                                     } else if (cell.column.Header === "Progress") {
                                         const progressValue = answersCounts[rowIndex] || 0;
-                                        console.log("valuee",index)
+                                        
                                         data = (
                                           <Flex align='center'>
                                              
@@ -1083,76 +1178,9 @@ console.log("erorrrr",verificationCodeResponse)
                                                 
 
 
-                                                <Modal isOpen={isEditModalOpen} onClose={closeEditModal}>
-                                            <ModalOverlay />
-                                                <ModalContent maxW={'800px'}>
-                                                    <ModalHeader>Edit Exam</ModalHeader>
-                                                    <ModalCloseButton />
-                                                    {editedExam && ( // Vérifiez si editedExam est disponible
-                                                        <ModalBody>
-                                                            {/* Formulaire pour l'édition du exam */}
-                                                            <FormControl id="title">
-                                                                <FormLabel>Title</FormLabel>
-                                                                <Input type="text" value={editedExam.title} onChange={(e) => setEditedExam({ ...editedExam, title: e.target.value })} />
-                                                            </FormControl>
-                                                            <FormControl id="description">
-                                                                <FormLabel>Description</FormLabel>
-                                                                <Input type="text" value={editedExam.description} onChange={(e) => setEditedExam({ ...editedExam, description: e.target.value })} />
-                                                            </FormControl>
-                                                            <FormControl id="format">
-                                                                <FormLabel>Format</FormLabel>
-                                                                <Input type="text" value={editedExam.format} onChange={(e) => setEditedExam({ ...editedExam, format: parseInt(e.target.value) })} />
-                                                            </FormControl>
-                                                            {editedExam.format === 'pdf' && (
-       <FormControl mt={4}>
-           <div>
-                {editedExam.pdfFile && (
-                    
-                    <span>Current File:   <a href={editedExam.pdfFile} target="_blank" rel="noopener noreferrer">
-                    {getFileNameFromURL(editedExam.pdfFile)}
-                </a></span>
-                )}
-            </div>
-   </FormControl>
-   
-     
-                                                            )}
-                                                        </ModalBody>
-                                                    )}
-                                                    <ModalFooter>
-                                                        <Button colorScheme="blue" mr={3} onClick={handleSaveEdit}>Save</Button>
-                                                        <Button onClick={closeEditModal}>Cancel</Button>
-                                                    </ModalFooter>
-                                                </ModalContent>
-                                            </Modal>
                                             
                                                 {/* Delete icon */}
-                                                <AlertDialog
-                                                    isOpen={isDeleteDialogOpen}
-                                                    leastDestructiveRef={cancelRef}
-                                                    onClose={cancelDelete}
-                                                >
-                                                    <AlertDialogOverlay>
-                                                        <AlertDialogContent>
-                                                            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                                                                Delete Exam
-                                                            </AlertDialogHeader>
-
-                                                            <AlertDialogBody>
-                                                                Are you sure you want to delete this exam?
-                                                            </AlertDialogBody>
-
-                                                            <AlertDialogFooter>
-                                                                <Button ref={cancelRef} onClick={cancelDelete}>
-                                                                    Cancel
-                                                                </Button>
-                                                                <Button colorScheme="red" onClick={handleDelete} ml={3}>
-                                                                    Delete
-                                                                </Button>
-                                                            </AlertDialogFooter>
-                                                        </AlertDialogContent>
-                                                    </AlertDialogOverlay>
-                                                </AlertDialog>
+                                                
 
                                                 <DeleteIcon
                                                     w='20px'
@@ -1173,35 +1201,7 @@ console.log("erorrrr",verificationCodeResponse)
                                                     cursor="pointer"
                                                     onClick={() => handleView(row.original)}
                                                 />
-                                                <Modal isOpen={isModalViewOpen} onClose={closeModalViewA}>
-                                                    <ModalOverlay />
-                                                    <ModalContent maxW={'800px'} overflowY='auto'>
-                                                        <ModalHeader>Exam Information</ModalHeader>
-                                                        <ModalCloseButton />
-                                                        <ModalBody>
-                                                            {examInfo && (
-                                                                <>
-                                                                    <Text
-                                        color={textColorPrimary}
-                                        fontWeight='bold'
-                                        fontSize='2xl'
-                                        mt='10px'
-                                        mb='4px'
-                                        style={{ margin: "auto" }}>
-                                        {examInfo.title} {examInfo.description}
-                                    </Text>
-                                                                    <object data={examInfo.pdfFile} type="application/pdf" width="100%" height="500px">
-                                                                <p>PDF cannot be displayed. <a href={examInfo.pdfFile}>Download PDF</a> instead.</p>
-                                                            </object>
-                                                            {examInfo.format === 'pdf' && (
-  <Answers columnsData={AnswersData} tableData={answersData} />
-)}
-
-                                                                </>
-                                                            )}
-                                                        </ModalBody>
-                                                    </ModalContent>
-                                                </Modal>
+                                                
                                             </Flex>
                                         );
                                     }

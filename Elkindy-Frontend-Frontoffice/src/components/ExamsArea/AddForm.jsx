@@ -90,7 +90,7 @@ useEffect(() => {
         const response = await api.get(`http://localhost:9090/api/auth/user/${userId}`);
         
         setUser(response.data);
-        console.log(user._id)
+        
     } catch (error) {
         console.error('Error fetching user data:', error);
        
@@ -117,7 +117,7 @@ const fetchQuizzes = async () => {
 const handleSubmit = async (e) => {
   e.preventDefault();
   const isValid = validateForm();
-  console.log("Submitting form");
+  
   if (isValid) {
       try {
           const combinedDateTime = new Date(`${formData.endAtDate}T${formData.endAtTime}`);
@@ -158,14 +158,13 @@ const handleSubmit = async (e) => {
           }
 
           const professorId = user._id;
-          console.log(professorId)
           const examData = { ...formDataWithPicture, prof: professorId };
 
           const registerResponse = await axios.post(
               "http://localhost:9090/api/exam/",
               examData
           );
-          console.log(registerResponse)
+          
           navigate(-1);
       } catch (error) {
           console.error("Error adding Exam:", error);

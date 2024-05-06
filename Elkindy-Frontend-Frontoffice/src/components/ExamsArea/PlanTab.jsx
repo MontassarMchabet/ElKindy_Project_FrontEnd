@@ -24,10 +24,7 @@ const PlanTable = ({ notes }) => {
                 const decodedToken = jwtDecode(storedToken);
                 const { userId, role } = decodedToken;
 setRole(role)
-                // const response = await api.get(`http://localhost:9090/api/auth/user/${userId}`);
-                // console.log(response);
-                // setUser(response.data);
-                // console.log(user)
+               
             } catch (error) {
                 console.error('Error fetching user data:', error);
             }
@@ -36,7 +33,7 @@ setRole(role)
     }, []);
     const handleEdit = (note) => {
         seteditedRoom(note);
-        console.log("edited room :", editedRoom);
+        
         setShowModal(true);
     };
 
@@ -48,8 +45,6 @@ setRole(role)
 
             // Perform the API request to update the planning with the new data
             await axios.put(`http://localhost:9090/api/plannings/updateevaluation/${editedRoom._id}`, updatedRoom);
-
-            console.log("Planning updated successfully");
             setIsEditModalOpen(false);
             window.location.reload();
         } catch (error) {
