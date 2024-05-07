@@ -1,6 +1,6 @@
 const handleCreate = async (newPlanning) => {
     try {
-        const response = await fetch('http://localhost:9090/api/plannings/add', {
+        const response = await fetch('https://elkindy-project-backend.onrender.com/api/plannings/add', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -20,7 +20,7 @@ const handleCreate = async (newPlanning) => {
 
 const loadPlannings = async () => {
     try {
-        const response = await fetch('http://localhost:9090/api/plannings/getall');
+        const response = await fetch('https://elkindy-project-backend.onrender.com/api/plannings/getall');
         if (response.ok) {
             const data = await response.json();
             return data;
@@ -35,7 +35,7 @@ const loadPlannings = async () => {
 
 const handleUpdate = async (updatedPlanning) => {
     try {
-        const response = await fetch(`http://localhost:9090/api/plannings/update/${updatedPlanning.id}`, {
+        const response = await fetch(`https://elkindy-project-backend.onrender.com/api/plannings/update/${updatedPlanning.id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ const handleUpdate = async (updatedPlanning) => {
 
 const handleDelete = async (id) => {
     try {
-        const response = await fetch(`http://localhost:9090/api/plannings/delete/${id}`, {
+        const response = await fetch(`https://elkindy-project-backend.onrender.com/api/plannings/delete/${id}`, {
             method: 'DELETE',
         });
         if (response.ok) {

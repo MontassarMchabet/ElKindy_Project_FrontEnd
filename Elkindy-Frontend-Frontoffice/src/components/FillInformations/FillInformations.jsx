@@ -24,7 +24,7 @@ const FillInformations = () => {
             const decodedToken = jwtDecode(storedToken);
             const { userId, role } = decodedToken;
 
-            const response = await api.patch(`http://localhost:9090/api/auth/editClient/${userId}`, formData);
+            const response = await api.patch(`https://elkindy-project-backend.onrender.com/api/auth/editClient/${userId}`, formData);
 
             setNavigateToHome(true);
         } catch (error) {

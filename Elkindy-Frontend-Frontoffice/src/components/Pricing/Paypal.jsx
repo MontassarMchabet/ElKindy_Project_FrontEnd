@@ -61,7 +61,7 @@ const Paypal = ({ planValue }) => {
                 return;
             }
 
-            const response = await api.put(`http://localhost:9090/api/auth/updateSubscription/${userId}`, {
+            const response = await api.put(`https://elkindy-project-backend.onrender.com/api/auth/updateSubscription/${userId}`, {
                 subscription: subscriptionType,
                 subscriptionPrice: subscriptionPrice,
             }, {
@@ -70,7 +70,7 @@ const Paypal = ({ planValue }) => {
                 },
             });
 
-            const responseHistory = await api.post(`http://localhost:9090/api/auth/addSubscriptionHistory/${userId}`, {
+            const responseHistory = await api.post(`https://elkindy-project-backend.onrender.com/api/auth/addSubscriptionHistory/${userId}`, {
                 subscriptionType: subscriptionType,
                 subscriptionPrice: subscriptionPrice,
             }, {

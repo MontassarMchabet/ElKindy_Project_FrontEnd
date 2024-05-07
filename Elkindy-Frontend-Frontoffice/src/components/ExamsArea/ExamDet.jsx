@@ -34,17 +34,17 @@ const ExamDet = () => {
                 const { userId } = decodedToken;
                 
                 // Fetch user data
-                const response = await api.get(`http://localhost:9090/api/auth/user/${userId}`);
+                const response = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${userId}`);
                 setUser(response.data);
     
                 // Fetch exam details after setting user data
-                const examResponse = await fetch(`http://localhost:9090/api/exam/${id}`);
+                const examResponse = await fetch(`https://elkindy-project-backend.onrender.com/api/exam/${id}`);
                 if (examResponse.ok) {
                     const data = await examResponse.json();
                     setExamDetails(data);
     
                     // Check if user has answered the exam
-                    const answerResponse = await axios.get(`http://localhost:9090/api/answer/exam/${id}/client/${userId}`);
+                    const answerResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/answer/exam/${id}/client/${userId}`);
                     if (answerResponse.data.answer) {
                         localStorage.setItem(`hasAnswered_${id}`, 'true');
                         setHasAnswered(true);
@@ -78,7 +78,7 @@ const ExamDet = () => {
           const clientId = user._id;
           const quizzId = examDetails.quiz._id;
   
-          const response = await axios.post('http://localhost:9090/api/note/check', { clientId, quizzId });
+          const response = await axios.post('https://elkindy-project-backend.onrender.com/api/note/check', { clientId, quizzId });
           setIsButtonDisabled(response.data.isButtonDisabled);
         } catch (error) {
           console.error('Error checking Note document:', error);
@@ -151,7 +151,7 @@ const ExamDet = () => {
               const clientId = user._id;
               
               
-              const pdfAnswersResponse = await axios.get(`http://localhost:9090/api/answer/answers/${examId}`);
+              const pdfAnswersResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/answer/answers/${examId}`);
         const answerPdfUrls = pdfAnswersResponse.data.map(answer => answer.answerPdf);
         
               const text = await pdfToText(answerFile);
@@ -163,7 +163,7 @@ const ExamDet = () => {
                 try {
 
                   const pdfUrl = answerPdfUrls[i];
-                  const response = await axios.get('http://localhost:9090/api/answer/fetch-pdf', {
+                  const response = await axios.get('https://elkindy-project-backend.onrender.com/api/answer/fetch-pdf', {
                     params: { url: pdfUrl },
                     responseType: 'blob' 
                 });
@@ -201,7 +201,7 @@ const ExamDet = () => {
                       formDataToSend.append("image", answerFile);
                      
                       const uploadResponse = await axios.post(
-                          "http://localhost:9090/api/image/uploadimage",
+                          "https://elkindy-project-backend.onrender.com/api/image/uploadimage",
                           formDataToSend,
                           {
                               headers: {
@@ -212,7 +212,7 @@ const ExamDet = () => {
   
                       const answerPdf = uploadResponse.data.downloadURL[0];
                       const response = await axios.post(
-                          "http://localhost:9090/api/answer",
+                          "https://elkindy-project-backend.onrender.com/api/answer",
                           { examId, answerPdf, clientId }
                       );
                       window.location.reload();
@@ -225,7 +225,7 @@ const ExamDet = () => {
                   const formDataToSend = new FormData();
                   formDataToSend.append("image", answerFile);
                   const uploadResponse = await axios.post(
-                      "http://localhost:9090/api/image/uploadimage",
+                      "https://elkindy-project-backend.onrender.com/api/image/uploadimage",
                       formDataToSend,
                       {
                           headers: {
@@ -236,7 +236,7 @@ const ExamDet = () => {
   
                   const answerPdf = uploadResponse.data.downloadURL[0];
                   const response = await axios.post(
-                      "http://localhost:9090/api/answer",
+                      "https://elkindy-project-backend.onrender.com/api/answer",
                       { examId, answerPdf, clientId }
                   );
                   window.location.reload();
@@ -256,7 +256,7 @@ const ExamDet = () => {
         if (confirmDelete) {
             try {
                
-                const response = await axios.delete(`http://localhost:9090/api/exam/${examId}`);
+                const response = await axios.delete(`https://elkindy-project-backend.onrender.com/api/exam/${examId}`);
         
                
                 if (response.status === 200) {

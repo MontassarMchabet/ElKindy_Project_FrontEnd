@@ -47,7 +47,7 @@ export default function ColumnsTable(props) {
         // Fonction pour sauvegarder les modifications du cours
         const handleSaveEdit = async () => {
             try {
-                await axios.put(`http://localhost:9090/api/classroom/update/${editedCourse._id}`, editedCourse);
+                await axios.put(`https://elkindy-project-backend.onrender.com/api/classroom/update/${editedCourse._id}`, editedCourse);
                 console.log("classroom updated successfully");
                 setIsEditModalOpen(false); 
                 fetchData();
@@ -176,7 +176,7 @@ export default function ColumnsTable(props) {
         if (isValid) {
             try {
                 const response = await axios.post(
-                    "http://localhost:9090/api/classroom/add",
+                    "https://elkindy-project-backend.onrender.com/api/classroom/add",
                     formData
                 );
                 fetchData()

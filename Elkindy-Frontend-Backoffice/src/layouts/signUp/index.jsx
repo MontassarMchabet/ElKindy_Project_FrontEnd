@@ -38,14 +38,14 @@ function SignUp() {
         const isValid = await validateForm();
         if (isValid) {
             try {
-                const response = await api.post("http://localhost:9090/api/auth/verificationCode", {
+                const response = await api.post("https://elkindy-project-backend.onrender.com/api/auth/verificationCode", {
                     email: formData.email,
                     username: formData.username
                 });
                 const { verificationCode } = response.data;
 
                 const responsehashedVerificationCode =
-                    await api.post("http://localhost:9090/api/auth/hashverificationcode", {
+                    await api.post("https://elkindy-project-backend.onrender.com/api/auth/hashverificationcode", {
                         verificationCode
                     })
                 const { hashedCode } = responsehashedVerificationCode.data;
@@ -103,7 +103,7 @@ function SignUp() {
         }
 
         try {
-            const emailResponse = await api.get(`http://localhost:9090/api/auth/check/email/${formData.email}`);
+            const emailResponse = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/check/email/${formData.email}`);
             if (emailResponse.data.exists) {
                 errors.email = 'Email already in use';
             }
@@ -112,7 +112,7 @@ function SignUp() {
         }
 
         try {
-            const usernameResponse = await api.get(`http://localhost:9090/api/auth/check/username/${formData.username}`);
+            const usernameResponse = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/check/username/${formData.username}`);
             if (usernameResponse.data.exists) {
                 errors.username = 'Username already taken';
             }
@@ -134,7 +134,7 @@ function SignUp() {
                     return;
                 }
                 const hashedVerificationCode = localStorage.getItem('verificationCode');
-                const responseisCodeCorrect = await api.post("http://localhost:9090/api/auth/verifycode", {
+                const responseisCodeCorrect = await api.post("https://elkindy-project-backend.onrender.com/api/auth/verifycode", {
                     code: formData.code,
                     hashedVerificationCode
                 });
@@ -145,7 +145,7 @@ function SignUp() {
                     return;
                 } else {
                     const response = await api.post(
-                        "http://localhost:9090/api/auth/register",
+                        "https://elkindy-project-backend.onrender.com/api/auth/register",
                         formData
                     );
                     const { token, refreshToken } = response.data;

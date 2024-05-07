@@ -100,7 +100,7 @@ const HeaderOne = () => {
                 const decodedToken = jwtDecode(storedToken);
                 const { userId, role } = decodedToken;
 
-                const response = await api.get(`http://localhost:9090/api/auth/user/${userId}`);
+                const response = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${userId}`);
                 setUser(response.data);
             } catch (error) {
                 console.error('Error fetching user data:', error);
@@ -132,8 +132,8 @@ const HeaderOne = () => {
             const { userId, role } = decodedToken;
             console.log(userId,role)
 
-            const responseHistory = await api.post(`http://localhost:9090/api/auth/cancelSubscriptionHistory/${userId}`);
-            const response = await api.put(`http://localhost:9090/api/auth/cancelSubscription/${userId}`);
+            const responseHistory = await api.post(`https://elkindy-project-backend.onrender.com/api/auth/cancelSubscriptionHistory/${userId}`);
+            const response = await api.put(`https://elkindy-project-backend.onrender.com/api/auth/cancelSubscription/${userId}`);
 
             console.log(response);
             console.log(responseHistory);
@@ -184,7 +184,7 @@ const HeaderOne = () => {
 
     const fetchData = async () => {
         try {
-            const notifsResponse = await axios.get('http://localhost:9090/api/order/notifs');
+            const notifsResponse = await axios.get('https://elkindy-project-backend.onrender.com/api/order/notifs');
             setNotifications(notifsResponse.data);
             
         } catch (error) {
@@ -227,7 +227,7 @@ const HeaderOne = () => {
 
     const handleRead = () => {
         
-        const response = axios.put('http://localhost:9090/api/order/notifs', {read:"true"});
+        const response = axios.put('https://elkindy-project-backend.onrender.com/api/order/notifs', {read:"true"});
         if (response.data) {
             return response.data;
         }

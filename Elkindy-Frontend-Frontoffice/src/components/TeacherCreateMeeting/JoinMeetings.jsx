@@ -20,9 +20,9 @@ const JoinMeetings = () => {
 
     const fetchMeetings = async () => {
       try {
-        const response = await axios.get(`http://localhost:9090/api/plannings/meetings/participant/${studentName}`);
+        const response = await axios.get(`https://elkindy-project-backend.onrender.com/api/plannings/meetings/participant/${studentName}`);
         const updatedPlannings = await Promise.all(response.data.meetings.map(async (planning) => {
-          const teacherResponse = await axios.get(`http://localhost:9090/api/auth/user/${planning.teacherName}`);
+          const teacherResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${planning.teacherName}`);
 
           return {
             ...planning,

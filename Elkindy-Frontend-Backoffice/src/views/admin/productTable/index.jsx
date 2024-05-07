@@ -13,7 +13,7 @@ export default function Settings() {
 
     const fetchData = async () => {
         try {
-            const productResponse = await axios.get('http://localhost:9090/api/product');
+            const productResponse = await axios.get('https://elkindy-project-backend.onrender.com/api/product');
             setProductData(productResponse.data);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -35,7 +35,7 @@ export default function Settings() {
     const handleDelete = async () => {
         setIsDeleteDialogOpen(false);
         try {
-            await axios.delete(`http://localhost:9090/api/product/${deletingId}`);
+            await axios.delete(`https://elkindy-project-backend.onrender.com/api/product/${deletingId}`);
             fetchData();
         } catch (error) {
             console.error("Error deleting user:", error);

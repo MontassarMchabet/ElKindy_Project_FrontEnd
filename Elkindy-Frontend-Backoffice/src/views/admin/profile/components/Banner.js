@@ -35,7 +35,7 @@ export default function Banner(props) {
         const decodedToken = jwtDecode(token);
         const { userId, role } = decodedToken;
 
-        const response = await api.get(`http://localhost:9090/api/auth/user/${userId}`);
+        const response = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${userId}`);
         setUser(response.data);
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -102,7 +102,7 @@ export default function Banner(props) {
     } else {
       try {
         if (email !== originalEmail) {
-          const emailResponse = await api.get(`http://localhost:9090/api/auth/check/email/${email}`);
+          const emailResponse = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/check/email/${email}`);
           if (emailResponse.data.exists) {
             setErrorsEdit({ ...errorsEdit, email: "Email is not valid" });
             return false;
@@ -127,7 +127,7 @@ export default function Banner(props) {
     } else {
       try {
         if (username !== originalUsername) {
-          const usernameResponse = await api.get(`http://localhost:9090/api/auth/check/username/${username}`);
+          const usernameResponse = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/check/username/${username}`);
           if (usernameResponse.data.exists) {
             setErrorsEdit({ ...errorsEdit, username: "Username is not valid" });
             return false;
@@ -182,7 +182,7 @@ export default function Banner(props) {
     } else {
       try {
         if (cinNumber !== originalCIN) {
-          const cinResponse = await api.get(`http://localhost:9090/api/auth/check/cin/${cinNumber}`);
+          const cinResponse = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/check/cin/${cinNumber}`);
           if (cinResponse.data.exists) {
             setErrorsEdit({ ...errorsEdit, cinNumber: "CIN number is not valid" });
             return false;
@@ -211,7 +211,7 @@ export default function Banner(props) {
     } else {
       try {
         if (phoneNumber !== originalPhoneNumber) {
-          const phoneResponse = await api.get(`http://localhost:9090/api/auth/check/phone/${phoneNumber}`);
+          const phoneResponse = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/check/phone/${phoneNumber}`);
           if (phoneResponse.data.exists) {
             setErrorsEdit({ ...errorsEdit, phoneNumber: "Phone number is not valid" });
             return false;
@@ -232,7 +232,7 @@ export default function Banner(props) {
         formDataToSend.append("image", profilePictureFile);
 
         const uploadResponse = await api.post(
-          "http://localhost:9090/api/image/uploadimage",
+          "https://elkindy-project-backend.onrender.com/api/image/uploadimage",
           formDataToSend,
           {
             headers: {
@@ -243,7 +243,7 @@ export default function Banner(props) {
         editedUser.profilePicture = uploadResponse.data.downloadURL[0];
       }
 
-      await api.patch(`http://localhost:9090/api/auth/editAdminProf/${editedUser._id}`, editedUser);
+      await api.patch(`https://elkindy-project-backend.onrender.com/api/auth/editAdminProf/${editedUser._id}`, editedUser);
 
       setIsEditModalOpen(false);
       window.location.reload();

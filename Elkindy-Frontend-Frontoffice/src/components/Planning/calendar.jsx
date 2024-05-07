@@ -33,12 +33,12 @@ const HeaderBar = () => {
         const decodedToken = jwtDecode(storedToken);
         const { userId, role } = decodedToken;
 
-        const response = await axios.get(`http://localhost:9090/api/auth/user/${userId}`);
+        const response = await axios.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${userId}`);
         setUser(response.data);
         console.log("User data:", response.data);
 
         if (response.data.role === "client") {
-          const response2 = await axios.get(`http://localhost:9090/api/plannings/GetStudentsWithClassroomAndId/${userId}`);
+          const response2 = await axios.get(`https://elkindy-project-backend.onrender.com/api/plannings/GetStudentsWithClassroomAndId/${userId}`);
           if (!Array.isArray(response2.data.existingPlanningForStudents)) {
             throw new Error("Data is not in the expected format");
           }
@@ -47,7 +47,7 @@ const HeaderBar = () => {
               response2.data.existingPlanningForStudents.map(async (planning) => {
                 
                 if (planning.type === "instrument") {
-                  const roomResponse = await axios.get(`http://localhost:9090/api/Room/getById/${planning.roomId}`);
+                  const roomResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/Room/getById/${planning.roomId}`);
                   return {
                     ...planning,
                     StartTime: moment(planning.date).set({
@@ -62,8 +62,8 @@ const HeaderBar = () => {
                     Location: roomResponse.data.room_number,
                   };
                 } else {
-                  const classroomResponse = await axios.get(`http://localhost:9090/api/classroom/getById/${planning.classroomId}`);
-                  const roomResponse = await axios.get(`http://localhost:9090/api/Room/getById/${planning.roomId}`);
+                  const classroomResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/classroom/getById/${planning.classroomId}`);
+                  const roomResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/Room/getById/${planning.roomId}`);
                   return {
                     ...planning,
                     StartTime: moment(planning.date).set({
@@ -88,12 +88,12 @@ const HeaderBar = () => {
         }
 
         if (response.data.role === "prof") {
-          const response3 = await axios.get(`http://localhost:9090/api/plannings/getByTeacherId/${userId}`);
+          const response3 = await axios.get(`https://elkindy-project-backend.onrender.com/api/plannings/getByTeacherId/${userId}`);
           const formattedData = await Promise.all(
             response3.data.map(async (planning) => {
               if (planning.type === "instrument") {
-                const studentResponse = await axios.get(`http://localhost:9090/api/auth/user/${planning.studentIds}`);
-                const roomResponse = await axios.get(`http://localhost:9090/api/Room/getById/${planning.roomId}`);
+                const studentResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${planning.studentIds}`);
+                const roomResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/Room/getById/${planning.roomId}`);
                 return {
                   ...planning,
                   StartTime: moment(planning.date).set({
@@ -108,8 +108,8 @@ const HeaderBar = () => {
                   Location: roomResponse.data.room_number,
                 };
               } else {
-                const classroomResponse = await axios.get(`http://localhost:9090/api/classroom/getById/${planning.classroomId}`);
-                const roomResponse = await axios.get(`http://localhost:9090/api/Room/getById/${planning.roomId}`);
+                const classroomResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/classroom/getById/${planning.classroomId}`);
+                const roomResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/Room/getById/${planning.roomId}`);
                 return {
                   ...planning,
                   StartTime: moment(planning.date).set({

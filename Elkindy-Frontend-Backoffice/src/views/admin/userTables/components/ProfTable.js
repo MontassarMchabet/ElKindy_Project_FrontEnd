@@ -163,7 +163,7 @@ export default function ColumnsTable(props) {
         } else {
             try {
                 if (email !== originalEmail) {
-                    const emailResponse = await api.get(`http://localhost:9090/api/auth/check/email/${email}`);
+                    const emailResponse = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/check/email/${email}`);
                     if (emailResponse.data.exists) {
                         setErrorsEdit({ ...errorsEdit, email: "Email is not valid" });
                         return false;
@@ -188,7 +188,7 @@ export default function ColumnsTable(props) {
         } else {
             try {
                 if (username !== originalUsername) {
-                    const usernameResponse = await api.get(`http://localhost:9090/api/auth/check/username/${username}`);
+                    const usernameResponse = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/check/username/${username}`);
                     if (usernameResponse.data.exists) {
                         setErrorsEdit({ ...errorsEdit, username: "Username is not valid" });
                         return false;
@@ -243,7 +243,7 @@ export default function ColumnsTable(props) {
         } else {
             try {
                 if (cinNumber !== originalCIN) {
-                    const cinResponse = await api.get(`http://localhost:9090/api/auth/check/cin/${cinNumber}`);
+                    const cinResponse = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/check/cin/${cinNumber}`);
                     if (cinResponse.data.exists) {
                         setErrorsEdit({ ...errorsEdit, cinNumber: "CIN number is not valid" });
                         return false;
@@ -272,7 +272,7 @@ export default function ColumnsTable(props) {
         } else {
             try {
                 if (phoneNumber !== originalPhoneNumber) {
-                    const phoneResponse = await api.get(`http://localhost:9090/api/auth/check/phone/${phoneNumber}`);
+                    const phoneResponse = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/check/phone/${phoneNumber}`);
                     if (phoneResponse.data.exists) {
                         setErrorsEdit({ ...errorsEdit, phoneNumber: "Phone number is not valid" });
                         return false;
@@ -323,7 +323,7 @@ export default function ColumnsTable(props) {
                 formDataToSend.append("image", profilePictureFile);
 
                 const uploadResponse = await api.post(
-                    "http://localhost:9090/api/image/uploadimage",
+                    "https://elkindy-project-backend.onrender.com/api/image/uploadimage",
                     formDataToSend,
                     {
                         headers: {
@@ -333,7 +333,7 @@ export default function ColumnsTable(props) {
                 );
                 editedUser.profilePicture = uploadResponse.data.downloadURL[0];
             }
-            await api.patch(`http://localhost:9090/api/auth/editAdminProf/${editedUser._id}`, editedUser);
+            await api.patch(`https://elkindy-project-backend.onrender.com/api/auth/editAdminProf/${editedUser._id}`, editedUser);
 
             setIsEditModalOpenP(false);
             fetchData();
@@ -435,7 +435,7 @@ export default function ColumnsTable(props) {
 
         try {
 
-            const emailResponse = await api.get(`http://localhost:9090/api/auth/check/email/${formData.email}`);
+            const emailResponse = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/check/email/${formData.email}`);
             if (emailResponse.data.exists) {
                 errors.email = 'Email already in use';
             }
@@ -444,7 +444,7 @@ export default function ColumnsTable(props) {
         }
 
         try {
-            const usernameResponse = await api.get(`http://localhost:9090/api/auth/check/username/${formData.username}`);
+            const usernameResponse = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/check/username/${formData.username}`);
 
             if (usernameResponse.data.exists) {
                 errors.username = 'Username already taken';
@@ -454,7 +454,7 @@ export default function ColumnsTable(props) {
         }
 
         try {
-            const cinResponse = await api.get(`http://localhost:9090/api/auth/check/cin/${formData.cinNumber}`);
+            const cinResponse = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/check/cin/${formData.cinNumber}`);
             if (cinResponse.data.exists) {
                 errors.cinNumber = 'CIN is invalid';
             }
@@ -463,7 +463,7 @@ export default function ColumnsTable(props) {
         }
 
         try {
-            const phoneResponse = await api.get(`http://localhost:9090/api/auth/check/phone/${formData.phoneNumber}`);
+            const phoneResponse = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/check/phone/${formData.phoneNumber}`);
 
             if (phoneResponse.data.exists) {
                 errors.phoneNumber = 'Phone number is invalid';
@@ -485,7 +485,7 @@ export default function ColumnsTable(props) {
                 formDataToSend.append("image", formData.profilePicture); // Use "image" as the key
 
                 const uploadResponse = await api.post(
-                    "http://localhost:9090/api/image/uploadimage",
+                    "https://elkindy-project-backend.onrender.com/api/image/uploadimage",
                     formDataToSend,
                     {
                         headers: {
@@ -498,7 +498,7 @@ export default function ColumnsTable(props) {
                 const formDataWithProfilePicture = { ...formData, profilePicture: profilePictureUrl };
 
                 const response = await api.post(
-                    "http://localhost:9090/api/auth/registerProf",
+                    "https://elkindy-project-backend.onrender.com/api/auth/registerProf",
                     formDataWithProfilePicture
                 );
                 fetchData()

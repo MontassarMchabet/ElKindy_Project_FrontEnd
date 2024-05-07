@@ -52,12 +52,12 @@ function ForgotPassword() {
         setErrorEmail("Invalid email");
         return;
       }
-      const emailResponse = await api.get(`http://localhost:9090/api/auth/check/email/${email}`);
+      const emailResponse = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/check/email/${email}`);
       if (!emailResponse.data.exists) {
         setErrorEmail("Email not found");
         return;
       }
-      const response = await api.post('http://localhost:9090/api/auth/forgotpasswordtoken', formData);
+      const response = await api.post('https://elkindy-project-backend.onrender.com/api/auth/forgotpasswordtoken', formData);
       setErrorEmail('');
       setSuccessImage(true);
       setTimeout(() => {

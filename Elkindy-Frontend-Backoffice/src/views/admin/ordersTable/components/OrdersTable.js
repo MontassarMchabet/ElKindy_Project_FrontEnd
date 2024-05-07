@@ -121,11 +121,11 @@ export default function ColumnsTable(props) {
 
     const handleSaveEdit = async () => {
         try {
-            await axios.put(`http://localhost:9090/api/order/update-order/${editedOrder._id}`, editedOrder);
+            await axios.put(`https://elkindy-project-backend.onrender.com/api/order/update-order/${editedOrder._id}`, editedOrder);
             setIsEditModalOpen(false);
             fetchData();
             handleNotification();
-            await axios.post("http://localhost:9090/api/order/notif", {senderName: "Admin", receiverName:editedOrder.user.username, orderStatus: editedOrder.orderStatus});
+            await axios.post("https://elkindy-project-backend.onrender.com/api/order/notif", {senderName: "Admin", receiverName:editedOrder.user.username, orderStatus: editedOrder.orderStatus});
         } catch (error) {
             console.error("Error updating user:", error);
         }

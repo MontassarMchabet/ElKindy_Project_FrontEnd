@@ -19,7 +19,7 @@ const DeveloperAreaTabs = () => {
         const decodedToken = jwtDecode(storedToken);
         const { userId, role } = decodedToken;
 
-        const response = await api.get(`http://localhost:9090/api/auth/user/${userId}`);
+        const response = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${userId}`);
         setUser(response.data);
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -57,7 +57,7 @@ const DeveloperAreaTabs = () => {
         formDataToSend.append("image", profilePictureFile);
 
         const uploadResponse = await api.post(
-          "http://localhost:9090/api/image/uploadimage",
+          "https://elkindy-project-backend.onrender.com/api/image/uploadimage",
           formDataToSend,
           {
             headers: {
@@ -68,8 +68,8 @@ const DeveloperAreaTabs = () => {
         user.profilePicture = uploadResponse.data.downloadURL[0];
       }
 
-      await api.patch(`http://localhost:9090/api/auth/editClient/${user._id}`, formData);
-      const response = await api.get(`http://localhost:9090/api/auth/user/${user._id}`);
+      await api.patch(`https://elkindy-project-backend.onrender.com/api/auth/editClient/${user._id}`, formData);
+      const response = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${user._id}`);
       setUser(response.data);
       setShowModal(false);
       window.location.reload();
@@ -83,8 +83,8 @@ const DeveloperAreaTabs = () => {
     try {
       console.log('user:', user);
       console.log('user id:', user._id);
-      await api.patch(`http://localhost:9090/api/auth/editAdminProf/${user._id}`, formData);
-      const response = await api.get(`http://localhost:9090/api/auth/user/${user._id}`);
+      await api.patch(`https://elkindy-project-backend.onrender.com/api/auth/editAdminProf/${user._id}`, formData);
+      const response = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${user._id}`);
       setUser(response.data);
       setShowModal(false);
     } catch (error) {

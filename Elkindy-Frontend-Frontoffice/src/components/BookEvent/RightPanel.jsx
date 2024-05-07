@@ -34,7 +34,7 @@ const RightPanel = () => {
             const decodedToken = jwtDecode(storedToken);
             const { userId, role } = decodedToken;
     
-            const response = await axios.get(`http://localhost:9090/api/auth/user/${userId}`);
+            const response = await axios.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${userId}`);
             setUser(response.data);
           } catch (error) {
             console.error('Error fetching user data:', error);
@@ -221,7 +221,7 @@ const RightPanel = () => {
     };
     const sendMail = async () => {
         try {
-            const response = await axios.post("http://localhost:9090/tickets/sendMail", {
+            const response = await axios.post("https://elkindy-project-backend.onrender.com/tickets/sendMail", {
                 email: user.email,
                 username: user.username
             });
@@ -275,7 +275,7 @@ const RightPanel = () => {
                     console.log('Utilisateur:', userId);
 
                     // Effectuer le paiement via une requête POST axios
-                    await axios.post("http://localhost:9090/tickets/payement", { amount: totalPrice*1000 })
+                    await axios.post("https://elkindy-project-backend.onrender.com/tickets/payement", { amount: totalPrice*1000 })
                         .then((res) => {
                             const { result } = res.data;
                             window.location.href = result.link;

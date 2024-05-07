@@ -8,7 +8,7 @@ function Success() {
     const [searchParams] = useSearchParams()
     useEffect(()=>{
         axios
-        .post(`http://localhost:9090/api/order/payement/${searchParams.get("payement_id")}`)
+        .post(`https://elkindy-project-backend.onrender.com/api/order/payement/${searchParams.get("payement_id")}`)
         .then(res=>{
          })
          .catch(err=>{

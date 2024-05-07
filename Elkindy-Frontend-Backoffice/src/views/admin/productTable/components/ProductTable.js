@@ -150,7 +150,7 @@ export default function ColumnsTable(props) {
                 formDataToSend.append("image", formData.images); // Use "image" as the key
 
                 const uploadResponse = await axios.post(
-                    "http://localhost:9090/api/image/uploadimage",
+                    "https://elkindy-project-backend.onrender.com/api/image/uploadimage",
                     formDataToSend,
                     {
                         headers: {
@@ -163,7 +163,7 @@ export default function ColumnsTable(props) {
                 const formDataWithImages = { ...formData, images: imagesUrl };
 
                 const response = await axios.post(
-                    "http://localhost:9090/api/product",
+                    "https://elkindy-project-backend.onrender.com/api/product",
                     formDataWithImages
 
                 );
@@ -185,7 +185,7 @@ export default function ColumnsTable(props) {
                     formDataToSend.append("image", imagesFile);
 
                     const uploadResponse = await axios.post(
-                        "http://localhost:9090/api/image/uploadimage",
+                        "https://elkindy-project-backend.onrender.com/api/image/uploadimage",
                         formDataToSend,
                         {
                             headers: {
@@ -195,7 +195,7 @@ export default function ColumnsTable(props) {
                     );
                     editedProduct.images = uploadResponse.data.downloadURL[0];
                 }
-                await axios.put(`http://localhost:9090/api/product/${editedProduct._id}`, editedProduct);
+                await axios.put(`https://elkindy-project-backend.onrender.com/api/product/${editedProduct._id}`, editedProduct);
                 setErrors('');
                 setIsEditModalOpen(false);
                 fetchData();

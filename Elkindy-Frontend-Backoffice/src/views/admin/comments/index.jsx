@@ -25,7 +25,7 @@ export default function Settings() {
 
     const fetchData = async () => {
         try {
-            const commentResponse = await axios.get(`http://localhost:9090/event/${eventId}/comments`);;
+            const commentResponse = await axios.get(`https://elkindy-project-backend.onrender.com/event/${eventId}/comments`);;
             setCommentsData(commentResponse.data);
         } catch (error) {
             console.error('Error fetching comments:', error);
@@ -51,7 +51,7 @@ export default function Settings() {
     const handleDelete = async () => {
         setIsDeleteDialogOpen(false);
         try {
-            await axios.delete(`http://localhost:9090/comment/delete/${deletingId}`);
+            await axios.delete(`https://elkindy-project-backend.onrender.com/comment/delete/${deletingId}`);
             console.log("Comment deleted successfully");
             fetchData();
         } catch (error) {

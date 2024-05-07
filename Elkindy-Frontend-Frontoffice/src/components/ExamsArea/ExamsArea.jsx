@@ -20,14 +20,14 @@ const AboutArea = ({ setExamInfo }) => {
                 const storedToken = Cookies.get('token');
                 const decodedToken = jwtDecode(storedToken);
                 const { userId } = decodedToken;
-                const response = await api.get(`http://localhost:9090/api/auth/user/${userId}`);
+                const response = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${userId}`);
                 
                 setUser(response.data);
                 if (response.data.role === 'client') {
-                    const examsResponse = await api.get(`http://localhost:9090/api/exam/byclass/${response.data.level}`);
+                    const examsResponse = await api.get(`https://elkindy-project-backend.onrender.com/api/exam/byclass/${response.data.level}`);
                     setExams(examsResponse.data);
                 } else {
-                    const response = await api.get('http://localhost:9090/api/exam/');
+                    const response = await api.get('https://elkindy-project-backend.onrender.com/api/exam/');
                     setExams(response.data);
                 }
             } catch (error) {

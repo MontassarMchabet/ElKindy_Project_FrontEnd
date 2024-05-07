@@ -4,14 +4,14 @@ import { jwtDecode } from 'jwt-decode';
 
 
 const getProducts = async () => {
-    const response = await axios.get("http://localhost:9090/api/product");
+    const response = await axios.get("https://elkindy-project-backend.onrender.com/api/product");
     if (response.data) {
         return response.data;
     }
 };
 
 const getSingleProduct = async (id) => {
-    const response = await axios.get(`http://localhost:9090/api/product/${id}`);
+    const response = await axios.get(`https://elkindy-project-backend.onrender.com/api/product/${id}`);
     if (response.data) {
         return response.data;
     }
@@ -23,7 +23,7 @@ const addToWishlist = async (prodId) => {
         const decodedToken = jwtDecode(storedToken);
         const userId = decodedToken.userId;
         
-        const response = await axios.put(`http://localhost:9090/api/product/wishlist/${userId}`, { prodId });
+        const response = await axios.put(`https://elkindy-project-backend.onrender.com/api/product/wishlist/${userId}`, { prodId });
         
         if (response.data) {
             return response.data;
@@ -38,7 +38,7 @@ const getUserWishlist = async () => {
     const storedToken = Cookies.get('token');
     const decodedToken = jwtDecode(storedToken);
     const userId = decodedToken;
-    const response = await axios.get(`http://localhost:9090/api/product/wishlist/${userId.userId}`);
+    const response = await axios.get(`https://elkindy-project-backend.onrender.com/api/product/wishlist/${userId.userId}`);
     if (response.data) {
         return response.data;
     }
@@ -48,7 +48,7 @@ const addToCart = async (cartData) => {
     const storedToken = Cookies.get('token');
     const decodedToken = jwtDecode(storedToken);
     const userId = decodedToken;
-    const response = await axios.post(`http://localhost:9090/api/cart/add/${userId.userId}`, cartData);
+    const response = await axios.post(`https://elkindy-project-backend.onrender.com/api/cart/add/${userId.userId}`, cartData);
     if (response.data) {
         return response.data;
     }
@@ -58,7 +58,7 @@ const getCart = async () => {
     const storedToken = Cookies.get('token');
     const decodedToken = jwtDecode(storedToken);
     const userId = decodedToken;
-    const response = await axios.get(`http://localhost:9090/api/cart/get/${userId.userId}`);
+    const response = await axios.get(`https://elkindy-project-backend.onrender.com/api/cart/get/${userId.userId}`);
     if (response.data) {
         return response.data;
     }
@@ -68,7 +68,7 @@ const removeProductFromCart = async (cartItemId) => {
     const storedToken = Cookies.get('token');
     const decodedToken = jwtDecode(storedToken);
     const userId = decodedToken;
-    const response = await axios.delete(`http://localhost:9090/api/cart/delete-product-cart/${userId.userId}/${cartItemId}`);
+    const response = await axios.delete(`https://elkindy-project-backend.onrender.com/api/cart/delete-product-cart/${userId.userId}/${cartItemId}`);
     if (response.data) {
         return response.data;
     }
@@ -78,7 +78,7 @@ const updateProductFromCart = async (cartDetail) => {
     const storedToken = Cookies.get('token');
     const decodedToken = jwtDecode(storedToken);
     const userId = decodedToken;
-    const response = await axios.put(`http://localhost:9090/api/cart/update-product-cart/${userId.userId}/${cartDetail.cartItemId}/${cartDetail.quantity}`);
+    const response = await axios.put(`https://elkindy-project-backend.onrender.com/api/cart/update-product-cart/${userId.userId}/${cartDetail.cartItemId}/${cartDetail.quantity}`);
     if (response.data) {
         return response.data;
     }
@@ -89,7 +89,7 @@ const rateProduct = async (data) => {
         const storedToken = Cookies.get('token');
         const decodedToken = jwtDecode(storedToken);
         const userId = decodedToken.userId;
-        const response = await axios.put(`http://localhost:9090/api/product/rating/${userId}`, data);
+        const response = await axios.put(`https://elkindy-project-backend.onrender.com/api/product/rating/${userId}`, data);
         if (response.data) {
             return response.data;
         }
@@ -104,7 +104,7 @@ const createOrder = async (orderDetail) => {
         const storedToken = Cookies.get('token');
         const decodedToken = jwtDecode(storedToken);
         const userId = decodedToken.userId;
-        const response = await axios.post(`http://localhost:9090/api/order/cash-order/${userId}`, orderDetail);
+        const response = await axios.post(`https://elkindy-project-backend.onrender.com/api/order/cash-order/${userId}`, orderDetail);
         if (response.data) {
             return response.data;
         }
@@ -118,7 +118,7 @@ const getUserOrders = async () => {
         const storedToken = Cookies.get('token');
         const decodedToken = jwtDecode(storedToken);
         const userId = decodedToken.userId;
-        const response = await axios.get(`http://localhost:9090/api/order/getmyorders/${userId}`);
+        const response = await axios.get(`https://elkindy-project-backend.onrender.com/api/order/getmyorders/${userId}`);
         if (response.data) {
             return response.data;
         }
@@ -128,7 +128,7 @@ const emptyUserCart = async () => {
     const storedToken = Cookies.get('token');
     const decodedToken = jwtDecode(storedToken);
     const userId = decodedToken.userId;
-    const response = await axios.delete(`http://localhost:9090/api/cart/empty-cart/${userId}`);
+    const response = await axios.delete(`https://elkindy-project-backend.onrender.com/api/cart/empty-cart/${userId}`);
     if (response.data) {
         return response.data;
     }

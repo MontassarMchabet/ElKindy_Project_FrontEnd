@@ -171,7 +171,7 @@ useEffect(() => {
         const storedToken = Cookies.get('token');
         const decodedToken = jwtDecode(storedToken);
         const { userId } = decodedToken;
-        const response = await api.get(`http://localhost:9090/api/auth/user/${userId}`);
+        const response = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${userId}`);
         
         setUser(response.data);
         
@@ -211,7 +211,7 @@ const handleSubmitB = async (e) => {
             };
 
             
-            const response = await axios.post('http://localhost:9090/api/quiz/quizzes', dataToSend);
+            const response = await axios.post('https://elkindy-project-backend.onrender.com/api/quiz/quizzes', dataToSend);
 
             
 

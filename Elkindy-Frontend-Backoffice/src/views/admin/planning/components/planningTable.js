@@ -73,26 +73,26 @@ export default function ColumnsTable(props) {
         console.log(e.Lastweek)
         setIsLoading(true);
         try {
-            const response = await axios.post(`http://localhost:9090/api/plannings/autoplanning/${e.Startweek}/${e.Lastweek}/${e.startDate}/${e.endDate}`);
+            const response = await axios.post(`https://elkindy-project-backend.onrender.com/api/plannings/autoplanning/${e.Startweek}/${e.Lastweek}/${e.startDate}/${e.endDate}`);
             console.log(response.data.createdPlannings)
             const updatedPlannings = await Promise.all(response.data.createdPlannings.map(async (planning) => {
                 // Récupérez le nom du cours pour ce planning
-                //const courseResponse = await axios.get(`http://localhost:9090/api/classroom/getById/${planning.classroomId}`);
+                //const courseResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/classroom/getById/${planning.classroomId}`);
                 let ClassroomName = "";
                 if (planning.classroomId === undefined) {
                     ClassroomName = "--";
                 } else {
-                    const studentResponse = await axios.get(`http://localhost:9090/api/classroom/getById/${planning.classroomId}`);
+                    const studentResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/classroom/getById/${planning.classroomId}`);
                     ClassroomName = studentResponse.data.name;
                 }
                 // Ajoutez le nom du cours au planning
-                const RoomResponse = await axios.get(`http://localhost:9090/api/Room/getById/${planning.roomId}`);
-                const teacherResponse = await axios.get(`http://localhost:9090/api/auth/user/${planning.teacherId}`);
+                const RoomResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/Room/getById/${planning.roomId}`);
+                const teacherResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${planning.teacherId}`);
                 let studentName = "";
                 if (planning.studentIds === undefined) {
                     studentName = "--";
                 } else {
-                    const studentResponse = await axios.get(`http://localhost:9090/api/auth/user/${planning.studentIds}`);
+                    const studentResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${planning.studentIds}`);
                     studentName = studentResponse.data.name;
                 }
                 return {
@@ -113,7 +113,7 @@ export default function ColumnsTable(props) {
     const savePlanningsToDatabase = async (plannings) => {
         try {
             console.log(plannings);
-            const response = await axios.post('http://localhost:9090/api/plannings/SaveMoreplannnings', { plannings });
+            const response = await axios.post('https://elkindy-project-backend.onrender.com/api/plannings/SaveMoreplannnings', { plannings });
     
             if (response.status === 200) {
                 console.log("Plannings saved successfully");
@@ -188,7 +188,7 @@ export default function ColumnsTable(props) {
         }
             try {
                 // Effectuer la requête API pour mettre à jour le cours avec les nouvelles données
-                await axios.put(`http://localhost:9090/api/plannings/update/${editedRoom._id}`, editedRoom);
+                await axios.put(`https://elkindy-project-backend.onrender.com/api/plannings/update/${editedRoom._id}`, editedRoom);
                
                 console.log("plannings updated successfully");
                 setIsEditModalOpen(false); 
@@ -225,7 +225,7 @@ const openTotalStudyHoursPopup = () => {
     // Fonction pour vérifier la disponibilité de la salle
 const checkRoomAvailability = async (roomId, date, startTime, endTime) => {
     try {
-        const response = await axios.get(`http://localhost:9090/api/plannings/availability/room/${roomId}/${date}/${startTime}/${endTime}`);
+        const response = await axios.get(`https://elkindy-project-backend.onrender.com/api/plannings/availability/room/${roomId}/${date}/${startTime}/${endTime}`);
         console.log(response.data.isRoomAvailable);
         return response.data.isRoomAvailable;
     } catch (error) {
@@ -236,7 +236,7 @@ const checkRoomAvailability = async (roomId, date, startTime, endTime) => {
 };
 const checkTeacherAvailability = async (teacherId, date, startTime, endTime) => {
     try {
-        const response = await axios.get(`http://localhost:9090/api/plannings/availability/teacher/${teacherId}/${date}/${startTime}/${endTime}`);
+        const response = await axios.get(`https://elkindy-project-backend.onrender.com/api/plannings/availability/teacher/${teacherId}/${date}/${startTime}/${endTime}`);
         console.log(response.data.isTeacherAvailable);
         return response.data.isTeacherAvailable;
     } catch (error) {
@@ -248,7 +248,7 @@ const checkTeacherAvailability = async (teacherId, date, startTime, endTime) => 
 const checkStudentAvailability = async (studentIds, date, startTime, endTime) => {
     console.log(studentIds)
     try {
-        const response = await axios.get(`http://localhost:9090/api/plannings/availability/studends/${studentIds}/${date}/${startTime}/${endTime}`);
+        const response = await axios.get(`https://elkindy-project-backend.onrender.com/api/plannings/availability/studends/${studentIds}/${date}/${startTime}/${endTime}`);
         console.log(response.data.areStudentsAvailable);
         return response.data.areStudentsAvailable;
     } catch (error) {
@@ -259,7 +259,7 @@ const checkStudentAvailability = async (studentIds, date, startTime, endTime) =>
 };
 const checkDurationOfCourse = async (startTime, endTime,type) => {
     try {
-        const response = await axios.get(`http://localhost:9090/api/plannings/CheckDuration/${startTime}/${endTime}/${type}`);
+        const response = await axios.get(`https://elkindy-project-backend.onrender.com/api/plannings/CheckDuration/${startTime}/${endTime}/${type}`);
         return response.data.correctDuration;
     } catch (error) {
         console.error('Error checking course duration:', error);
@@ -269,7 +269,7 @@ const checkDurationOfCourse = async (startTime, endTime,type) => {
 const calculateTotalIndividualStudyHours  = async (studentIds,date,type) => {
     
     try {
-        const response = await axios.get(`http://localhost:9090/api/plannings/TotalIndividualStudy/${studentIds}/${date}/${type}`);
+        const response = await axios.get(`https://elkindy-project-backend.onrender.com/api/plannings/TotalIndividualStudy/${studentIds}/${date}/${type}`);
         console.log(response.data.TotalIndividualStudy);
         return response.data.TotalIndividualStudy;
     } catch (error) {
@@ -279,7 +279,7 @@ const calculateTotalIndividualStudyHours  = async (studentIds,date,type) => {
 };
 const calculateTotalStudyHours  = async (classroomId,date,startTime, endTime) => {
     try {
-        const response = await axios.get(`http://localhost:9090/api/plannings/TotalStudyHours/${classroomId}/${date}/${startTime}/${endTime}`);
+        const response = await axios.get(`https://elkindy-project-backend.onrender.com/api/plannings/TotalStudyHours/${classroomId}/${date}/${startTime}/${endTime}`);
         console.log(response.data.totalStudyHoursPerWeek);
         return response.data.totalStudyHoursPerWeek;
     } catch (error) {
@@ -493,7 +493,7 @@ const calculateTotalStudyHours  = async (classroomId,date,startTime, endTime) =>
         }
         try {
             const response = await axios.post(
-                "http://localhost:9090/api/plannings/add",
+                "https://elkindy-project-backend.onrender.com/api/plannings/add",
                 formData
             );
             fetchData();

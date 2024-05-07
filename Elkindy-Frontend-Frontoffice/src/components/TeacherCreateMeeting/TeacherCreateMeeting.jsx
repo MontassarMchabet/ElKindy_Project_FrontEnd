@@ -34,7 +34,7 @@ const TeacherMeetingPage = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await axios.get('http://localhost:9090/api/auth/clients');
+        const response = await axios.get('https://elkindy-project-backend.onrender.com/api/auth/clients');
         setStudents(response.data);
       } catch (error) {
         console.error('Error fetching students:', error);
@@ -43,7 +43,7 @@ const TeacherMeetingPage = () => {
 
     const fetchMeetings = async () => {
       try {
-        const response = await axios.get('http://localhost:9090/api/plannings/get-meetings');
+        const response = await axios.get('https://elkindy-project-backend.onrender.com/api/plannings/get-meetings');
         setMeetings(response.data.meetings);
         setLoading(false);
       } catch (err) {
@@ -74,12 +74,12 @@ const TeacherMeetingPage = () => {
     const teacherName = decodedToken.userId;
 
     try {
-      await axios.post('http://localhost:9090/api/plannings/create-meeting', {
+      await axios.post('https://elkindy-project-backend.onrender.com/api/plannings/create-meeting', {
         ...formData,
         teacherName,
       });
 
-      const response = await axios.get('http://localhost:9090/api/plannings/get-meetings');
+      const response = await axios.get('https://elkindy-project-backend.onrender.com/api/plannings/get-meetings');
       setMeetings(response.data.meetings);
 
       setFormData({
@@ -95,7 +95,7 @@ const TeacherMeetingPage = () => {
 
   const deleteMeeting = async (meetingId) => {
     try {
-      await axios.delete(`http://localhost:9090/api/plannings/delete-meeting/${meetingId}`);
+      await axios.delete(`https://elkindy-project-backend.onrender.com/api/plannings/delete-meeting/${meetingId}`);
       const updatedMeetings = meetings.filter((m) => m._id !== meetingId);
       setMeetings(updatedMeetings);
     } catch (error) {

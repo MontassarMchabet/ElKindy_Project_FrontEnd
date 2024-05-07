@@ -19,7 +19,7 @@ export default function Settings() {
 
     const fetchData = async () => {
         try {
-            const eventResponse = await axios.get('http://localhost:9090/event/all');
+            const eventResponse = await axios.get('https://elkindy-project-backend.onrender.com/event/all');
             seteventsData(eventResponse.data);
         } catch (error) {
             console.error('Error fetching data:', error);

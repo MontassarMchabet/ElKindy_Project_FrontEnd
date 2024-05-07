@@ -23,7 +23,7 @@ export default function Conversion(props) {
   const fetchSubscriptionStatus = async () => {
     try {
       const response = await api.get(
-        "http://localhost:9090/api/auth/subscription/status"
+        "https://elkindy-project-backend.onrender.com/api/auth/subscription/status"
       );
       const { active, inactive } = response.data.SubscriptionStatus;
       setSubscriptionData({ active, inactive });

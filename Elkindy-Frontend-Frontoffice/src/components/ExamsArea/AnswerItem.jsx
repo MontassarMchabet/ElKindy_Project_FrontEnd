@@ -20,7 +20,7 @@ const AnswerItemCom = ({ item, className, onEvaluate }) => {
                 const storedToken = Cookies.get('token');
                 const decodedToken = jwtDecode(storedToken);
                 const { userId } = decodedToken;
-                const response = await api.get(`http://localhost:9090/api/auth/user/${userId}`);
+                const response = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${userId}`);
                 
                 setUser(response.data);
                
@@ -48,7 +48,7 @@ const AnswerItemCom = ({ item, className, onEvaluate }) => {
     
     
             const response = await axios.post(
-                'http://localhost:9090/api/note/',
+                'https://elkindy-project-backend.onrender.com/api/note/',
                 { answerId, teacherId, content, score }
             );
     

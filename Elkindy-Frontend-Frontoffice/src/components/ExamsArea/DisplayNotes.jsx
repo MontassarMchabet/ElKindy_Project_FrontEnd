@@ -17,11 +17,11 @@ const NotesArea = () => {
                 const storedToken = Cookies.get('token');
                 const decodedToken = jwtDecode(storedToken);
                 const { userId } = decodedToken;
-                const response = await api.get(`http://localhost:9090/api/auth/user/${userId}`);
+                const response = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${userId}`);
                 
                 setUser(response.data);
                 
-                    const notesResponse = await api.get(`http://localhost:9090/api/note/byclient/${userId}`);
+                    const notesResponse = await api.get(`https://elkindy-project-backend.onrender.com/api/note/byclient/${userId}`);
                     setNotes(notesResponse.data);
                     
                 

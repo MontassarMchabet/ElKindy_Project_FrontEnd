@@ -33,7 +33,7 @@ export default function TotalSpent(props) {
 
   const fetchData = async () => {
     try {
-      const response = await api.get('http://localhost:9090/api/auth/subscription/type');
+      const response = await api.get('https://elkindy-project-backend.onrender.com/api/auth/subscription/type');
       console.log('Response:', response.data);
       const subscriptionByMonth = response.data.subscriptionByMonth;
 
