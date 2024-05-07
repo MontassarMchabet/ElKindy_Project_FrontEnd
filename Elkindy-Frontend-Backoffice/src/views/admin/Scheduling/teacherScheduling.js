@@ -22,12 +22,12 @@ const GroupCustomWorkDays = () => {
     useEffect(() => {
       const fetchPlannings = async () => {
         try {
-          const response = await axios.get('http://localhost:9090/api/plannings/getall');
+          const response = await axios.get('https://elkindy-project-backend.onrender.com/api/plannings/getall');
     
           const formattedData = await Promise.all(response.data.plannings.map(async planning => {
             if (planning.type === "instrument") {
-              const studentResponse = await axios.get(`http://localhost:9090/api/auth/user/${planning.studentIds}`);
-              const RoomResponse = await axios.get(`http://localhost:9090/api/Room/getById/${planning.roomId}`);
+              const studentResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${planning.studentIds}`);
+              const RoomResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/Room/getById/${planning.roomId}`);
               return {
                 ...planning,
                 StartTime: moment(planning.date).set({
@@ -42,8 +42,8 @@ const GroupCustomWorkDays = () => {
                 Location: RoomResponse.data.room_number
               };
             } else {
-              const studentResponse = await axios.get(`http://localhost:9090/api/classroom/getById/${planning.classroomId}`);
-              const RoomResponse = await axios.get(`http://localhost:9090/api/Room/getById/${planning.roomId}`);
+              const studentResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/classroom/getById/${planning.classroomId}`);
+              const RoomResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/Room/getById/${planning.roomId}`);
               return {
                 ...planning,
                 StartTime: moment(planning.date).set({
@@ -73,7 +73,7 @@ const GroupCustomWorkDays = () => {
       const fetchProfs = async () => {
         try {
           // Récupérer la liste des enseignants depuis l'API
-          const response = await axios.get('http://localhost:9090/api/auth/profs');
+          const response = await axios.get('https://elkindy-project-backend.onrender.com/api/auth/profs');
           // Utiliser les données pour remplir resourceData
           setResourceData(response.data.map(prof => ({
             text: `${prof.name} ${prof.lastname}`,

@@ -44,7 +44,7 @@ setRole(role)
             const updatedRoom = { ...editedRoom, evaluation };
 
             // Perform the API request to update the planning with the new data
-            await axios.put(`http://localhost:9090/api/plannings/updateevaluation/${editedRoom._id}`, updatedRoom);
+            await axios.put(`https://elkindy-project-backend.onrender.com/api/plannings/updateevaluation/${editedRoom._id}`, updatedRoom);
             setIsEditModalOpen(false);
             window.location.reload();
         } catch (error) {

@@ -26,7 +26,7 @@ export default function Overview() {
         const decodedToken = jwtDecode(token);
         const { userId, role } = decodedToken;
 
-        const response = await api.get(`http://localhost:9090/api/auth/user/${userId}`);
+        const response = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${userId}`);
         setUser(response.data);
       } catch (error) {
         console.error('Error fetching user data:', error);

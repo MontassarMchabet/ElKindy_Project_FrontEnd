@@ -91,7 +91,7 @@ export default function ColumnsTable(props) {
 
     const fetchComments = async () => {
         try {
-            const response = await axios.get(`http://localhost:9090/event/${eventId}/comments`);
+            const response = await axios.get(`https://elkindy-project-backend.onrender.com/event/${eventId}/comments`);
             setComments(response.data);
         } catch (error) {
             console.error('Erreur lors de la récupération des commentaires :', error);
@@ -188,7 +188,7 @@ console.log('user',userId)
             };
       
             const response = await axios.post(
-              `http://localhost:9090/comment/add/event/${eventId}`,
+              `https://elkindy-project-backend.onrender.com/comment/add/event/${eventId}`,
               commentData
             );
             fetchComments();

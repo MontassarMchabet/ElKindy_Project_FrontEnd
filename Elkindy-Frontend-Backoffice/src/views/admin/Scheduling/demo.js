@@ -31,10 +31,10 @@ const TimeZone = () => {
   useEffect(() => {
     const fetchPlannings = async () => {
       try {
-        const response = await axios.get('http://localhost:9090/api/plannings/getallStudent');
+        const response = await axios.get('https://elkindy-project-backend.onrender.com/api/plannings/getallStudent');
         const formattedData = await Promise.all(response.data.map(async planning => {
-          const studentResponse = await axios.get(`http://localhost:9090/api/auth/user/${planning.studentIds}`);
-          const RoomResponse = await axios.get(`http://localhost:9090/api/Room/getById/${planning.roomId}`);
+          const studentResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${planning.studentIds}`);
+          const RoomResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/Room/getById/${planning.roomId}`);
           return {
             ...planning,
             StartTime: moment(planning.date).set({

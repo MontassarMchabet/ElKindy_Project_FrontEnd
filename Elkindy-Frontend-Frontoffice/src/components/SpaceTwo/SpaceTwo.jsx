@@ -20,7 +20,7 @@ const SpaceTwo = ({ quizDetailsOrId }) => {
             const storedToken = Cookies.get('token');
             const decodedToken = jwtDecode(storedToken);
             const { userId } = decodedToken;
-            const response = await api.get(`http://localhost:9090/api/auth/user/${userId}`);
+            const response = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${userId}`);
             
             setUser(response.data);
             console.log(user._id)
@@ -39,7 +39,7 @@ const SpaceTwo = ({ quizDetailsOrId }) => {
             quizId = quizDetailsOrId._id; // Adjust accordingly based on the structure of quizDetailsOrId
           }
   console.log(quizId)
-          const response = await fetch(`http://localhost:9090/api/quiz/quizzes/${quizId}`); // Fetch quiz data by ID
+          const response = await fetch(`https://elkindy-project-backend.onrender.com/api/quiz/quizzes/${quizId}`); // Fetch quiz data by ID
           if (!response.ok) {
             throw new Error('Failed to fetch quiz data');
           }
@@ -86,7 +86,7 @@ const SpaceTwo = ({ quizDetailsOrId }) => {
         };
     console.log(dataToSave);
         // Send request to server to save quiz results
-        const response = await axios.post('http://localhost:9090/api/note/quiz/', dataToSave);
+        const response = await axios.post('https://elkindy-project-backend.onrender.com/api/note/quiz/', dataToSave);
     
         console.log(response.data);
       } catch (error) {

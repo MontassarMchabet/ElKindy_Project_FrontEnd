@@ -115,7 +115,7 @@ export default function ColumnsTable(props) {
                     formDataToSend.append("image", image);
 
                     const uploadResponse = await api.post(
-                        "http://localhost:9090/api/image/uploadimage",
+                        "https://elkindy-project-backend.onrender.com/api/image/uploadimage",
                         formDataToSend,
                         {
                             headers: {
@@ -148,7 +148,7 @@ export default function ColumnsTable(props) {
                 };
 
                 // Effectuer la requête API pour mettre à jour l'événement avec les nouvelles données
-                await axios.put(`http://localhost:9090/event/update/${editedEvent._id}`, editedEventData);
+                await axios.put(`https://elkindy-project-backend.onrender.com/event/update/${editedEvent._id}`, editedEventData);
                 console.log("Event updated successfully");
                 setIsEditModalOpen(false); // Fermer la modal d'édition après la sauvegarde
                 fetchData(); // Rafraîchir les données des cours
@@ -331,7 +331,7 @@ export default function ColumnsTable(props) {
                     formDataToSend.append("image", image);
 
                     const uploadResponse = await api.post(
-                        "http://localhost:9090/api/image/uploadimage",
+                        "https://elkindy-project-backend.onrender.com/api/image/uploadimage",
                         formDataToSend,
                         {
                             headers: {
@@ -377,7 +377,7 @@ export default function ColumnsTable(props) {
                     selectedSeats: formData.selectedSeats,
                 };
 
-                const response = await axios.post("http://localhost:9090/event/add", dataToSend);
+                const response = await axios.post("https://elkindy-project-backend.onrender.com/event/add", dataToSend);
                 
                 fetchData();
                 closeModalA();

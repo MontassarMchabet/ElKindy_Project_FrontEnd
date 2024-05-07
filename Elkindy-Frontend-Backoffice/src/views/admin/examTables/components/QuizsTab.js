@@ -57,7 +57,7 @@ function Quizes(props) {
                 }))
             };
     
-            await axios.put(`http://localhost:9090/api/quiz/${editedQuiz._id}`, editedData);
+            await axios.put(`https://elkindy-project-backend.onrender.com/api/quiz/${editedQuiz._id}`, editedData);
             
             setIsEditModalOpenQ(false);
             fetchData();

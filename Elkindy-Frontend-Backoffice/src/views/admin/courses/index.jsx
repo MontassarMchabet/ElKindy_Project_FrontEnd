@@ -20,11 +20,11 @@ export default function Settings() {
 
     const fetchData = async () => {
         try {
-            const CourseResponse = await axios.get(`http://localhost:9090/api/classroom/getall?page=${currentPage}&_limit=${itemsPerPage}`);
+            const CourseResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/classroom/getall?page=${currentPage}&_limit=${itemsPerPage}`);
             setCoursesData(CourseResponse.data.classroom);
             setPageCount(Math.ceil(CourseResponse.data.totalDocuments / itemsPerPage));
             console.log(Math.ceil(pageCount))
-            const RoomResponse = await axios.get('http://localhost:9090/api/Room/getall');
+            const RoomResponse = await axios.get('https://elkindy-project-backend.onrender.com/api/Room/getall');
             setRoomData(RoomResponse.data);
             
         } catch (error) {
@@ -64,7 +64,7 @@ export default function Settings() {
     const handleDelete = async () => {
         setIsCourseDeleteDialogOpen(false);
         try {
-            await axios.delete(`http://localhost:9090/api/classroom/delete/${deletingUserId}`);
+            await axios.delete(`https://elkindy-project-backend.onrender.com/api/classroom/delete/${deletingUserId}`);
             console.log("Course deleted successfully");
             setIsCourseEditModalOpen(false);
             fetchData();
@@ -78,7 +78,7 @@ export default function Settings() {
     const handleDeleteRoom = async () => {
         setIsRoomDeleteDialogOpen(false);
         try {
-            await axios.delete(`http://localhost:9090/api/Room/delete/${deletingRoomId}`);
+            await axios.delete(`https://elkindy-project-backend.onrender.com/api/Room/delete/${deletingRoomId}`);
             console.log("Course deleted successfully");
             setIsRoomEditModalOpen(false);
             fetchData();

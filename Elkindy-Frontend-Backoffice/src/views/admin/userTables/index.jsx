@@ -23,7 +23,7 @@ export default function Settings() {
         try {
             const token = localStorage.getItem('token');
 
-            const adminResponse = await api.get('http://localhost:9090/api/auth/admins', {
+            const adminResponse = await api.get('https://elkindy-project-backend.onrender.com/api/auth/admins', {
                 headers: {
                     'authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -31,7 +31,7 @@ export default function Settings() {
             });
             setAdminsData(adminResponse.data);
 
-            const clientResponse = await api.get('http://localhost:9090/api/auth/clients', {
+            const clientResponse = await api.get('https://elkindy-project-backend.onrender.com/api/auth/clients', {
                 headers: {
                     'authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -44,7 +44,7 @@ export default function Settings() {
                 if (planning.classroom === undefined) {
                     ClassroomName = "--";
                 } else {
-                    const studentResponse = await axios.get(`http://localhost:9090/api/classroom/getById/${planning.classroom}`);
+                    const studentResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/classroom/getById/${planning.classroom}`);
                     ClassroomName = studentResponse.data.name;
                     console.log(ClassroomName)
                 }
@@ -58,7 +58,7 @@ export default function Settings() {
 
             setClientsData(updatedPlannings);
 
-            const profResponse = await api.get('http://localhost:9090/api/auth/profs', {
+            const profResponse = await api.get('https://elkindy-project-backend.onrender.com/api/auth/profs', {
                 headers: {
                     'authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -75,7 +75,7 @@ export default function Settings() {
     ////////////////////////////////////////////////////////////////////
     const fetchClassroomOptions = async () => {
         try {
-            const response = await axios.get('http://localhost:9090/api/classroom/getall');
+            const response = await axios.get('https://elkindy-project-backend.onrender.com/api/classroom/getall');
             setclassroomOptions(response.data.classroom);
         } catch (error) {
             console.error('Error fetching classroom:', error);
@@ -120,7 +120,7 @@ export default function Settings() {
         setIsDeleteDialogOpen(false);
         try {
             console.log(deletingUserId);
-            await api.delete(`http://localhost:9090/api/auth/deleteUser/${deletingUserId}`);
+            await api.delete(`https://elkindy-project-backend.onrender.com/api/auth/deleteUser/${deletingUserId}`);
             fetchData();
         } catch (error) {
             console.error("Error deleting user:", error);

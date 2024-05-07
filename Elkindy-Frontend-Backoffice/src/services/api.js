@@ -2,7 +2,7 @@ import axios from "axios";
 import Cookies from 'js-cookie';
 
 const instance = axios.create({
-    baseURL: "http://localhost:9090/api",
+    baseURL: "https://elkindy-project-backend.onrender.com/api",
     headers: {
         "Content-Type": "application/json",
     },
@@ -29,7 +29,7 @@ instance.interceptors.response.use(
         const originalConfig = err.config;
         console.log('originalConfig', originalConfig.url);
 
-        if (originalConfig.url !== "http://localhost:9090/api/auth/loginEmail" && err.response) {
+        if (originalConfig.url !== "https://elkindy-project-backend.onrender.com/api/auth/loginEmail" && err.response) {
             if (err.response.status === 401 && !originalConfig._retry) {
                 originalConfig._retry = true;
 

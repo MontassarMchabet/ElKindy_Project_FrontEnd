@@ -2,7 +2,7 @@ import axios from "axios";
 import Cookies from 'js-cookie';
 
 const instance = axios.create({
-    baseURL: "http://localhost:9090/api",
+    baseURL: "https://elkindy-project-backend.onrender.com/api",
     headers: {
         "Content-Type": "application/json",
     },

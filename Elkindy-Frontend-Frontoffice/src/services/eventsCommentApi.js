@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const apiURL = "http://localhost:9090/comment";
+const apiURL = "https://elkindy-project-backend.onrender.com/comment";
 
 export async function getAllComments(config) {
   try {

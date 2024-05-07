@@ -67,9 +67,9 @@ export default function UserReports() {
 
   const fetchDataTopClients = async () => {
     try {
-      const response = await api.get('http://localhost:9090/api/auth/subscription/topclients');
+      const response = await api.get('https://elkindy-project-backend.onrender.com/api/auth/subscription/topclients');
       const topClientsData = await Promise.all(response.data.TopClients.map(async (client) => {
-        const userResponse = await api.get(`http://localhost:9090/api/auth/user/${client._id}`);
+        const userResponse = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${client._id}`);
         const { profilePicture, username } = userResponse.data;
         return {
           ...client,
@@ -87,7 +87,7 @@ export default function UserReports() {
 
   const fetchTotalIncome = async () => {
     try {
-      const response = await api.get('http://localhost:9090/api/auth/subscription/totalincome');
+      const response = await api.get('https://elkindy-project-backend.onrender.com/api/auth/subscription/totalincome');
       setTotalIncome(response.data.TotalIncome);
       let variabletotalIncomeTND = response.data.TotalIncome * 3.3;
       setTotalIncomeTND(variabletotalIncomeTND);
@@ -98,7 +98,7 @@ export default function UserReports() {
 
   const fetchTotalIncomeThisMonth = async () => {
     try {
-      const response = await api.get('http://localhost:9090/api/auth/subscription/totalincomeThisMonth');
+      const response = await api.get('https://elkindy-project-backend.onrender.com/api/auth/subscription/totalincomeThisMonth');
       setTotalIncomeThisMonth(response.data.TotalIncomeThisMonth);
     } catch (error) {
       console.error('Error fetching total income this month:', error);
@@ -107,7 +107,7 @@ export default function UserReports() {
 
   const fetchTotalSubscriptionsThisMonth = async () => {
     try {
-      const response = await api.get('http://localhost:9090/api/auth/subscription/SubscriptionThisMonth');
+      const response = await api.get('https://elkindy-project-backend.onrender.com/api/auth/subscription/SubscriptionThisMonth');
       setTotalSubscriptionsThisMonth(response.data.totalSubscriptions);
       setPercentageIncreaseSubscription(response.data.percentageIncrease)
     } catch (error) {
@@ -117,7 +117,7 @@ export default function UserReports() {
 
   const fetchTotalClients = async () => {
     try {
-      const response = await api.get('http://localhost:9090/api/auth/subscription/TotalClients');
+      const response = await api.get('https://elkindy-project-backend.onrender.com/api/auth/subscription/TotalClients');
       setTotalClients(response.data.TotalClients);
     } catch (error) {
       console.error('Error fetching total clients:', error);
@@ -126,7 +126,7 @@ export default function UserReports() {
 
   const fetchTopClients = async () => {
     try {
-      const response = await api.get('http://localhost:9090/api/auth/subscription/topclients');
+      const response = await api.get('https://elkindy-project-backend.onrender.com/api/auth/subscription/topclients');
       setTopClients(response.data.TopClients);
     } catch (error) {
       console.error('Error fetching top clients:', error);
@@ -134,7 +134,7 @@ export default function UserReports() {
   };
   const fetchSubscriptionStatus = async () => {
     try {
-      const response = await api.get('http://localhost:9090/api/auth/subscription/status');
+      const response = await api.get('https://elkindy-project-backend.onrender.com/api/auth/subscription/status');
       setSubscriptionStatus(response.data);
     } catch (error) {
       console.error('Error fetching subscription status:', error);

@@ -90,7 +90,7 @@ export default function ColumnsTable(props) {
         const handleSaveEdit = async () => {
             try {
                 
-                await axios.put(`http://localhost:9090/api/exam/${editedExam._id}`, editedExam);
+                await axios.put(`https://elkindy-project-backend.onrender.com/api/exam/${editedExam._id}`, editedExam);
                 console.log("Exam updated successfully");
                 setIsEditModalOpen(false); 
                 fetchData(); 
@@ -136,7 +136,7 @@ const [quizzes, setQuizzes] = useState([]);
 
   const fetchQuizzes = async () => {
     try {
-      const response = await axios.get('http://localhost:9090/api/quiz/quizzes/all');
+      const response = await axios.get('https://elkindy-project-backend.onrender.com/api/quiz/quizzes/all');
       setQuizzes(response.data);
     } catch (error) {
       console.error('Error fetching quizzes:', error);
@@ -212,7 +212,7 @@ const handleSubmitB = async (e) => {
             };
 
             // Make a POST request to save the quiz data
-            const response = await axios.post('http://localhost:9090/api/quiz/quizzes', dataToSend);
+            const response = await axios.post('https://elkindy-project-backend.onrender.com/api/quiz/quizzes', dataToSend);
 
             // Handle successful response
             console.log('Quiz saved successfully:', response.data);
@@ -354,7 +354,7 @@ const handleSubmitB = async (e) => {
             // Iterate through each exam ID
             for (const id of ids) {
                 // Fetch number of answers for the current exam ID
-                const response = await fetch(`http://localhost:9090/api/answer/answers/${id}`);
+                const response = await fetch(`https://elkindy-project-backend.onrender.com/api/answer/answers/${id}`);
                 if (!response.ok) {
                     throw new Error(`Failed to fetch answers for exam ID: ${id}`);
                 }
@@ -553,7 +553,7 @@ if (!question.point.trim()) {
       const fetchAnswersData = async (examId) => {
         try {
             // Make an API call to fetch answers
-            const response = await fetch(`http://localhost:9090/api/answer/answers/${examId}`);
+            const response = await fetch(`https://elkindy-project-backend.onrender.com/api/answer/answers/${examId}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch answers');
             }
@@ -561,7 +561,7 @@ if (!question.point.trim()) {
 
             // Fetch notes for each answer
             const answersWithNotes = await Promise.all(answers.map(async (answer) => {
-                const noteResponse = await fetch(`http://localhost:9090/api/note/byanswer/${answer._id}`);
+                const noteResponse = await fetch(`https://elkindy-project-backend.onrender.com/api/note/byanswer/${answer._id}`);
                 if (noteResponse.ok) {
                     const noteData = await noteResponse.json();
                     answer.note = noteData;
@@ -600,7 +600,7 @@ if (!question.point.trim()) {
                     formDataToUpload.append("image", formDataToSend.pdfFile);
                     
                     const uploadResponse = await axios.post(
-                        "http://localhost:9090/api/image/uploadimage",
+                        "https://elkindy-project-backend.onrender.com/api/image/uploadimage",
                         formDataToUpload,
                         {
                             headers: {
@@ -613,12 +613,12 @@ if (!question.point.trim()) {
                 }
     
                 const registerResponse = await axios.post(
-                    "http://localhost:9090/api/exam/",
+                    "https://elkindy-project-backend.onrender.com/api/exam/",
                     formDataToSendWithoutDateTime
                 );
                 // Get the users of a specific level
                 const level = formData.level; 
-                const usersResponse = await axios.get(`http://localhost:9090/api/auth/users/${level}`);
+                const usersResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/auth/users/${level}`);
                 const users = usersResponse.data;
    
                 // Get the emails of the users
@@ -626,7 +626,7 @@ if (!question.point.trim()) {
    
                 // Call the sendVerificationCode method with the emails and users
                 const verificationCodeResponse = await axios.post(
-                    "http://localhost:9090/api/exam/verificationCode",
+                    "https://elkindy-project-backend.onrender.com/api/exam/verificationCode",
                     { email: emails, username: users.map(user => user.username) }
                 );
 

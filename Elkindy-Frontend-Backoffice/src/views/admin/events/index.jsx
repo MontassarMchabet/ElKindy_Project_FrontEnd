@@ -17,7 +17,7 @@ export default function Settings() {
 
     const fetchData = async () => {
         try {
-            const eventResponse = await axios.get('http://localhost:9090/event/all');
+            const eventResponse = await axios.get('https://elkindy-project-backend.onrender.com/event/all');
             seteventsData(eventResponse.data);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -42,7 +42,7 @@ export default function Settings() {
     const handleDelete = async () => {
         setIsDeleteDialogOpen(false);
         try {
-            await axios.delete(`http://localhost:9090/event/delete/${deletingId}`);
+            await axios.delete(`https://elkindy-project-backend.onrender.com/event/delete/${deletingId}`);
             console.log("Event deleted successfully");
             fetchData();
         } catch (error) {

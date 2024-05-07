@@ -22,17 +22,17 @@ const ClassesArea = () => {
               const { userId, role } = decodedToken;
           
               // Fetch user data using the userId
-              const response = await api.get(`http://localhost:9090/api/auth/user/${userId}`);
+              const response = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${userId}`);
               setUser(response.data);
              
           
               let planningResponse;
               if (role === 'prof') {
                 // Fetch planning data for the teacher using the userId
-                planningResponse = await api.get(`http://localhost:9090/api/plannings/getByTeacherId/${userId}`);
+                planningResponse = await api.get(`https://elkindy-project-backend.onrender.com/api/plannings/getByTeacherId/${userId}`);
               } else if (role === 'client') {
                 // Fetch planning data for the client using the userId
-                planningResponse = await api.get(`http://localhost:9090/api/plannings/getallStudent/${userId}`);
+                planningResponse = await api.get(`https://elkindy-project-backend.onrender.com/api/plannings/getallStudent/${userId}`);
               }
         
               if (planningResponse) {
@@ -41,9 +41,9 @@ const ClassesArea = () => {
                    
                     if (planning.type === 'instrument') {
                       // Fetch student data using the studentIds from the planning
-                      const studentResponse = await api.get(`http://localhost:9090/api/auth/user/${planning.studentIds}`);
+                      const studentResponse = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${planning.studentIds}`);
                       // Fetch room data using the roomId from the planning
-                      const roomResponse = await api.get(`http://localhost:9090/api/Room/getById/${planning.roomId}`);
+                      const roomResponse = await api.get(`https://elkindy-project-backend.onrender.com/api/Room/getById/${planning.roomId}`);
                       return {
                         ...planning,
                         Subject: `${studentResponse.data.name} ${studentResponse.data.lastname}`,

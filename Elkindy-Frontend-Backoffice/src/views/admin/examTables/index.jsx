@@ -18,9 +18,9 @@ export default function Settings() {
     }, []);
 
     const fetchData = async (classLevel = null) => {
-        let url = 'http://localhost:9090/api/exam/';
+        let url = 'https://elkindy-project-backend.onrender.com/api/exam/';
         if (classLevel) {
-          url = `http://localhost:9090/api/exam/byclass/${classLevel}`;
+          url = `https://elkindy-project-backend.onrender.com/api/exam/byclass/${classLevel}`;
         }
         try {
           const examResponse = await axios.get(url);
@@ -35,7 +35,7 @@ export default function Settings() {
       
 
       const fetchQuizData = async () => {
-        const url = 'http://localhost:9090/api/quiz/quizzes/all'; // Route to fetch all quizzes
+        const url = 'https://elkindy-project-backend.onrender.com/api/quiz/quizzes/all'; // Route to fetch all quizzes
         try {
           const quizResponse = await axios.get(url);
           setQuizData(quizResponse.data)
@@ -71,7 +71,7 @@ export default function Settings() {
     const handleDelete = async () => {
         setIsDeleteDialogOpen(false);
         try {
-            await axios.delete(`http://localhost:9090/api/exam/${deletingExamId}`);
+            await axios.delete(`https://elkindy-project-backend.onrender.com/api/exam/${deletingExamId}`);
             
             fetchData();
         } catch (error) {
@@ -85,7 +85,7 @@ export default function Settings() {
             return;
         }
         try {
-            await axios.delete(`http://localhost:9090/api/quiz/delete/${deletingQuizId}`);
+            await axios.delete(`https://elkindy-project-backend.onrender.com/api/quiz/delete/${deletingQuizId}`);
             
             fetchData();
             window.location.reload(); 

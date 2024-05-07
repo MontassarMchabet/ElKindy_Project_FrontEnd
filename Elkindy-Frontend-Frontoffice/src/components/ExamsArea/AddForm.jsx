@@ -87,7 +87,7 @@ useEffect(() => {
         const storedToken = Cookies.get('token');
         const decodedToken = jwtDecode(storedToken);
         const { userId } = decodedToken;
-        const response = await api.get(`http://localhost:9090/api/auth/user/${userId}`);
+        const response = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${userId}`);
         
         setUser(response.data);
         
@@ -103,7 +103,7 @@ fetchUserData();
 
 const fetchQuizzes = async () => {
   try {
-    const response = await axios.get('http://localhost:9090/api/quiz/quizzes/all');
+    const response = await axios.get('https://elkindy-project-backend.onrender.com/api/quiz/quizzes/all');
     setQuizzes(response.data);
   } catch (error) {
     console.error('Error fetching quizzes:', error);
@@ -145,7 +145,7 @@ const handleSubmit = async (e) => {
               formDataToUpload.append("image", formDataToSend.pdfFile);
               
               const uploadResponse = await axios.post(
-                  "http://localhost:9090/api/image/uploadimage",
+                  "https://elkindy-project-backend.onrender.com/api/image/uploadimage",
                   formDataToUpload,
                   {
                       headers: {
@@ -161,7 +161,7 @@ const handleSubmit = async (e) => {
           const examData = { ...formDataWithPicture, prof: professorId };
 
           const registerResponse = await axios.post(
-              "http://localhost:9090/api/exam/",
+              "https://elkindy-project-backend.onrender.com/api/exam/",
               examData
           );
           

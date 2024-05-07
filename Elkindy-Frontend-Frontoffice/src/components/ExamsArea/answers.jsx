@@ -7,12 +7,12 @@ const AnswersPage = ({ examId }) => {
     useEffect(() => {
         const fetchAnswers = async () => {
             try {
-                const response = await fetch(`http://localhost:9090/api/answer/answers/${examId}`);
+                const response = await fetch(`https://elkindy-project-backend.onrender.com/api/answer/answers/${examId}`);
                 if (response.ok) {
                     const data = await response.json();
                      // Fetch notes for each answer
                      const answersWithNotes = await Promise.all(data.map(async (answer) => {
-                        const noteResponse = await fetch(`http://localhost:9090/api/note/byanswer/${answer._id}`);
+                        const noteResponse = await fetch(`https://elkindy-project-backend.onrender.com/api/note/byanswer/${answer._id}`);
                         if (noteResponse.ok) {
                             const noteData = await noteResponse.json();
                             answer.note = noteData;

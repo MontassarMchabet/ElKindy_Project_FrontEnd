@@ -30,27 +30,27 @@ export default function Planning() {
 
     const fetchPlannings = async () => {
         try {
-            const response = await axios.get(`http://localhost:9090/api/plannings/getall?page=${currentPage}&_limit=${itemsPerPage}`);
+            const response = await axios.get(`https://elkindy-project-backend.onrender.com/api/plannings/getall?page=${currentPage}&_limit=${itemsPerPage}`);
             console.log(response.data.plannings)
             // Pour chaque planning, récupérez le nom du cours
             const updatedPlannings = await Promise.all(response.data.plannings.map(async (planning) => {
                 // Récupérez le nom du cours pour ce planning
-                //const courseResponse = await axios.get(`http://localhost:9090/api/classroom/getById/${planning.classroomId}`);
+                //const courseResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/classroom/getById/${planning.classroomId}`);
                 let ClassroomName = "";
                 if (planning.classroomId === undefined) {
                     ClassroomName = "--";
                 } else {
-                    const studentResponse = await axios.get(`http://localhost:9090/api/classroom/getById/${planning.classroomId}`);
+                    const studentResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/classroom/getById/${planning.classroomId}`);
                     ClassroomName = studentResponse.data.name;
                 }
                 // Ajoutez le nom du cours au planning
-                const RoomResponse = await axios.get(`http://localhost:9090/api/Room/getById/${planning.roomId}`);
-                const teacherResponse = await axios.get(`http://localhost:9090/api/auth/user/${planning.teacherId}`);
+                const RoomResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/Room/getById/${planning.roomId}`);
+                const teacherResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${planning.teacherId}`);
                 let studentName = "";
                 if (planning.studentIds === undefined) {
                     studentName = "--";
                 } else {
-                    const studentResponse = await axios.get(`http://localhost:9090/api/auth/user/${planning.studentIds}`);
+                    const studentResponse = await axios.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${planning.studentIds}`);
                     studentName = studentResponse.data.name;
                 }
                 return {
@@ -78,7 +78,7 @@ export default function Planning() {
       };
     const fetchClassroomOptions = async () => {
         try {
-            const response = await axios.get('http://localhost:9090/api/classroom/getall');
+            const response = await axios.get('https://elkindy-project-backend.onrender.com/api/classroom/getall');
             setclassroomOptions(response.data.classroom);
         } catch (error) {
             console.error('Error fetching classroom:', error);
@@ -86,7 +86,7 @@ export default function Planning() {
     };
     const fetchRoomOptions  = async () => {
         try {
-            const response = await axios.get('http://localhost:9090/api/Room/getall');
+            const response = await axios.get('https://elkindy-project-backend.onrender.com/api/Room/getall');
             setRoomOptions(response.data);
         } catch (error) {
             console.error('Error fetching courses:', error);
@@ -94,7 +94,7 @@ export default function Planning() {
     };
     const fetchTeacherOptions   = async () => {
         try {
-            const response = await axios.get('http://localhost:9090/api/auth/profs');
+            const response = await axios.get('https://elkindy-project-backend.onrender.com/api/auth/profs');
             setTeacherOptions(response.data);
         } catch (error) {
             console.error('Error fetching courses:', error);
@@ -102,7 +102,7 @@ export default function Planning() {
     };
     const fetchStudentOptions    = async () => {
         try {
-            const response = await axios.get('http://localhost:9090/api/auth/clients');
+            const response = await axios.get('https://elkindy-project-backend.onrender.com/api/auth/clients');
             setStudentOptions(response.data);
         } catch (error) {
             console.error('Error fetching courses:', error);
@@ -131,7 +131,7 @@ export default function Planning() {
     const handleDelete = async () => {
         setIsDeleteDialogOpen(false);
         try {
-            await axios.delete(`http://localhost:9090/api/plannings/delete/${deletingPlanningId}`);
+            await axios.delete(`https://elkindy-project-backend.onrender.com/api/plannings/delete/${deletingPlanningId}`);
             console.log("Planning deleted successfully");
             fetchPlannings();
         } catch (error) {

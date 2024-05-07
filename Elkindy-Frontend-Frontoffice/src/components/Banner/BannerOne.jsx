@@ -13,7 +13,7 @@ const BannerOne = () => {
       const decodedToken = jwtDecode(token);
       const { userId } = decodedToken;
 
-      api.get(`http://localhost:9090/api/auth/user/${userId}`)
+      api.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${userId}`)
         .then(response => {
           setUser(response.data);
         })

@@ -57,7 +57,7 @@ function ResetPassword() {
                 setErrorPassword("Passwords do not match");
                 return;
             }
-            const response = await api.put(`http://localhost:9090/api/auth/passwordReset/${token}`, { password });
+            const response = await api.put(`https://elkindy-project-backend.onrender.com/api/auth/passwordReset/${token}`, { password });
             if (response.data.message === 'Password reset successfully') {
                 setErrorPassword('');
                 setSuccessImage(true);

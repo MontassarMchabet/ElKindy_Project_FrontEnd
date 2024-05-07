@@ -12,7 +12,7 @@ export default function Settings() {
     const fetchData = async () => {
         try {
             const token = Cookies.get('token');
-            const response = await api.get('http://localhost:9090/api/auth/getAllHistorySubscriptions', {
+            const response = await api.get('https://elkindy-project-backend.onrender.com/api/auth/getAllHistorySubscriptions', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -20,7 +20,7 @@ export default function Settings() {
 
             //Iterate over each subscription to fetch user details
             const updatedData = await Promise.all(response.data.map(async (subscription) => {
-                const userResponse = await api.get(`http://localhost:9090/api/auth/user/${subscription.client}`, {
+                const userResponse = await api.get(`https://elkindy-project-backend.onrender.com/api/auth/user/${subscription.client}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
