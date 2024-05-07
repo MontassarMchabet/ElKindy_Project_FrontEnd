@@ -1,8 +1,13 @@
 [build]
+# Commande de build exécutée dans le répertoire de base
 command = "npm run build"
-publish = "build/"
+# Répertoire où sont stockés les fichiers statiques après la build
+publish = "Elkindy-Frontend-Backoffice/build"
+# Répertoire où la commande de build doit être exécutée
 base = "Elkindy-Frontend-Backoffice"
+
 [[redirects]]
+# Redirige toutes les requêtes vers le fichier index.html pour les SPA
 from = "/*"
-to="/index.html"
-status=200
+to = "/index.html"
+status = 200
