@@ -1,7 +1,0 @@
-
-
-# Redirection pour les requêtes vers /backoffice/*
-/backoffice/* /Elkindy-Frontend-Backoffice/index.html 200
-
-# Redirection pour les requêtes vers /frontoffice/*
-/frontoffice/* /Elkindy-Frontend-Frontoffice/index.html 200
