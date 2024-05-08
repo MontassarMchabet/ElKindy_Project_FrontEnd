@@ -464,7 +464,7 @@ const HeaderOne = () => {
                                                         }}>
                                                             <a
                                                                 style={{ color: "#6c757d", textDecoration: "none", display: "inline-block", width: "100%", height: "100%", lineHeight: "40px" }}
-                                                                href="el-kindy-project-front-end-t52l.vercel.app/elkindy#/signin"
+                                                                href="https://el-kindy-project-front-end-t52l.vercel.app/elkindy#/signin"
                                                             >Sign in</a>
                                                         </button>
                                                         <button style={{
