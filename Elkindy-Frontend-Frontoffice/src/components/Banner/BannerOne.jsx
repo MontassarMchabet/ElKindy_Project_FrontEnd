@@ -23,7 +23,7 @@ const BannerOne = () => {
     }
   }, []);
 
-  let destinationUrl = 'http://localhost:3000/elkindy#/signin';
+  let destinationUrl = 'https://el-kindy-project-front-end-t52l.vercel.app/elkindy#/signin';
   let buttonText = 'Subscribe now';
 
   if (user) {
