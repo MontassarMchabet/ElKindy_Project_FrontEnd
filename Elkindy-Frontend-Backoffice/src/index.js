@@ -24,7 +24,7 @@ const App = () => {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
 	const redirectToSecondProjectHome = () => {
-		window.location.href = 'http://localhost:3001';
+		window.location.href = 'https://el-kindy-project-front-end.vercel.app';
 	};
 
 
