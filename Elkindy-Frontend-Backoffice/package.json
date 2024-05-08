@@ -1,5 +1,5 @@
 {
-  "homepage": "elkindy",
+
   "name": "elkindy",
   "version": "1.0.1",
   "private": true,
@@ -69,10 +69,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
-    "sitemap": "babel-node ./sitemap-builder.js"
+    "eject": "react-scripts eject"
   },
   "resolutions": {
     "react-error-overlay": "6.0.9"
