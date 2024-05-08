@@ -3,5 +3,5 @@ publish = "build/"
 base = "Elkindy-Frontend-Backoffice"
 [[redirects]]
 from = "/*"
-to="/index.html"
+to="Elkindy-Frontend-Backoffice/index.html"
 status=200
