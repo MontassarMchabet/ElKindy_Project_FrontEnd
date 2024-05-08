@@ -1,0 +1,7 @@
+command = "npm run build"
+publish = "build/"
+base = "Elkindy-Frontend-Backoffice"
+[[redirects]]
+from = "/*"
+to="/index.html"
+status=200
