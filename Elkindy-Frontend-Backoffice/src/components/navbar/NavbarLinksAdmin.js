@@ -177,7 +177,7 @@ export default function HeaderLinks(props) {
 					<Flex flexDirection="column" p="10px">
 
 						<MenuItem _hover={{ bg: 'none' }} _focus={{ bg: 'none' }} borderRadius="8px" px="14px">
-							<a href="http://localhost:3001/" fontSize="sm">Home</a>
+							<a href="https://el-kindy-project-front-end.vercel.app/" fontSize="sm">Home</a>
 						</MenuItem>
 
 						<NavLink to="/admin/profile" style={{ textDecoration: "none" }}>
