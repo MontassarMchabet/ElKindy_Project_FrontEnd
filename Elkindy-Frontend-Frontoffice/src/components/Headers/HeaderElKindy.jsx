@@ -388,7 +388,7 @@ const HeaderOne = () => {
                                                                 </li>
                                                                 {user?.role === 'admin' && (
                                                                     <li>
-                                                                        <a href="http://localhost:3000/elkindy#/admin/dashboard">Dashboard</a>
+                                                                        <a href="https://el-kindy-project-front-end-t52l.vercel.app/elkindy#/admin/dashboard">Dashboard</a>
                                                                     </li>
                                                                 )}
                                                                 {user?.isSubscribed && (
@@ -476,7 +476,7 @@ const HeaderOne = () => {
                                                         }}>
                                                             <a
                                                                 style={{ color: "#6c757d", textDecoration: "none", display: "inline-block", width: "100%", height: "100%", lineHeight: "40px" }}
-                                                                href="http://localhost:3000/elkindy#/signup"
+                                                                href="https://el-kindy-project-front-end-t52l.vercel.app/elkindy#/signup"
                                                             >Sign up</a>
                                                         </button>
                                                     </>
@@ -592,7 +592,7 @@ const HeaderOne = () => {
                                                                 </li>
                                                                 {user?.role === 'admin' && (
                                                                     <li>
-                                                                        <a href="http://localhost:3000/elkindy#/admin/dashboard">Dashboard</a>
+                                                                        <a href="https://el-kindy-project-front-end-t52l.vercel.app/elkindy#/admin/dashboard">Dashboard</a>
                                                                     </li>
                                                                 )}
                                                                 {user?.isSubscribed && (
@@ -667,7 +667,7 @@ const HeaderOne = () => {
                                                         }}>
                                                             <a
                                                                 style={{ color: "#6c757d", textDecoration: "none", display: "inline-block", width: "100%", height: "100%", lineHeight: "40px" }}
-                                                                href="http://localhost:3000/elkindy#/signin"
+                                                                href="https://el-kindy-project-front-end-t52l.vercel.app/elkindy#/signin"
                                                             >Sign in</a>
                                                         </button>
                                                         <button style={{
@@ -679,7 +679,7 @@ const HeaderOne = () => {
                                                         }}>
                                                             <a
                                                                 style={{ color: "#6c757d", textDecoration: "none", display: "inline-block", width: "100%", height: "100%", lineHeight: "40px" }}
-                                                                href="http://localhost:3000/elkindy#/signup"
+                                                                href="https://el-kindy-project-front-end-t52l.vercel.app/elkindy#/signup"
                                                             >Sign up</a>
                                                         </button>
                                                     </>
