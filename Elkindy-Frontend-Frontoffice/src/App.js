@@ -91,8 +91,8 @@ function App() {
       />
 
       <Routes>
-      
-        <Route path="/" element={<AccountComponent />} />
+          <Route path="/" element={<CreativeAgency />} />
+        <Route path="/account" element={<AccountComponent />} />
         <Route path="/exams" element={<ExamsComponent />} />
         <Route path="/addexams" element={<AddExamsComponent />} />
         <Route path="/addquiz" element={<AddQuizsComponent />} />
