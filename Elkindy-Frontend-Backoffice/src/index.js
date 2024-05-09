@@ -24,7 +24,7 @@ const App = () => {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
 	const redirectToSecondProjectHome = () => {
-		window.location.href = 'https://el-kindy-project-front-end.vercel.app/account';
+		window.location.href = 'https://el-kindy-project-front-end.vercel.app';
 	};
 
 
@@ -40,7 +40,7 @@ const App = () => {
 							<Route path="/signup" component={SignupLayout} />
 							<Route path="/forgot-password" component={ForgotpasswordLayout} />
 							<Route path="/passwordReset/:token" component={ResetPassword} />
-							<Route path="/home" render={redirectToSecondProjectHome} />
+							<Route path="/elkindy#/home" render={redirectToSecondProjectHome} />
 							{/* <Route path="/home" render={HomeLayout} /> */}
 							{/* Routes accessible only to authenticated users with specific roles */}
 							<PrivateRoute path="/admin" component={AdminLayout} allowedRoles={['admin']} isLoggedIn={isLoggedIn} />
