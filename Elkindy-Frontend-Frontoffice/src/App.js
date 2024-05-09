@@ -45,10 +45,13 @@ import Orders from "./pages/shop/pages/Orders.jsx";
 import Piano from "./pages/Virtualinstrument/Piano";
 import Drums from "./pages/Virtualinstrument/Drums";
 import SubscribePage from "./pages/Subscribe";
-
+import { registerLicense } from '@syncfusion/ej2-base';
 import FillInformations from "./components/FillInformations/FillInformations.jsx";
 
 function App() {
+    const licenseKey = process.env.SYNCFUSION_LICENSE_KEY;
+
+   registerLicense(licenseKey);
   useEffect(() => {
     const wow = new WOW({
       boxClass: "wow",
