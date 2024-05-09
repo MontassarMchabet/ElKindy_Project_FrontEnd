@@ -47,7 +47,7 @@ const App = () => {
 							{/* Redirect any other path to home */}
 							<Route path="/event/:eventId/tickets" component={TicketComponent} />
 						<Route path="/event/:eventId/comments" component={CommentComponent} />
-							<Redirect from="/" to="/home" />
+							<Redirect from="/elkindy#/home" to="/home" />
 						</Switch>
 					</HashRouter>
 				</ThemeEditorProvider>
