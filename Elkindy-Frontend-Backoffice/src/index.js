@@ -24,7 +24,7 @@ const App = () => {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
 	const redirectToSecondProjectHome = () => {
-		window.location.href = 'https://el-kindy-project-front-end.vercel.app/';
+		window.location.href = 'https://el-kindy-project-front-end.vercel.app/account';
 	};
 
 
@@ -47,7 +47,7 @@ const App = () => {
 							{/* Redirect any other path to home */}
 							<Route path="/event/:eventId/tickets" component={TicketComponent} />
 						<Route path="/event/:eventId/comments" component={CommentComponent} />
-							<Redirect from="/" to="/home" />
+							
 						</Switch>
 					</HashRouter>
 				</ThemeEditorProvider>
